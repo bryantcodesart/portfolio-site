@@ -1,3 +1,26 @@
+// import React, { ReactNode } from 'react';
+// import SyntaxHighlighter from 'react-syntax-highlighter';
+// import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+// // const createCodeDecorator = (langName:string,langSlug:string,langAbbreviation:string) => {
+// //   return {
+// //     title: langName,
+// //     value: langSlug,
+// //     blockEditor: {
+// //       icon: ()=>langAbbreviation,
+// //       render: ({children}:{children:ReactNode}) => {
+// //         const codeString = children?.toString()
+// //         console.log('render JS',children,typeof codeString)
+// //         return <span style={{backgroundColor: 'lime'}}>{children}</span>
+// //         // return <SyntaxHighlighter style={docco} language={langSlug}>
+// //         //   {codeString ?? ''}
+// //         // </SyntaxHighlighter>
+// //       }
+// //     }
+// //   }
+// // }
+
+
 /**
  * This is the schema definition for the rich text fields used for
  * for this blog studio. When you import it in schemas.js it can be
@@ -36,6 +59,7 @@ export default {
         decorators: [
           {title: 'Strong', value: 'strong'},
           {title: 'Emphasis', value: 'em'},
+
         ],
         // Annotations can be any object structure – e.g. a link or a footnote.
         annotations: [
@@ -60,6 +84,17 @@ export default {
     {
       type: 'image',
       options: {hotspot: true},
+    },
+    {
+      type: 'youtube',
+    },
+    {
+      type: 'vimeo',
+    },
+    {
+      name: 'code',
+      title: 'Code',
+      type: 'code',
     },
   ],
 }

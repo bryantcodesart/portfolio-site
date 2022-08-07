@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Vars we reference in tailwind classes */
+:root {
+  @screen lg {
+  }
+}
+
+canvas {
+  @apply absolute top-0 left-0 w-full h-full;
+}
+
+body {
+  @apply no-scrollbar;
+}
+
+* {
+  @apply !cursor-none;
+}
+
+#leva__root {
+  @apply !cursor-auto;
+}
