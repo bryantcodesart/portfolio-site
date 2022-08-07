@@ -1,8 +1,10 @@
 import React, { useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Line, Stats, Html } from '@react-three/drei';
+import {
+  Line, Stats, Html, ScrollControls,
+} from '@react-three/drei';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
-import { MoveCameraWithMouse } from './MoveCameraWithMouse';
+import { CameraController } from './CameraController';
 import { CodeLines } from './CodeLines';
 import { squigglePoints } from './squigglePoints';
 // import * as THREE from 'three';
@@ -74,31 +76,42 @@ const Squiggle = ({
   );
 };
 
+function ThreeSceneContent() {
+  return (
+    <>
+      <Squiggle
+        points={(squigglePoints as Point[])}
+        size={13}
+        position={[0, 0, -1]}
+        lineWidth={10}
+        color={0xff00ff}
+        visible
+      />
+      <Html
+        transform
+        position={[0, 0, 0]}
+        className="p-4 text-white bg-blue font-mono text-[1vw] !pointer-events-none"
+        wrapperClass="!pointer-events-none"
+      >
+        <p>
+          hi! i’m bryant! (he/him)
+          <br />
+          i make dope
+          <br />
+          web experiences.
+        </p>
+      </Html>
+    </>
+  );
+}
+
 const ThreeScene = () => (
   <Canvas>
     <ambientLight />
     <CodeLines />
-    {/* <OrbitControls /> */}
-    <MoveCameraWithMouse />
-    <Squiggle
-      points={squigglePoints as Point[]}
-      size={13}
-      position={[0, 0, -1]}
-      lineWidth={10}
-      color={0xff00ff}
-      visible
-    />
-
-    <Html transform position={[0, 0, 0]}>
-      <p className="p-4 text-white bg-blue font-mono text-[1vw]">
-        hi! i’m bryant! (he/him)
-        <br />
-        i make dope
-        <br />
-        web experiences.
-      </p>
-    </Html>
+    <ThreeSceneContent />
     <Stats />
+    <CameraController />
   </Canvas>
 );
 export default ThreeScene;
