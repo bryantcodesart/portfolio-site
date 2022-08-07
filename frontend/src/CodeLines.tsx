@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 import useFontFaceObserver from 'use-font-face-observer';
+import { Mesh } from 'three';
 import colors from './colors';
 
 const RING_HEIGHT = 0.1;
@@ -42,24 +43,29 @@ function createTextCanvas(text: string): HTMLCanvasElement | null {
 }
 
 // https://github.com/gsimone/gsim.one/blob/master/src/Scene.js
-function CodeRing({ canvases, z, r }:
-  { canvases: (HTMLCanvasElement | null)[]; z: number; r: number; }) {
+function CodeRing({ canvases, y, r }:
+  { canvases: (HTMLCanvasElement | null)[]; y: number; r: number; }) {
   const canvas = useMemo(() => canvases[Math.floor(Math.random() * codeLines.length)], [canvases]);
 
   const speed = useMemo(() => Math.random() * 0.5 + 0.5, []);
   const startingOffset = useMemo(() => Math.random(), []);
 
-  const texture = useRef<THREE.CanvasTexture | null>(null);
+  const cylinder = useRef<Mesh>(null);
   useFrame(({ clock }) => {
-    if (!texture.current) { return; }
-    texture.current.offset.x = startingOffset * 1000 + (clock.getElapsedTime() / 50) * -speed;
+    if (!cylinder.current) { return; }
+    cylinder.current.rotation.y = startingOffset * Math.PI * 2
+    + (clock.getElapsedTime() / 30) * -speed;
+
+    // const scale = (Math.cos(clock.getElapsedTime()) + 1 / 2) * 0.2 + 0.8;
+    // cylinder.current.scale.set(scale, scale, scale);
   });
 
   return (
     <Cylinder
       args={[r, r - RADIUS_TAPER, RING_HEIGHT, 64, 1, true]}
-      position={[0, 2, z]}
-      rotation={[0, Math.PI / 2, Math.PI / 2]}
+      position={[0, y, 0]}
+      rotation={[0, 0, 0]}
+      ref={cylinder}
     >
       <meshStandardMaterial transparent attach="material" side={THREE.BackSide}>
         <canvasTexture
@@ -69,7 +75,6 @@ function CodeRing({ canvases, z, r }:
           image={canvas}
           premultiplyAlpha
           // @ts-ignore
-          ref={texture}
           wrapS={THREE.RepeatWrapping}
           wrapT={THREE.RepeatWrapping}
           flipY={false}
@@ -95,11 +100,11 @@ export function CodeLines() {
 
   return (
     isFontLoaded ? (
-      <group>
-        {new Array(50).fill(null).map((_, index) => (
+      <group rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+        {new Array(100).fill(null).map((_, index) => (
           <CodeRing
-            z={5 + index * -RING_HEIGHT * (2 + 0.05 * index)}
-            r={5 - RADIUS_TAPER * index}
+            y={54 + index * -8 * RING_HEIGHT}
+            r={5}
             // eslint-disable-next-line react/no-array-index-key
             key={index}
             canvases={canvases}
