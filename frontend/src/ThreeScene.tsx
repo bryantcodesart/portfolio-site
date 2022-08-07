@@ -16,19 +16,17 @@ const RING_HEIGHT = 0.1;
 const RADIUS_TAPER = 0.1;
 
 const codeLines = [
-  '<TurboEncabulator><Amulite prefabulated/><HydrocopticMarzelvanes count={6} /><Panendermic /><Panendermic semiboloid /></TurboEncabulator>',
+  '<TurboEncabulator><Amulite prefabulated /><HydrocopticMarzelvanes count={6} /><Panendermic /><Panendermic semiboloid /></TurboEncabulator>',
   'rm -rf node_modules && npm install && npm run build && npm run hope && npm start',
-  '// I hope github copilot will finish this...',
+  '// I hope github copilot will finish this part...',
   '<AllWorkAndNoPlayMakesBryantADullBoy /><AllWorkAndNoPlayMakesBryantADullBoy /><AllWorkAndNoPlayMakesBryantADullBoy /><AllWorkAndNoPlayMakesBryantADullBoy />',
-  'useOnMyDeath(()=>{eraseBrowserHistoryOnAllDevices(); doItAgainJustToBeSure(); tripleCheck(); alsoJustIncinerateHardDrives();}); ',
+  'useOnMyDeath(()=>{ eraseBrowserHistoryOnAllDevices(); doItAgainJustToBeSure(); tripleCheck(); alsoJustIncinerateHardDrives(); }); ',
   'const debugInterval = setInterval(()=>{if(prompt(\'Program still working?\')==="nope") throw new Error("bug.");}, 100);',
-  '<Burrito spicy={100}>{toppings.map((tProps:{name:string,spicy:number,isHotsauce:boolean,vegan:boolean})=>(<Topping {...(tprops)} />)}',
+  '<Burrito spicy={100}>{toppings.map((tProps:{name:string,spicy:number,isHotsauce:boolean,vegan:boolean})=>(<Topping {...(tprops)} key={name} />)}</Burrito>',
   'if(i%(3*(7*3+2))===0) return "nice"; if(i%3===0 && i%5===0) return "fizzbuzz"; if(i%3===0) return "fizz"; if(i%5===0) return "buzz";',
   'mintNft("silly-3d-monkey1.gif"); profit(); mintNft("silly-3d-monkey2.gif"); profit(); mintNft("silly-3d-monkey3.gif"); profit();',
   // eslint-disable-next-line no-template-curly-in-string
-  'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json()) return isEven;}',
-  // eslint-disable-next-line no-template-curly-in-string
-  'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json()) return isEven;}',
+  'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json(); return isEven; }',
 ];
 
 function createTextCanvas(text:string) : HTMLCanvasElement|null {
