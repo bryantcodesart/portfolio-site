@@ -88,8 +88,8 @@ function ScrollExperience() {
       <Html
         transform
         position={[0, 0, 0]}
-        className="p-4 text-white bg-blue font-mono text-[1vw] !pointer-events-none"
-        wrapperClass="!pointer-events-none"
+        className="p-4 text-white bg-blue font-mono text-[1vw]"
+        pointerEvents="none"
       >
         <p>
           hi! i’m bryant! (he/him)
