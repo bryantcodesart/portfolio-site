@@ -55,7 +55,7 @@ export const squigglePoints = [
     0,
   ],
   [
-    0.2221,
+    0.2222,
     0.5011,
     0,
   ],
@@ -110,7 +110,7 @@ export const squigglePoints = [
     0,
   ],
   [
-    0.5114,
+    0.5115,
     0.2826,
     0,
   ],
@@ -231,7 +231,7 @@ export const squigglePoints = [
   ],
   [
     0.5761,
-    0.5799,
+    0.58,
     0,
   ],
   [
@@ -345,7 +345,7 @@ export const squigglePoints = [
     0,
   ],
   [
-    0.7262,
+    0.7263,
     0.4727,
     0,
   ],
@@ -420,8 +420,8 @@ export const squigglePoints = [
     0,
   ],
   [
-    0.8949,
-    0.4151,
+    0.895,
+    0.415,
     0,
   ],
   [
@@ -521,7 +521,7 @@ export const squigglePoints = [
   ],
   [
     0.8838,
-    0.5524,
+    0.5525,
     0,
   ],
   [
@@ -950,7 +950,7 @@ export const squigglePoints = [
     0,
   ],
   [
-    0.0704,
+    0.0705,
     0.3847,
     0,
   ],
@@ -971,7 +971,7 @@ export const squigglePoints = [
   ],
   [
     0.0518,
-    0.3445,
+    0.3444,
     0,
   ],
   [
@@ -980,7 +980,7 @@ export const squigglePoints = [
     0,
   ],
   [
-    0.0436,
+    0.0437,
     0.3435,
     0,
   ],
