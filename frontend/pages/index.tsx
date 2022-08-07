@@ -1,7 +1,6 @@
 import type { InferGetStaticPropsType, NextPage } from 'next';
 
 export async function getStaticProps() {
-
   return {
     props: {},
   };
@@ -9,8 +8,6 @@ export async function getStaticProps() {
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>
 
-const Home: NextPage<Props> = () => {
-  return null;
-};
+const Home: NextPage<Props> = () => null;
 
 export default Home;
