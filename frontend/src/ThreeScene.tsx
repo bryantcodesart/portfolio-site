@@ -7,7 +7,7 @@ import {
 } from '@react-three/drei';
 import { Color } from 'three';
 import { CameraController } from './CameraController';
-import { CodeLines } from './CodeLines';
+import { CodeRings } from './CodeRings';
 import squiggle1Points from './lines/squiggle1';
 import squiggleCirclePoints from './lines/squiggleCircle';
 import { Squiggle } from './Squiggle';
@@ -17,7 +17,7 @@ function ScrollExperience() {
   return (
     <ScrollControls pages={15}>
       <CameraController />
-      <CodeLines />
+      <CodeRings />
       <Squiggle
         points={(squiggle1Points as CoordArray[])}
         size={15}
