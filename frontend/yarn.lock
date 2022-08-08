@@ -508,6 +508,11 @@
   resolved "https://registry.yarnpkg.com/@portabletext/types/-/types-1.0.3.tgz#b23f832ae5331c1d864195a95eba34abf340597e"
   integrity sha512-SDDsdury2SaTI2D5Ea6o+Y39SSZMYHRMWJHxkxYl3yzFP0n/0EknOhoXcoaV+bxGr2dTTqZi2TOEj+uWYuavSw==
 
+"@quatrefoil/meshline@^1.3.0-a1":
+  version "1.3.0-a1"
+  resolved "https://registry.yarnpkg.com/@quatrefoil/meshline/-/meshline-1.3.0-a1.tgz#900821ec05c7cf504afac337ef5fdf7c44e540b8"
+  integrity sha512-9YsktvIpAktkyLVXPNLWXn9b6K+RId4A5gHRWKlfQ+Pf0HOmzyNmpTUrT2M0SWSdY7/IIUAofX+Ndlzl2Ode7g==
+
 "@radix-ui/popper@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@radix-ui/popper/-/popper-0.1.0.tgz#c387a38f31b7799e1ea0d2bb1ca0c91c2931b063"
@@ -4140,6 +4145,11 @@ three-stdlib@^2.13.0, three-stdlib@^2.8.11:
     opentype.js "^1.3.3"
     potpack "^1.0.1"
     zstddec "^0.0.2"
+
+three.meshline@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/three.meshline/-/three.meshline-1.4.0.tgz#2a483cbd99cd5f74cf6ee5c253a9a4b4a8169178"
+  integrity sha512-A8IsiMrWP8zmHisGDAJ76ZD7t/dOF/oCe/FUKNE6Bu01ZYEx8N6IlU/1Plb2aOZtAuWM2A8s8qS3hvY0OFuvOw==
 
 three@^0.143.0:
   version "0.143.0"

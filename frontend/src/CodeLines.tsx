@@ -3,7 +3,9 @@ import { useFrame } from '@react-three/fiber';
 import { Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 import useFontFaceObserver from 'use-font-face-observer';
-import { Mesh, Texture } from 'three';
+import {
+  AdditiveBlending, Mesh, SubtractiveBlending, Texture,
+} from 'three';
 import colors from './colors';
 
 // const RADIUS = 3;
@@ -35,17 +37,29 @@ function createTextCanvas(text: string): HTMLCanvasElement | null {
   context.fillStyle = 'transparent';
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  context.font = `100 ${fontSize}px 'Roboto Mono'`;
+  context.font = `200 ${fontSize}px 'Roboto Mono'`;
   context.textAlign = 'center';
   context.textBaseline = 'middle';
   context.fillStyle = colors.blue;
   context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  // setInterval(() => {
+  //   context.fillStyle = 'transparent';
+  //   context.fillRect(0, 0, canvas.width, canvas.height);
+  //   context.font = `200 ${fontSize}px 'Roboto Mono'`;
+  //   context.textAlign = 'center';
+  //   context.textBaseline = 'middle';
+  //   context.fillStyle = colors.blue;
+  //   context.fillText(Math.random().toString(), canvas.width / 2, canvas.height / 2);
+  // }, 1000);
   return canvas;
 }
 
 // https://github.com/gsimone/gsim.one/blob/master/src/Scene.js
-function CodeRing({ canvases, y, r }:
-  { canvases: (HTMLCanvasElement | null)[]; y: number; r: number }) {
+function CodeRing({
+  canvases, y, r, repeats,
+}:
+  { canvases: (HTMLCanvasElement | null)[]; y: number; r: number, repeats: number }) {
   const canvas = useMemo(() => canvases[Math.floor(Math.random() * codeLines.length)], [canvases]);
 
   const speed = useMemo(() => Math.random() * 0.5 + 0.5, []);
@@ -65,6 +79,8 @@ function CodeRing({ canvases, y, r }:
 
     texture.current.offset.x = startingOffset * Math.PI * 2
      + (clock.getElapsedTime() / 60) * -speed;
+
+    texture.current.needsUpdate = true;
 
     // if (!cylinder.current) { }
     // cylinder.current.rotation.y = startingOffset * Math.PI * 2
@@ -90,7 +106,7 @@ function CodeRing({ canvases, y, r }:
         <canvasTexture
           attach="map"
           // @ts-ignore
-          repeat={[3, 1]}
+          repeat={[repeats, 1]}
           image={canvas}
           premultiplyAlpha
           // @ts-ignore
@@ -101,6 +117,7 @@ function CodeRing({ canvases, y, r }:
           ref={texture}
           // eslint-disable-next-line no-param-reassign
           onUpdate={(s) => { s.needsUpdate = true; }}
+          blending={SubtractiveBlending}
         />
       </meshStandardMaterial>
     </Cylinder>
@@ -111,7 +128,7 @@ export function CodeLines() {
   const isFontLoaded = useFontFaceObserver([
     {
       family: 'Roboto Mono',
-      weight: '100',
+      weight: '200',
     },
   ]);
 
@@ -126,6 +143,9 @@ export function CodeLines() {
           <CodeRing
             y={index * (-4) * RING_HEIGHT}
             r={3 - index * 0.1}
+            repeats={
+              1 + (index < 15 ? 1 : 0) + (index < 25 ? 1 : 0)
+            }
             // eslint-disable-next-line react/no-array-index-key
             key={index}
             canvases={canvases}
