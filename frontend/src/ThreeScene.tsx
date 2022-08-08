@@ -2,7 +2,7 @@ import React from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Stats,
-  Html,
+  // Html,
   ScrollControls,
 } from '@react-three/drei';
 import { Color } from 'three';
@@ -30,7 +30,7 @@ function ScrollExperience() {
         rotation={[0, Math.PI, Math.PI]}
         visible
         curved
-        nPointsInCurve={400}
+        nPointsInCurve={700}
       />
       {/* <Squiggle
         points={(squiggle2Points as CoordArray[])}
@@ -50,7 +50,7 @@ function ScrollExperience() {
         rotation={[0, Math.PI, Math.PI]}
         visible
         curved
-        nPointsInCurve={200}
+        nPointsInCurve={300}
       />
       {/* <Squiggle
         points={(squiggleHelloPoints as CoordArray[])}
@@ -70,9 +70,10 @@ function ScrollExperience() {
         rotation={[Math.PI, 0, -Math.PI / 15]}
         visible
         curved
-        nPointsInCurve={400}
+        nPointsInCurve={700}
+        renderOrder={1}
       />
-      <Html
+      {/* <Html
         transform
         position={[-1, 1, 0]}
         className="p-4 text-white font-mono text-[1vw]"
@@ -85,7 +86,7 @@ function ScrollExperience() {
           <br />
           web experiences.
         </p>
-      </Html>
+      </Html> */}
     </ScrollControls>
   );
 }

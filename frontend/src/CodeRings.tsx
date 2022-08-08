@@ -4,8 +4,12 @@ import { Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 import useFontFaceObserver from 'use-font-face-observer';
 import {
-  Mesh, SubtractiveBlending, Texture,
+  LinearFilter,
+  Mesh,
+  NearestFilter,
+  Texture,
 } from 'three';
+import { useInterval } from 'usehooks-ts';
 import colors from './colors';
 
 /* height of each ring in world coordinate */
@@ -15,9 +19,9 @@ The difference in world coords */
 const RADIUS_TAPER = 0.05;
 /* number of canvas textures that can be pulled at random for a ring,
 ie some are recycled for performance */
-const N_RING_CANVASES = 5;
+const N_RING_CANVASES = 3;
 /** width of each canvas texture in pixels */
-const CANVAS_WIDTH = 1433;
+const CANVAS_WIDTH = 1432.5;
 /** Font size of the text written on the canvas */
 const FONT_SIZE = 15;
 /** time ms between each anim frame */
@@ -58,7 +62,7 @@ function createTextCanvas(): HTMLCanvasElement | null {
   }
 
   /* Current character index in the line of text to simulate typing */
-  let i = Math.floor(Math.random() * TEXT_LINES.length);
+  let i = Math.floor(Math.random() * TEXT_LINE_LENGTH);
   /* line of text we just wrote */
   let previousLine = chooseLine();
   /* line of text we are writing */
@@ -152,6 +156,11 @@ function CodeRing({
     // cylinder.current.scale.set(scale, scale, scale);
   });
 
+  useInterval(() => {
+    if (!texture.current) return;
+    texture.current.needsUpdate = true;
+  }, UPDATE_INTERVAL);
+
   return (
     <Cylinder
       args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
@@ -174,8 +183,9 @@ function CodeRing({
           // @ts-ignore
           ref={texture}
           // eslint-disable-next-line no-param-reassign
-          onUpdate={(s) => { s.needsUpdate = true; }}
-          blending={SubtractiveBlending}
+          // onUpdate={(s) => { s.needsUpdate = true; }}
+          minFilter={LinearFilter}
+          magFilter={NearestFilter}
         />
       </meshStandardMaterial>
     </Cylinder>
@@ -203,12 +213,12 @@ export function CodeRings() {
         {/* Will draw the whole group rightside up along the y axis
         and then rotate it toward camera */}
         <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 3]}>
-          {new Array(35).fill(null).map((_, index) => (
+          {new Array(22).fill(null).map((_, index) => (
             <CodeRing
               y={index * (-4) * RING_HEIGHT}
               r={3 - index * 0.1}
               repeats={
-                1 + (index < 15 ? 1 : 0) + (index < 25 ? 1 : 0)
+                Math.max(4 - (Math.floor(index / 5)), 1)
               }
               // eslint-disable-next-line react/no-array-index-key
               key={index}

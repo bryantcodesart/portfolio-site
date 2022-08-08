@@ -49,6 +49,7 @@ export const Squiggle = ({
   rotation = [0, 0, 0],
   scale = [1, 1, 1],
   drawSpeed = 0.01,
+  renderOrder = 0,
 }: {
   points: CoordArray[];
   size: number;
@@ -61,6 +62,7 @@ export const Squiggle = ({
   rotation?: CoordArray;
   scale?: CoordArray;
   drawSpeed?: number;
+  renderOrder?: number;
 }) => {
   // Calculate our points, sized via the size prop
   // and possibly interpolated into a curve on nPointsInCurve if curved prop is true.
@@ -85,11 +87,14 @@ export const Squiggle = ({
   useFrame(() => {
     if (materialRef.current) {
       if (visible) {
+        if (materialRef.current.uniforms.dashRatio.value === 0) return;
+        console.log('anim');
         materialRef.current.uniforms.dashRatio.value = Math.max(
           materialRef.current.uniforms.dashRatio.value - drawSpeed,
           0,
         );
       } else {
+        if (materialRef.current.uniforms.dashRatio.value === 1) return;
         materialRef.current.uniforms.dashRatio.value = Math.min(
           materialRef.current.uniforms.dashRatio.value + drawSpeed,
           1,
@@ -104,6 +109,7 @@ export const Squiggle = ({
       rotation={rotation}
       scale={scale}
       raycast={MeshLineRaycast}
+      renderOrder={renderOrder}
     >
       <meshLine
         attach="geometry"
@@ -119,6 +125,7 @@ export const Squiggle = ({
         dashArray={1}
         dashRatio={1}
         dashOffset={0}
+
       />
     </mesh>
   );
