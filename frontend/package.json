@@ -35,7 +35,6 @@
     "sanity-codegen": "^0.9.8",
     "three": "^0.143.0",
     "three-stdlib": "^2.13.0",
-    "three.meshline": "^1.4.0",
     "use-font-face-observer": "^1.2.1",
     "usehooks-ts": "^2.6.0"
   },
