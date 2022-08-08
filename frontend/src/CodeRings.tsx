@@ -17,9 +17,9 @@ const RADIUS_TAPER = 0.05;
 ie some are recycled for performance */
 const N_RING_CANVASES = 5;
 /** width of each canvas texture in pixels */
-const CANVAS_WIDTH = 4300;
+const CANVAS_WIDTH = 4300 * 15 / 45;
 /** Font size of the text written on the canvas */
-const FONT_SIZE = 45;
+const FONT_SIZE = 15;
 /** time ms between each anim frame */
 const UPDATE_INTERVAL = 100;
 /** The length a string should be to fit perfectly on the CANVAS_WIDTH pixels wide canvas */

@@ -10,8 +10,10 @@ import { CameraController } from './CameraController';
 import { CodeRings } from './CodeRings';
 import squiggle1Points from './lines/squiggle1';
 import squiggleCirclePoints from './lines/squiggleCircle';
+import squiggleRectPoints from './lines/squiggleRect';
 import { Squiggle } from './Squiggle';
 import { CoordArray } from './CoordArray';
+import colors from './colors';
 
 function ScrollExperience() {
   return (
@@ -28,7 +30,7 @@ function ScrollExperience() {
         rotation={[0, Math.PI, Math.PI]}
         visible
         curved
-        nPointsInCurve={1000}
+        nPointsInCurve={400}
       />
       {/* <Squiggle
         points={(squiggle2Points as CoordArray[])}
@@ -48,7 +50,7 @@ function ScrollExperience() {
         rotation={[0, Math.PI, Math.PI]}
         visible
         curved
-        nPointsInCurve={1000}
+        nPointsInCurve={200}
       />
       {/* <Squiggle
         points={(squiggleHelloPoints as CoordArray[])}
@@ -59,10 +61,21 @@ function ScrollExperience() {
         rotation={[Math.PI, 0, -Math.PI / 15]}
         visible
       /> */}
+      <Squiggle
+        points={(squiggleRectPoints as CoordArray[])}
+        size={6}
+        position={[-1, 1, 0]}
+        lineWidth={0.6}
+        color={new Color(colors.blue)}
+        rotation={[Math.PI, 0, -Math.PI / 15]}
+        visible
+        curved
+        nPointsInCurve={400}
+      />
       <Html
         transform
         position={[-1, 1, 0]}
-        className="p-4 text-white bg-blue font-mono text-[1vw]"
+        className="p-4 text-white font-mono text-[1vw]"
         pointerEvents="none"
       >
         <p>
