@@ -15,11 +15,13 @@ The difference in world coords */
 const RADIUS_TAPER = 0.05;
 /* number of canvas textures that can be pulled at random for a ring,
 ie some are recycled for performance */
-const N_RING_CANVASES = 20;
+const N_RING_CANVASES = 5;
 /** width of each canvas texture in pixels */
 const CANVAS_WIDTH = 4300;
 /** Font size of the text written on the canvas */
 const FONT_SIZE = 45;
+/** time ms between each anim frame */
+const UPDATE_INTERVAL = 100;
 /** The length a string should be to fit perfectly on the CANVAS_WIDTH pixels wide canvas */
 const TEXT_LINE_LENGTH = 158;
 /** The possible lines of code we can type on the rings */
@@ -95,7 +97,7 @@ function createTextCanvas(): HTMLCanvasElement | null {
   // Repeat to animate
   setInterval(() => {
     redrawCanvas();
-  }, 100);
+  }, UPDATE_INTERVAL);
   return canvas;
 }
 

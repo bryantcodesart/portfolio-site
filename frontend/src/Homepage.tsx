@@ -15,11 +15,11 @@ export const Homepage = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <main className="w-screen h-screen bg-white">
-      <h1 className="fixed top-0 left-0 z-10 p-4 font-mono font-bold text-white bg-blue">bryantcodes.art</h1>
+      <h1 className="fixed top-0 left-0 z-10 text-[3vw] px-[1.5vw] py-[0.5vw] font-mono font-bold text-white bg-blue">bryantcodes.art</h1>
 
       <a
         href="mailto:hello@bryantcodes.art?subject=Hello!&body=(if you're not unsure how to start this email, just tell me your favorite kind of pizza)"
-        className="fixed bottom-0 right-0 z-10 p-4 font-mono font-bold text-white underline bg-blue"
+        className="fixed bottom-0 right-0 z-10 text-[3vw] px-[1.5vw] py-[0.5vw] font-mono font-bold text-white underline bg-blue"
         target="_blank"
         rel="noreferrer"
       >
