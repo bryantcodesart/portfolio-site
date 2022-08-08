@@ -17,7 +17,7 @@ const RADIUS_TAPER = 0.05;
 ie some are recycled for performance */
 const N_RING_CANVASES = 5;
 /** width of each canvas texture in pixels */
-const CANVAS_WIDTH = 4300 * 15 / 45;
+const CANVAS_WIDTH = 1433;
 /** Font size of the text written on the canvas */
 const FONT_SIZE = 15;
 /** time ms between each anim frame */
@@ -45,6 +45,7 @@ const TEXT_LINES = [
  * It animates to simulate someone typing another line of text on top
  */
 function createTextCanvas(): HTMLCanvasElement | null {
+  console.log('createTextCanvas');
   // Create a canvas
   const canvas = document.createElement('canvas');
   canvas.width = CANVAS_WIDTH;
@@ -137,7 +138,7 @@ function CodeRing({
     texture.current.offset.x = startingOffset * CANVAS_WIDTH
      + (clock.getElapsedTime() / 60) * -speed;
 
-    texture.current.needsUpdate = true;
+    // texture.current.needsUpdate = true;
 
     // if (!cylinder.current) { }
     // cylinder.current.rotation.y = startingOffset * Math.PI * 2
@@ -153,7 +154,7 @@ function CodeRing({
 
   return (
     <Cylinder
-      args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 128, 1, true]}
+      args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
       position={[0, y, 0]}
       scale={[2, 1, 1]}
       rotation={[0, 0, 0]}
