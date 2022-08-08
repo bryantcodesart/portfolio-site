@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
@@ -6,12 +6,15 @@ import useFontFaceObserver from 'use-font-face-observer';
 import {
   LinearFilter,
   Mesh,
+  MeshStandardMaterial,
   NearestFilter,
   Texture,
 } from 'three';
 import { useInterval } from 'usehooks-ts';
 import colors from './colors';
 
+/** Number of rings to be drawn */
+const N_RINGS = 22;
 /* height of each ring in world coordinate */
 const RING_HEIGHT = 0.02;
 /* each ring is slightly narrower on top compared to bottom, creating a taper.
@@ -19,11 +22,11 @@ The difference in world coords */
 const RADIUS_TAPER = 0.05;
 /* number of canvas textures that can be pulled at random for a ring,
 ie some are recycled for performance */
-const N_RING_CANVASES = 3;
+const N_RING_CANVASES = 1;
 /** width of each canvas texture in pixels */
-const CANVAS_WIDTH = 1432.5;
+const CANVAS_WIDTH = 1146;
 /** Font size of the text written on the canvas */
-const FONT_SIZE = 15;
+const FONT_SIZE = 12;
 /** time ms between each anim frame */
 const UPDATE_INTERVAL = 100;
 /** The length a string should be to fit perfectly on the CANVAS_WIDTH pixels wide canvas */
@@ -49,7 +52,6 @@ const TEXT_LINES = [
  * It animates to simulate someone typing another line of text on top
  */
 function createTextCanvas(): HTMLCanvasElement | null {
-  console.log('createTextCanvas');
   // Create a canvas
   const canvas = document.createElement('canvas');
   canvas.width = CANVAS_WIDTH;
@@ -120,8 +122,15 @@ function CodeRing({
   r,
   /* How many times the texture should be repeated, (few for small ring, many for large ring) */
   repeats,
+  visible,
 }:
-  { canvases: (HTMLCanvasElement | null)[]; y: number; r: number, repeats: number }) {
+{
+  canvases: (HTMLCanvasElement | null)[],
+  y: number,
+  r: number,
+  repeats: number,
+  visible:boolean
+}) {
   const canvas = useMemo(() => canvases[Math.floor(Math.random() * canvases.length)], [canvases]);
 
   const speed = useMemo(() => Math.random() * 0.5 + 0.5, []);
@@ -130,17 +139,22 @@ function CodeRing({
   const cylinder = useRef<Mesh>(null);
 
   const texture = useRef<Texture>(null);
+  const materialRef = useRef<MeshStandardMaterial>(null);
 
   useFrame(({
     clock,
     // camera
   }) => {
-    if (!cylinder.current || !texture.current) return;
+    if (!cylinder.current || !texture.current || !materialRef.current) return;
 
     // Rotate the texture slightly--must be done by the texture and not rotating the mesh itself
     // because of the irregular shape
     texture.current.offset.x = startingOffset * CANVAS_WIDTH
      + (clock.getElapsedTime() / 60) * -speed;
+
+    if (visible && materialRef.current.opacity < 1) {
+      materialRef.current.opacity += 0.1;
+    }
 
     // texture.current.needsUpdate = true;
 
@@ -169,7 +183,13 @@ function CodeRing({
       rotation={[0, 0, 0]}
       ref={cylinder}
     >
-      <meshStandardMaterial transparent attach="material" side={THREE.BackSide}>
+      <meshStandardMaterial
+        transparent
+        attach="material"
+        side={THREE.BackSide}
+        ref={materialRef}
+        opacity={0}
+      >
         <canvasTexture
           attach="map"
           // @ts-ignore
@@ -192,7 +212,7 @@ function CodeRing({
   );
 }
 
-export function CodeRings() {
+export function CodeRings({ visible }: { visible: boolean }) {
   // Watches font face and becomes true when its loaded
   const isFontLoaded = useFontFaceObserver([
     {
@@ -206,14 +226,22 @@ export function CodeRings() {
     new Array(N_RING_CANVASES).fill(null).map(() => (isFontLoaded ? createTextCanvas() : null))
   ), [isFontLoaded]);
 
+  const [nVisibleRings, setNVisibleRings] = useState(0);
+
+  useInterval(() => {
+    if (visible && nVisibleRings < N_RINGS) {
+      setNVisibleRings(nVisibleRings + 1);
+    }
+  }, 50);
+
   return (
     // Don't even try to draw until we have the dont we need.
     isFontLoaded ? (
       <>
         {/* Will draw the whole group rightside up along the y axis
         and then rotate it toward camera */}
-        <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 3]}>
-          {new Array(22).fill(null).map((_, index) => (
+        <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 3.5]}>
+          {new Array(N_RINGS).fill(null).map((_, index) => (
             <CodeRing
               y={index * (-4) * RING_HEIGHT}
               r={3 - index * 0.1}
@@ -223,6 +251,7 @@ export function CodeRings() {
               // eslint-disable-next-line react/no-array-index-key
               key={index}
               canvases={canvases}
+              visible={index > N_RINGS - nVisibleRings}
             />
           ))}
         </group>

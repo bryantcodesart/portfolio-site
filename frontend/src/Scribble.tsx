@@ -37,7 +37,7 @@ declare global {
  * This component uses MeshLine to render a colored line (width width in world coords)
  * that animates in/out based on visible prop.
  */
-export const Squiggle = ({
+export const Scribble = ({
   points,
   size,
   position,
@@ -48,7 +48,7 @@ export const Squiggle = ({
   nPointsInCurve = 0,
   rotation = [0, 0, 0],
   scale = [1, 1, 1],
-  drawSpeed = 0.01,
+  drawSpeed = 0.008,
   renderOrder = 0,
 }: {
   points: CoordArray[];
