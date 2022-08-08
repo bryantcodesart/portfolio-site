@@ -1,4 +1,4 @@
-export const squigglePoints = [
+export default [
   [
     0.0303,
     0.4599,

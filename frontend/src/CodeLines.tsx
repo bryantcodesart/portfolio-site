@@ -3,9 +3,10 @@ import { useFrame } from '@react-three/fiber';
 import { Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 import useFontFaceObserver from 'use-font-face-observer';
-import { Mesh } from 'three';
+import { Mesh, Texture } from 'three';
 import colors from './colors';
 
+// const RADIUS = 3;
 const RING_HEIGHT = 0.1;
 const RADIUS_TAPER = 0.1;
 const codeLines = [
@@ -44,17 +45,34 @@ function createTextCanvas(text: string): HTMLCanvasElement | null {
 
 // https://github.com/gsimone/gsim.one/blob/master/src/Scene.js
 function CodeRing({ canvases, y, r }:
-  { canvases: (HTMLCanvasElement | null)[]; y: number; r: number; }) {
+  { canvases: (HTMLCanvasElement | null)[]; y: number; r: number }) {
   const canvas = useMemo(() => canvases[Math.floor(Math.random() * codeLines.length)], [canvases]);
 
   const speed = useMemo(() => Math.random() * 0.5 + 0.5, []);
   const startingOffset = useMemo(() => Math.random(), []);
 
   const cylinder = useRef<Mesh>(null);
-  useFrame(({ clock }) => {
-    if (!cylinder.current) { return; }
-    cylinder.current.rotation.y = startingOffset * Math.PI * 2
-    + (clock.getElapsedTime() / 30) * -speed;
+
+  const texture = useRef<Texture>(null);
+
+  // const worldPosition = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame(({
+    clock,
+    // camera
+  }) => {
+    if (!cylinder.current || !texture.current) return;
+
+    texture.current.offset.x = startingOffset * Math.PI * 2
+     + (clock.getElapsedTime() / 30) * -speed;
+
+    // if (!cylinder.current) { }
+    // cylinder.current.rotation.y = startingOffset * Math.PI * 2
+    // + (clock.getElapsedTime() / 30) * -speed;
+
+    // cylinder.current.getWorldPosition(worldPosition);
+    // const scale = (Math.max(10 - camera.position.distanceTo(worldPosition), 0)) ** 0.1;
+    // cylinder.current.scale.set(scale, scale, scale);
 
     // const scale = (Math.cos(clock.getElapsedTime()) + 1 / 2) * 0.2 + 0.8;
     // cylinder.current.scale.set(scale, scale, scale);
@@ -62,8 +80,9 @@ function CodeRing({ canvases, y, r }:
 
   return (
     <Cylinder
-      args={[r, r - RADIUS_TAPER, RING_HEIGHT, 64, 1, true]}
+      args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
       position={[0, y, 0]}
+      scale={[2, 1, 1]}
       rotation={[0, 0, 0]}
       ref={cylinder}
     >
@@ -78,6 +97,8 @@ function CodeRing({ canvases, y, r }:
           wrapS={THREE.RepeatWrapping}
           wrapT={THREE.RepeatWrapping}
           flipY={false}
+          // @ts-ignore
+          ref={texture}
           // eslint-disable-next-line no-param-reassign
           onUpdate={(s) => { s.needsUpdate = true; }}
         />
@@ -100,11 +121,11 @@ export function CodeLines() {
 
   return (
     isFontLoaded ? (
-      <group rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        {new Array(100).fill(null).map((_, index) => (
+      <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 5]}>
+        {new Array(80).fill(null).map((_, index) => (
           <CodeRing
-            y={54 + index * -8 * RING_HEIGHT}
-            r={5}
+            y={index * (-4) * RING_HEIGHT}
+            r={3 - index * 0.1}
             // eslint-disable-next-line react/no-array-index-key
             key={index}
             canvases={canvases}

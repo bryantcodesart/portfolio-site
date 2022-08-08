@@ -1,6 +1,8 @@
 import React from 'react';
 import { ReactThreeFiber } from '@react-three/fiber';
-import { Vector2, Vector3, Color } from 'three';
+import {
+  Vector2, Vector3, Color,
+} from 'three';
 import { LineGeometry, Line2 } from 'three-stdlib';
 import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial';
 
@@ -65,7 +67,6 @@ export const WorldUnitsLine = React.forwardRef<Line2, LineProps>((
         linewidth={lineWidth}
         dashed={dashed}
         worldUnits
-        sizeAttenuation
         {...rest}
       />
     </primitive>

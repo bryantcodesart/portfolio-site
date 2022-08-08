@@ -9,24 +9,37 @@ import {
 import { CatmullRomCurve3, Vector3 } from 'three';
 import { CameraController } from './CameraController';
 import { CodeLines } from './CodeLines';
-import { squigglePoints } from './squigglePoints';
+import squiggle1Points from './lines/squiggle1';
+// import squiggle2Points from './lines/squiggle2';
+import squiggleCirclePoints from './lines/squiggleCircle';
+// import squiggleHelloPoints from './lines/squiggleHello';
 import { WorldUnitsLine } from './WorldUnitsLine';
 
-type Point = [x: number, y: number, z:number];
+type Vec3Array = [x: number, y: number, z:number];
 
 const Squiggle = ({
-  points, size, position, color, lineWidth, visible, curve = false,
+  points,
+  size,
+  position,
+  color,
+  lineWidth,
+  visible,
+  curve = false,
+  rotation = [0, 0, 0],
+  scale = [1, 1, 1],
 }:
 {
-  points:Point[],
+  points:Vec3Array[],
   size:number,
-  position:Point,
+  position:Vec3Array,
   color:number,
   lineWidth:number,
   visible:boolean,
   curve?:number|false,
+  rotation?:Vec3Array,
+  scale?:Vec3Array,
 }) => {
-  const sizedPoints:Point[] = useMemo(() => {
+  const sizedPoints:Vec3Array[] = useMemo(() => {
     const resizedPoints = points.map((
       [x, y, z],
     ) => new Vector3(x * size - size / 2, y * size - size / 2, z));
@@ -36,9 +49,11 @@ const Squiggle = ({
     const calculatedCurve = new CatmullRomCurve3(resizedPoints, true);
     const curvePoints = calculatedCurve.getPoints(curve);
     return curvePoints.map((point) => [point.x, point.y, point.z]);
-  }, [points, size]);
+  }, [points, size, curve]);
 
-  const initialPoints:Point[] = useMemo(() => sizedPoints.map(() => sizedPoints[0]), [sizedPoints]);
+  const initialPoints:Vec3Array[] = useMemo(() => sizedPoints.map(
+    () => sizedPoints[0],
+  ), [sizedPoints]);
 
   const lineRef = useRef<Line2>();
 
@@ -66,6 +81,8 @@ const Squiggle = ({
       points={initialPoints}
       lineWidth={lineWidth}
       position={position}
+      rotation={rotation}
+      scale={scale}
       color={color}
       // @ts-ignore
       ref={lineRef}
@@ -77,14 +94,44 @@ function ScrollExperience() {
   return (
     <ScrollControls pages={15}>
       <CameraController />
+      <CodeLines />
       <Squiggle
-        points={(squigglePoints as Point[])}
-        size={13}
-        position={[0, 0, -1]}
-        lineWidth={0.05}
-        color={0xff00ff}
+        points={(squiggle1Points as Vec3Array[])}
+        size={15}
+        position={[-4, -0.5, -1]}
+        scale={[1, 1, 1]}
+        lineWidth={0.7}
+        color={0x00ff00}
+        rotation={[0, Math.PI, Math.PI]}
         visible
       />
+      {/* <Squiggle
+        points={(squiggle2Points as Vec3Array[])}
+        size={13}
+        position={[0, 0, -1]}
+        lineWidth={0.2}
+        color={0xffff00}
+        rotation={[0, -Math.PI / 10, 0]}
+        visible
+      /> */}
+      <Squiggle
+        points={(squiggleCirclePoints as Vec3Array[])}
+        size={7}
+        position={[-2, -1, -0.4]}
+        lineWidth={0.1}
+        color={0x00ffff}
+        rotation={[0, Math.PI, Math.PI]}
+        visible
+      />
+      {/* <Squiggle
+        points={(squiggleHelloPoints as Vec3Array[])}
+        size={8}
+        position={[2, 3.5, -1]}
+        lineWidth={0.1}
+        color={0xff0000}
+        rotation={[Math.PI, 0, -Math.PI / 15]}
+        visible
+      /> */}
       <Html
         transform
         position={[0, 0, 0]}
@@ -106,7 +153,6 @@ function ScrollExperience() {
 const ThreeScene = () => (
   <Canvas>
     <ambientLight />
-    <CodeLines />
     <ScrollExperience />
     <Stats />
   </Canvas>
