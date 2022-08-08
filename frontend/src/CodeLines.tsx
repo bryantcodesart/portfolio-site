@@ -7,8 +7,8 @@ import { Mesh, Texture } from 'three';
 import colors from './colors';
 
 // const RADIUS = 3;
-const RING_HEIGHT = 0.1;
-const RADIUS_TAPER = 0.1;
+const RING_HEIGHT = 0.02;
+const RADIUS_TAPER = 0.05;
 const codeLines = [
   '<TurboEncabulator><Amulite prefabulated /><HydrocopticMarzelvanes count={6} /><Panendermic /><Panendermic semiboloid /></TurboEncabulator>',
   'rm -rf node_modules && npm install && npm run build && npm run hope && npm start',
@@ -23,10 +23,10 @@ const codeLines = [
   'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json(); return isEven; }',
 ];
 function createTextCanvas(text: string): HTMLCanvasElement | null {
-  const fontSize = 32;
+  const fontSize = 45;
 
   const canvas = document.createElement('canvas');
-  canvas.width = 3048;
+  canvas.width = 4300;
   canvas.height = fontSize;
   const context = canvas.getContext('2d');
 
@@ -64,7 +64,7 @@ function CodeRing({ canvases, y, r }:
     if (!cylinder.current || !texture.current) return;
 
     texture.current.offset.x = startingOffset * Math.PI * 2
-     + (clock.getElapsedTime() / 30) * -speed;
+     + (clock.getElapsedTime() / 60) * -speed;
 
     // if (!cylinder.current) { }
     // cylinder.current.rotation.y = startingOffset * Math.PI * 2
@@ -80,7 +80,7 @@ function CodeRing({ canvases, y, r }:
 
   return (
     <Cylinder
-      args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
+      args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 128, 1, true]}
       position={[0, y, 0]}
       scale={[2, 1, 1]}
       rotation={[0, 0, 0]}
@@ -90,7 +90,7 @@ function CodeRing({ canvases, y, r }:
         <canvasTexture
           attach="map"
           // @ts-ignore
-          repeat={[2, 1]}
+          repeat={[3, 1]}
           image={canvas}
           premultiplyAlpha
           // @ts-ignore
@@ -121,8 +121,8 @@ export function CodeLines() {
 
   return (
     isFontLoaded ? (
-      <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 5]}>
-        {new Array(80).fill(null).map((_, index) => (
+      <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 3]}>
+        {new Array(35).fill(null).map((_, index) => (
           <CodeRing
             y={index * (-4) * RING_HEIGHT}
             r={3 - index * 0.1}

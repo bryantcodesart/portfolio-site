@@ -134,7 +134,7 @@ function ScrollExperience() {
       /> */}
       <Html
         transform
-        position={[0, 0, 0]}
+        position={[-1, 1, 0]}
         className="p-4 text-white bg-blue font-mono text-[1vw]"
         pointerEvents="none"
       >
@@ -152,9 +152,10 @@ function ScrollExperience() {
 
 const ThreeScene = () => (
   <Canvas>
-    <ambientLight />
+    {/* <ambientLight color={0xffffff} intensity={2} /> */}
     <ScrollExperience />
     <Stats />
+    <ambientLight color={0xffffff} intensity={2} />
   </Canvas>
 );
 export default ThreeScene;
