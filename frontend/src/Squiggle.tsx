@@ -1,10 +1,11 @@
 import React, {
+  Ref,
   // useEffect,
-  useMemo,
+  useMemo, useRef,
   // useRef,
 } from 'react';
 import {
-  extend, ReactThreeFiber,
+  extend, ReactThreeFiber, useFrame,
 } from '@react-three/fiber';
 import {
   CatmullRomCurve3,
@@ -47,6 +48,7 @@ export const Squiggle = ({
   nPointsInCurve = 0,
   rotation = [0, 0, 0],
   scale = [1, 1, 1],
+  drawSpeed = 0.01,
 }: {
   points: CoordArray[];
   size: number;
@@ -58,7 +60,11 @@ export const Squiggle = ({
   nPointsInCurve?: number;
   rotation?: CoordArray;
   scale?: CoordArray;
+  drawSpeed?: number;
 }) => {
+  // Calculate our points, sized via the size prop
+  // and possibly interpolated into a curve on nPointsInCurve if curved prop is true.
+  // Must be in format [x1,y1,z1,x2,y2,z2,...] for MeshLine.
   const sizedPoints: number[] = useMemo(() => {
     let vectors = points.flatMap((
       [x, y, z],
@@ -73,31 +79,24 @@ export const Squiggle = ({
     return vectors.flatMap((point:Vector3) => [point.x, point.y, point.z]);
   }, [points, curved, size, nPointsInCurve]);
 
-  // const initialPoints: Vector3[] = useMemo(() => sizedPoints.map(
-  //   () => sizedPoints[0],
-  // ), [sizedPoints]);
-
-  console.log(visible);
-  // const lineRef = useRef<Line2>();
-
-  // const currentPoint = useRef(0);
-
-  // useFrame(() => {
-  //   if (lineRef.current) {
-  //     if (visible) {
-  //       currentPoint.current = Math.min(currentPoint.current + 1, sizedPoints.length - 1);
-  //     } else {
-  //       currentPoint.current = Math.max(currentPoint.current - 1, 0);
-  //     }
-
-  //     const newPositions = sizedPoints.map(
-  //       (_, index) => (index <= currentPoint.current
-  //         ? sizedPoints[index]
-  //         : sizedPoints[currentPoint.current]),
-  //     );
-  //     lineRef.current.geometry.setPositions(newPositions.flat());
-  //   }
-  // });
+  // Animate by incrementing/decrementing the dash ratio fed to the material shader
+  // value of 0 means the entire line is drawn, 1 means none of it is drawn.
+  const materialRef = useRef<MeshLineMaterial>();
+  useFrame(() => {
+    if (materialRef.current) {
+      if (visible) {
+        materialRef.current.uniforms.dashRatio.value = Math.max(
+          materialRef.current.uniforms.dashRatio.value - drawSpeed,
+          0,
+        );
+      } else {
+        materialRef.current.uniforms.dashRatio.value = Math.min(
+          materialRef.current.uniforms.dashRatio.value + drawSpeed,
+          1,
+        );
+      }
+    }
+  });
 
   return (
     <mesh
@@ -112,13 +111,14 @@ export const Squiggle = ({
       />
       <meshLineMaterial
         attach="material"
-        // ref={material}
         transparent
         depthTest={false}
         lineWidth={lineWidth}
         color={color}
+        ref={materialRef as Ref<MeshLineMaterial>}
         dashArray={1}
-        dashRatio={0}
+        dashRatio={1}
+        dashOffset={0}
       />
     </mesh>
   );
