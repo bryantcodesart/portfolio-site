@@ -1,22 +1,26 @@
 import React, {
-  useEffect,
-  useMemo, useRef,
+  // useEffect,
+  useMemo,
+  // useRef,
 } from 'react';
 import {
   extend, ReactThreeFiber,
 } from '@react-three/fiber';
 import {
-  AdditiveBlending,
   CatmullRomCurve3,
-  // CatmullRomCurve3,
-  Color, Mesh, MultiplyBlending, SubtractiveBlending, Vector3,
+  Color, Vector3,
 } from 'three';
-// This is
+
+// This is a fork of the threejs-meshline lib, as it is no longer maintained.
+// See https://github.com/spite/THREE.MeshLine/issues/140#issuecomment-1208355220
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'meshline';
 import { CoordArray } from './CoordArray';
 
-// Add me
+// This extends r3f to include the meshline lib.
 extend({ MeshLine, MeshLineMaterial });
+
+// This adds the types from the meshline lib to JSX.IntrinsicElements so it can be added
+// e.g. as a child of <mesh>
 /* eslint-disable no-unused-vars */
 declare global {
   namespace JSX {
@@ -28,6 +32,10 @@ declare global {
 }
 /* eslint-enable no-unused-vars */
 
+/**
+ * This component uses MeshLine to render a colored line (width width in world coords)
+ * that animates in/out based on visible prop.
+ */
 export const Squiggle = ({
   points,
   size,
@@ -36,6 +44,7 @@ export const Squiggle = ({
   lineWidth,
   visible,
   curved = false,
+  nPointsInCurve = 0,
   rotation = [0, 0, 0],
   scale = [1, 1, 1],
 }: {
@@ -45,25 +54,24 @@ export const Squiggle = ({
   color: Color;
   lineWidth: number;
   visible: boolean;
-  curved?: number | false;
+  curved?: boolean;
+  nPointsInCurve?: number;
   rotation?: CoordArray;
   scale?: CoordArray;
 }) => {
   const sizedPoints: number[] = useMemo(() => {
-    const sizedVec3s = points.flatMap((
+    let vectors = points.flatMap((
       [x, y, z],
     ) => new Vector3(x * size - size / 2, y * size - size / 2, z));
 
-    // return sizedVec3s;
+    // Optionally extrapolate points into a curve
+    if (curved) {
+      vectors = new CatmullRomCurve3(vectors, true)
+        .getPoints(nPointsInCurve);
+    }
 
-    // console.log(visible);
-
-    // if (!curve) { return resizedPoints; }
-
-    return new CatmullRomCurve3(sizedVec3s, true)
-      .getPoints(1000)
-      .flatMap((point:Vector3) => [point.x, point.y, point.z]);
-  }, [points, size, curved]);
+    return vectors.flatMap((point:Vector3) => [point.x, point.y, point.z]);
+  }, [points, curved, size, nPointsInCurve]);
 
   // const initialPoints: Vector3[] = useMemo(() => sizedPoints.map(
   //   () => sizedPoints[0],
@@ -91,18 +99,12 @@ export const Squiggle = ({
   //   }
   // });
 
-  const meshRef = useRef<Mesh>(null);
-  useEffect(() => {
-    console.log(meshRef);
-  }, []);
-
   return (
     <mesh
       position={position}
       rotation={rotation}
       scale={scale}
       raycast={MeshLineRaycast}
-      ref={meshRef}
     >
       <meshLine
         attach="geometry"

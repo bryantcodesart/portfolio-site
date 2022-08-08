@@ -27,6 +27,8 @@ function ScrollExperience() {
         color={new Color(0x00ff00)}
         rotation={[0, Math.PI, Math.PI]}
         visible
+        curved
+        nPointsInCurve={1000}
       />
       {/* <Squiggle
         points={(squiggle2Points as CoordArray[])}
@@ -45,6 +47,8 @@ function ScrollExperience() {
         color={new Color(0x00ffff)}
         rotation={[0, Math.PI, Math.PI]}
         visible
+        curved
+        nPointsInCurve={1000}
       />
       {/* <Squiggle
         points={(squiggleHelloPoints as CoordArray[])}
