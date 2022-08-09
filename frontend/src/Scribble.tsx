@@ -11,6 +11,19 @@ import {
   CatmullRomCurve3,
   Color, Vector3,
 } from 'three';
+// import {
+//   // config,
+//   easings,
+//   SpringConfig,
+//   useSpring,
+// } from 'react-spring';
+import {
+  useSpring,
+  animated,
+  easings,
+  SpringConfig,
+  config,
+} from '@react-spring/three';
 
 // This is a fork of the threejs-meshline lib, as it is no longer maintained.
 // See https://github.com/spite/THREE.MeshLine/issues/140#issuecomment-1208355220
@@ -47,9 +60,13 @@ export const Scribble = ({
   curved = false,
   nPointsInCurve = 0,
   rotation = [0, 0, 0],
-  scale = [1, 1, 1],
-  drawSpeed = 0.008,
+  scale = 1,
+  drawSpringConfig = {
+    duration: 1000,
+    easing: easings.easeInOutQuint,
+  },
   renderOrder = 0,
+  scaleSpringConfig = config.wobbly,
 }: {
   points: CoordArray[];
   size: number;
@@ -60,9 +77,10 @@ export const Scribble = ({
   curved?: boolean;
   nPointsInCurve?: number;
   rotation?: CoordArray;
-  scale?: CoordArray;
-  drawSpeed?: number;
+  scale?: number;
+  drawSpringConfig?: SpringConfig;
   renderOrder?: number;
+  scaleSpringConfig?: SpringConfig;
 }) => {
   // Calculate our points, sized via the size prop
   // and possibly interpolated into a curve on nPointsInCurve if curved prop is true.
@@ -81,33 +99,31 @@ export const Scribble = ({
     return vectors.flatMap((point:Vector3) => [point.x, point.y, point.z]);
   }, [points, curved, size, nPointsInCurve]);
 
+  const { percentageDrawn } = useSpring({
+    percentageDrawn: visible
+      ? 1 : 0,
+    config: drawSpringConfig,
+  });
+
   // Animate by incrementing/decrementing the dash ratio fed to the material shader
   // value of 0 means the entire line is drawn, 1 means none of it is drawn.
   const materialRef = useRef<MeshLineMaterial>();
   useFrame(() => {
     if (materialRef.current) {
-      if (visible) {
-        if (materialRef.current.uniforms.dashRatio.value === 0) return;
-        console.log('anim');
-        materialRef.current.uniforms.dashRatio.value = Math.max(
-          materialRef.current.uniforms.dashRatio.value - drawSpeed,
-          0,
-        );
-      } else {
-        if (materialRef.current.uniforms.dashRatio.value === 1) return;
-        materialRef.current.uniforms.dashRatio.value = Math.min(
-          materialRef.current.uniforms.dashRatio.value + drawSpeed,
-          1,
-        );
+      const newDashRatio = 1 - percentageDrawn.get();
+      if (newDashRatio !== materialRef.current.uniforms.dashRatio.value) {
+        materialRef.current.uniforms.dashRatio.value = newDashRatio;
       }
     }
   });
 
+  const { scale: animatedScale } = useSpring({ scale, config: scaleSpringConfig });
+
   return (
-    <mesh
+    <animated.mesh
       position={position}
       rotation={rotation}
-      scale={scale}
+      scale={animatedScale}
       raycast={MeshLineRaycast}
       renderOrder={renderOrder}
     >
@@ -125,8 +141,7 @@ export const Scribble = ({
         dashArray={1}
         dashRatio={1}
         dashOffset={0}
-
       />
-    </mesh>
+    </animated.mesh>
   );
 };

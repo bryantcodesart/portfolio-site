@@ -4,10 +4,8 @@ import * as THREE from 'three';
 import { useEventListener } from 'usehooks-ts';
 // import { useScroll } from '@react-three/drei';
 
-export const CameraController = () => {
+export const CameraController = ({ distance }:{distance:number}) => {
   const mouse = useRef<{ x: number; y: number; } | null>(null);
-
-  // const scrollData = useScroll();
 
   useEventListener('mousemove', (e) => {
     mouse.current = {
@@ -18,10 +16,8 @@ export const CameraController = () => {
 
   useFrame(({ camera }) => {
     const { x, y } = mouse.current ? mouse.current : { x: 0, y: 0 };
-    camera.position.lerp(new THREE.Vector3(x * 2, y * 0.5, 5), 0.1);
+    camera.position.lerp(new THREE.Vector3(x * 2, y * 0.5, distance), 0.1);
   });
-
-  console.log('CameraController render');
 
   return null;
 };

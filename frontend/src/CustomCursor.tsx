@@ -6,15 +6,18 @@ import { useMouse } from 'rooks';
 // import { useEventListener } from 'usehooks-ts';
 import { useHasNoMouse } from './useHasNoMouse';
 
-export type CustomCursorState = 'normal' | 'contact'
+export type CustomCursorState = 'normal' | 'contact' | 'computer-on'
 export type CustomCursorSetter = (_cursorState:CustomCursorState)=>void
 export type CustomCursorArray = [CustomCursorState, CustomCursorSetter]
 
 export const CustomCursorContext = createContext<CustomCursorArray>([
   'normal',
-  (cursorState:CustomCursorState) => { console.warn(`Tried to set custom cursor to ${cursorState} before it was ready`); },
+  (cursorState:CustomCursorState) => { console.warn(`Tried to set custom cursor to ${cursorState} outside of <CustomCursorProvider>`); },
 ]);
 
+/**
+ * @returns [cursorState, setCursorState]
+ */
 export const useCustomCursor = () => useContext(CustomCursorContext);
 
 export function CustomCursorProvider({ children }:{children:ReactNode}) {
@@ -43,6 +46,10 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
 
   const hasNoMouse = useHasNoMouse();
 
+  useEffect(() => {
+    console.log(`cursor changed to ${cursor}`);
+  }, [cursor]);
+
   return (
     <>
       <CustomCursorContext.Provider value={customCursorStateArray}>
@@ -58,11 +65,18 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
         >
           {cursor === 'normal' && <div className="p-2 border-2 border-white rounded-full bg-blue min-h-2 min-w-2" />}
 
+          {cursor === 'computer-on' && (
+          <div className="relative grid w-12 h-12 font-mono text-xs font-extrabold text-center text-white border-2 border-white rounded-full bg-blue place-items-center">
+            turn
+            <br />
+            on
+          </div>
+          )}
           {cursor === 'contact' && (
           <div className="relative grid w-12 h-12 font-mono text-xs font-extrabold text-center text-white border-2 border-white rounded-full bg-blue place-items-center">
-            SAY
+            say
             <br />
-            HI!
+            hi
           </div>
           )}
 

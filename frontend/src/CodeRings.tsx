@@ -11,10 +11,15 @@ import {
   Texture,
 } from 'three';
 import { useInterval } from 'usehooks-ts';
+import {
+  useSpring,
+  animated,
+  config,
+} from '@react-spring/three';
 import colors from './colors';
 
 /** Number of rings to be drawn */
-const N_RINGS = 22;
+const N_RINGS = 16;
 /* height of each ring in world coordinate */
 const RING_HEIGHT = 0.02;
 /* each ring is slightly narrower on top compared to bottom, creating a taper.
@@ -37,11 +42,11 @@ const TEXT_LINES = [
   'rm -rf node_modules && npm install && npm run build && npm run hope && npm start',
   '// I hope github copilot will finish this part...',
   '<AllWorkAndNoPlayMakesBryantADullBoy /><AllWorkAndNoPlayMakesBryantADullBoy /><AllWorkAndNoPlayMakesBryantADullBoy /><AllWorkAndNoPlayMakesBryantADullBoy />',
-  'useOnMyDeath(()=>{ eraseBrowserHistoryOnAllDevices(); doItAgainJustToBeSure(); tripleCheck(); alsoJustIncinerateHardDrives(); }); ',
+  'useOnMyDeath(()=>{ eraseBrowserHistoryOnAllDevices(); doItAgainJustToBeSure(); tripleCheck(); youKnowWhatMaybeJustIncinerateTheHardDrives(); }); ',
   'const debugInterval = setInterval(()=>{if(prompt(\'Program still working?\')==="nope") throw new Error("bug.");}, 100);',
   '<Burrito spicy={100}>{toppings.map((tProps:{name:string,spicy:number,isHotsauce:boolean,vegan:boolean})=>(<Topping {...(tprops)} key={name} />)}</Burrito>',
   'if(i%(3*(7*3+2))===0) return "nice"; if(i%3===0 && i%5===0) return "fizzbuzz"; if(i%3===0) return "fizz"; if(i%5===0) return "buzz";',
-  'mintNft("silly-3d-monkey1.gif"); profit(); mintNft("silly-3d-monkey2.gif"); profit(); mintNft("silly-3d-monkey3.gif"); profit();',
+  'mintNft("vintage-3d-aardvark-meme1.gif"); profit(); mintNft("vintage-3d-aardvark-meme2.gif"); profit(); mintNft("vintage-3d-aardvark-meme3.gif"); profit();',
   // eslint-disable-next-line no-template-curly-in-string
   'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json(); return isEven; }',
 ].map((line) => line + ((new Array(TEXT_LINE_LENGTH - line.length)).fill('.').join('')));
@@ -175,40 +180,44 @@ function CodeRing({
     texture.current.needsUpdate = true;
   }, UPDATE_INTERVAL);
 
+  const { scale } = useSpring({ scale: visible ? 1 : 0, config: config.wobbly });
+
   return (
-    <Cylinder
-      args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
-      position={[0, y, 0]}
-      scale={[2, 1, 1]}
-      rotation={[0, 0, 0]}
-      ref={cylinder}
-    >
-      <meshStandardMaterial
-        transparent
-        attach="material"
-        side={THREE.BackSide}
-        ref={materialRef}
-        opacity={0}
+    <animated.group scale={scale}>
+      <Cylinder
+        args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
+        position={[0, y, 0]}
+        scale={[2, 1, 1]}
+        rotation={[0, 0, 0]}
+        ref={cylinder}
       >
-        <canvasTexture
-          attach="map"
+        <meshStandardMaterial
+          transparent
+          attach="material"
+          side={THREE.BackSide}
+          ref={materialRef}
+          opacity={0}
+        >
+          <canvasTexture
+            attach="map"
           // @ts-ignore
-          repeat={[repeats, 1]}
-          image={canvas}
-          premultiplyAlpha
+            repeat={[repeats, 1]}
+            image={canvas}
+            premultiplyAlpha
           // @ts-ignore
-          wrapS={THREE.RepeatWrapping}
-          wrapT={THREE.RepeatWrapping}
-          flipY={false}
+            wrapS={THREE.RepeatWrapping}
+            wrapT={THREE.RepeatWrapping}
+            flipY={false}
           // @ts-ignore
-          ref={texture}
+            ref={texture}
           // eslint-disable-next-line no-param-reassign
           // onUpdate={(s) => { s.needsUpdate = true; }}
-          minFilter={LinearFilter}
-          magFilter={NearestFilter}
-        />
-      </meshStandardMaterial>
-    </Cylinder>
+            minFilter={LinearFilter}
+            magFilter={NearestFilter}
+          />
+        </meshStandardMaterial>
+      </Cylinder>
+    </animated.group>
   );
 }
 
