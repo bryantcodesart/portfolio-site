@@ -4,10 +4,11 @@ import {
   Stats,
   // Html,
   // ScrollControls,
+  Text,
   useContextBridge,
 } from '@react-three/drei';
 import { Color } from 'three';
-import { useTimeout } from 'usehooks-ts';
+import { useInterval, useTimeout } from 'usehooks-ts';
 import {
   useSpring,
   animated,
@@ -33,6 +34,38 @@ const useTrueAfterDelay = (timeoutLength:number) => {
     setVisible(true);
   }, timeoutLength);
   return visible;
+};
+
+const TypeWriter = ({ children, showCarat = true }:{children:string, showCarat?:boolean}) => {
+  const targetText = children;
+  const [text, setText] = useState('');
+  const [caratVisible, setCaratVisible] = useState(false);
+
+  useInterval(() => {
+    if (!targetText.includes(text)) {
+      setText('');
+      return;
+    }
+    if (text.length < targetText.length) {
+      setText(targetText.slice(0, text.length + 1));
+    }
+  }, 100);
+
+  useInterval(() => {
+    setCaratVisible(!caratVisible);
+  }, 300);
+
+  return (
+    <Text
+      position={[-2.6, 1.3, 2.1]}
+      rotation={[0, 0, Math.PI / 40]}
+      color="white"
+      anchorX="left"
+      anchorY="top"
+    >
+      {text + (showCarat && caratVisible ? '_' : ' ')}
+    </Text>
+  );
 };
 
 function Content() {
@@ -73,6 +106,9 @@ function Content() {
     animatedComputerGroupRotation: computerGroupRotation,
     config: { mass: 1.5, tension: 220, friction: 12 },
   });
+
+  let computerScreenText = 'Click me';
+  if (computerOn) computerScreenText = "Hello! I'm Bryant! (he/him) \nI make web experiences.";
 
   return (
     <>
@@ -116,7 +152,7 @@ function Content() {
           visible={computerFillVisible}
           curved
           nPointsInCurve={700}
-          renderOrder={1}
+          // renderOrder={1}
           scale={computerPartScale}
         />
         <Scribble
@@ -129,7 +165,7 @@ function Content() {
           visible={computerScreenVisible}
           curved
           nPointsInCurve={700}
-          renderOrder={1}
+          // renderOrder={1}
           scale={computerPartScale}
         />
         <Scribble
@@ -142,7 +178,7 @@ function Content() {
           visible={computerBodyVisible}
           curved
           nPointsInCurve={700}
-          renderOrder={1}
+          // renderOrder={1}
           scale={computerPartScale}
         />
         <Scribble
@@ -155,9 +191,21 @@ function Content() {
           visible={computerKeyboardVisible}
           curved
           nPointsInCurve={700}
-          renderOrder={1}
+          // renderOrder={1}
           scale={computerPartScale}
         />
+        {computerOn ? <TypeWriter>{computerScreenText}</TypeWriter> : null}
+        {computerBodyVisible && !computerOn ? (
+          <Text
+            position={[-1, 0.7, 2.1]}
+            rotation={[0, 0, Math.PI / 40]}
+            color="gray"
+            anchorX="center"
+            anchorY="middle"
+          >
+            Click me.
+          </Text>
+        ) : null}
 
         {computerCanBeTurnedOn && !computerOn && (
           <InvisibleThreeButton

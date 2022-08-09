@@ -46,10 +46,6 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
 
   const hasNoMouse = useHasNoMouse();
 
-  useEffect(() => {
-    console.log(`cursor changed to ${cursor}`);
-  }, [cursor]);
-
   return (
     <>
       <CustomCursorContext.Provider value={customCursorStateArray}>

@@ -249,7 +249,7 @@ export function CodeRings({ visible }: { visible: boolean }) {
       <>
         {/* Will draw the whole group rightside up along the y axis
         and then rotate it toward camera */}
-        <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 3.5]}>
+        <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 2.5]} scale={1.8}>
           {new Array(N_RINGS).fill(null).map((_, index) => (
             <CodeRing
               y={index * (-4) * RING_HEIGHT}
