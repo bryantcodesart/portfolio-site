@@ -8,7 +8,6 @@ import {
   useContextBridge,
 } from '@react-three/drei';
 import { Color } from 'three';
-import { useInterval, useTimeout } from 'usehooks-ts';
 import {
   useSpring,
   animated,
@@ -27,46 +26,9 @@ import { CoordArray } from './CoordArray';
 import colors from './colors';
 import { CustomCursorContext } from './CustomCursor';
 import { InvisibleThreeButton } from './InvisibleThreeButton';
-
-const useTrueAfterDelay = (timeoutLength:number) => {
-  const [visible, setVisible] = useState(false);
-  useTimeout(() => {
-    setVisible(true);
-  }, timeoutLength);
-  return visible;
-};
-
-const TypeWriter = ({ children, showCarat = true }:{children:string, showCarat?:boolean}) => {
-  const targetText = children;
-  const [text, setText] = useState('');
-  const [caratVisible, setCaratVisible] = useState(false);
-
-  useInterval(() => {
-    if (!targetText.includes(text)) {
-      setText('');
-      return;
-    }
-    if (text.length < targetText.length) {
-      setText(targetText.slice(0, text.length + 1));
-    }
-  }, 100);
-
-  useInterval(() => {
-    setCaratVisible(!caratVisible);
-  }, 300);
-
-  return (
-    <Text
-      position={[-2.6, 1.3, 2.1]}
-      rotation={[0, 0, Math.PI / 40]}
-      color="white"
-      anchorX="left"
-      anchorY="top"
-    >
-      {text + (showCarat && caratVisible ? '_' : ' ')}
-    </Text>
-  );
-};
+import { useTrueAfterDelay } from './useTrueAfterDelay';
+import { Typewriter } from './Typewriter';
+import { computerTextConfig } from './typography';
 
 function Content() {
   // This time+= is just a clever way to syntax to timeline each of these
@@ -108,12 +70,18 @@ function Content() {
   });
 
   let computerScreenText = 'Click me';
-  if (computerOn) computerScreenText = "Hello! I'm Bryant! (he/him) \nI make web experiences.";
+  if (computerOn) {
+    computerScreenText = `Bryant, he/him, web developer–
+
+I partner with
+KICKASS DESIGNERS
+to build their
+WILDEST DREAMS.`;
+  }
 
   return (
     <>
       <CameraController distance={cameraPosition} />
-      <CodeRings visible={codeRingsVisible} />
       <Scribble
         points={(squiggle1Points as CoordArray[])}
         size={30}
@@ -142,6 +110,7 @@ function Content() {
         // @ts-ignore
         rotation={animatedComputerGroupRotation}
       >
+        <CodeRings visible={codeRingsVisible} />
         <Scribble
           points={(computerFillPoints as CoordArray[])}
           size={5}
@@ -194,16 +163,28 @@ function Content() {
           // renderOrder={1}
           scale={computerPartScale}
         />
-        {computerOn ? <TypeWriter>{computerScreenText}</TypeWriter> : null}
-        {computerBodyVisible && !computerOn ? (
+        {computerOn ? (
+          <Typewriter
+            position={[-2.6, 1.3, 2.1]}
+            rotation={[0, 0, Math.PI / 40]}
+            color="white"
+            anchorX="left"
+            anchorY="top"
+            {...computerTextConfig()}
+          >
+            {computerScreenText}
+          </Typewriter>
+        ) : null}
+        {computerCanBeTurnedOn && !computerOn ? (
           <Text
             position={[-1, 0.7, 2.1]}
             rotation={[0, 0, Math.PI / 40]}
             color="gray"
             anchorX="center"
             anchorY="middle"
+            {...computerTextConfig(0.6)}
           >
-            Click me.
+            {'Click me.'.toUpperCase()}
           </Text>
         ) : null}
 
