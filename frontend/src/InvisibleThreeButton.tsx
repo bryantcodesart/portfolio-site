@@ -59,7 +59,7 @@ export const InvisibleThreeButton = ({
     >
       <boxGeometry
         attach="geometry"
-        args={[width, height, 1]}
+        args={[width, height, 0.01]}
       />
       <meshStandardMaterial
         attach="material"

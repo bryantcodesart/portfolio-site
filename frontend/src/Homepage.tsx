@@ -2,6 +2,7 @@ import Head from 'next/head';
 import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { BeatLoader } from 'react-spinners';
+import { CustomCursorHover } from './CustomCursor';
 
 const DynamicThreeScene = dynamic(() => import('./ThreeScene'), {
   ssr: false,
@@ -24,6 +25,24 @@ export const Homepage = () => (
       >
         <DynamicThreeScene />
       </Suspense>
+
+      <div
+        className="fixed bottom-0 left-0 z-10 text-[1.2vw] px-[2vw] py-[1vw] font-mono text-white bg-blue tracking-wide"
+      >
+        CONTACT:
+        {' '}
+        <CustomCursorHover cursor="contact">
+          <a
+            href={`mailto:hello@bryantcodes.art?subject=${encodeURI('Hello, Bryant!')}&body=${encodeURI("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`}
+            className="underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {' '}
+            hello@bryantcodes.art
+          </a>
+        </CustomCursorHover>
+      </div>
     </main>
   </>
 );

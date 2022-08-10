@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Stats,
-  // Html,
-  // ScrollControls,
   Text,
   useContextBridge,
 } from '@react-three/drei';
@@ -11,7 +9,6 @@ import { Color } from 'three';
 import {
   useSpring,
   animated,
-  // config,
 } from '@react-spring/three';
 import { CameraController } from './CameraController';
 import { CodeRings } from './CodeRings';
@@ -28,7 +25,38 @@ import { CustomCursorContext } from './CustomCursor';
 import { InvisibleThreeButton } from './InvisibleThreeButton';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
 import { Typewriter } from './Typewriter';
-import { computerTextConfig } from './typography';
+import { fontUrls } from './typography';
+import bookFillPoints from './lines/bookFill';
+import bookLinesPoints from './lines/bookLines';
+import bookHighlightPoints from './lines/bookHighlight';
+import coffeeBackPoints from './lines/coffeeBack';
+import coffeeLinesPoints from './lines/coffeeLines';
+import coffeeLiquidPoints from './lines/coffeeLiquid';
+
+function ComputerTerminal() {
+  const computerScreenText = `I'm Bryant! (he/him)
+    I build web experiences.`;
+  return (
+    <group
+      // position={[-2.6, 1.3, 2.1]}
+      position={[-1, 0.7, 2]}
+      rotation={[0, 0, Math.PI / 40]}
+    >
+      <Typewriter
+        color="white"
+        anchorX="left"
+        anchorY="top"
+        position={[-1.6, 0.7, 0.1]}
+        fontSize={0.27}
+        lineHeight={1.3}
+        font={fontUrls.bryantBold}
+      >
+        {computerScreenText}
+      </Typewriter>
+      <InvisibleThreeButton cursor="terminal" position={[0, 0, 0]} width={3.5} height={2} />
+    </group>
+  );
+}
 
 function Content() {
   // This time+= is just a clever way to syntax to timeline each of these
@@ -47,10 +75,21 @@ function Content() {
   const [computerOn, setComputerOn] = useState(false);
   const [computerTurningOn, setComputerTurningOn] = useState(false);
   const [codeRingsVisible, setCodeRingsVisible] = useState(false);
+  const [projectButtonVisible, setProjectButtonVisible] = useState(false);
+  const [blogButtonVisible, setBlogButtonVisible] = useState(false);
 
-  let cameraPosition = 15;
-  if (computerScreenVisible) cameraPosition = 5.5;
-  if (computerOn || computerTurningOn) cameraPosition = 6;
+  const startComputerScene = () => {
+    let delay = 0;
+    setComputerTurningOn(true); setComputerOnButtonHovering(false);
+    setTimeout(() => { setComputerOn(true); setComputerTurningOn(false); }, delay += 300);
+    setTimeout(() => { setCodeRingsVisible(true); }, delay);
+    setTimeout(() => { setProjectButtonVisible(true); }, delay += 1000);
+    setTimeout(() => { setBlogButtonVisible(true); }, delay += 300);
+  };
+
+  let cameraPosition = [0, 0, 15];
+  if (computerScreenVisible) cameraPosition = [-1, 0, 5.5];
+  if (computerOn || computerTurningOn) cameraPosition = [1, 0, 6];
 
   let computerPartScale = 1;
   if (computerOnButtonHovering) computerPartScale = 1.1;
@@ -69,19 +108,9 @@ function Content() {
     config: { mass: 1.5, tension: 220, friction: 12 },
   });
 
-  let computerScreenText = 'Click me';
-  if (computerOn) {
-    computerScreenText = `Bryant, he/him, web developer–
-
-I partner with
-KICKASS DESIGNERS
-to build their
-WILDEST DREAMS.`;
-  }
-
   return (
     <>
-      <CameraController distance={cameraPosition} />
+      <CameraController position={cameraPosition as [number, number, number]} />
       <Scribble
         points={(squiggle1Points as CoordArray[])}
         size={30}
@@ -164,29 +193,20 @@ WILDEST DREAMS.`;
           scale={computerPartScale}
         />
         {computerOn ? (
-          <Typewriter
-            position={[-2.6, 1.3, 2.1]}
-            rotation={[0, 0, Math.PI / 40]}
-            color="white"
-            anchorX="left"
-            anchorY="top"
-            {...computerTextConfig()}
-          >
-            {computerScreenText}
-          </Typewriter>
+          <ComputerTerminal />
         ) : null}
-        {computerCanBeTurnedOn && !computerOn ? (
-          <Text
-            position={[-1, 0.7, 2.1]}
-            rotation={[0, 0, Math.PI / 40]}
-            color="gray"
-            anchorX="center"
-            anchorY="middle"
-            {...computerTextConfig(0.6)}
-          >
-            {'Click me.'.toUpperCase()}
-          </Text>
-        ) : null}
+        <Text
+          position={[-1, 0.7, 2.1]}
+          rotation={[0, 0, Math.PI / 40]}
+          color="gray"
+          anchorX="center"
+          anchorY="middle"
+          fontSize={0.6}
+          font={fontUrls.bryantBold}
+          visible={computerCanBeTurnedOn && !computerOn}
+        >
+          {'Click me.'.toUpperCase()}
+        </Text>
 
         {computerCanBeTurnedOn && !computerOn && (
           <InvisibleThreeButton
@@ -196,9 +216,7 @@ WILDEST DREAMS.`;
             // @ts-ignore
             onPointerDown={(_, setCursor) => {
               if (setCursor) setCursor('normal');
-              setComputerTurningOn(true); setComputerOnButtonHovering(false);
-              setTimeout(() => { setComputerOn(true); setComputerTurningOn(false); }, 300);
-              setTimeout(() => { setCodeRingsVisible(true); }, 300);
+              startComputerScene();
             }}
             onPointerEnter={() => setComputerOnButtonHovering(true)}
             onPointerOver={() => setComputerOnButtonHovering(true)}
@@ -207,20 +225,102 @@ WILDEST DREAMS.`;
           />
         )}
       </animated.group>
-      {/* <Html
-        transform
-        position={[-1, 1, 0]}
-        className="p-4 text-white font-mono text-[1vw]"
-        pointerEvents="none"
+      <animated.group
+        position={[4, 1.3, 2.5]}
       >
-        <p>
-          hi! i’m bryant! (he/him)
-          <br />
-          i make dope
-          <br />
-          web experiences.
-        </p>
-      </Html> */}
+        <Scribble
+          points={(coffeeBackPoints as CoordArray[])}
+          size={1.9}
+          position={[0.2, 0.1, -0.3]}
+          lineWidth={0.38}
+          color={new Color(0xff00ff)}
+          rotation={[Math.PI, 0, 0]}
+          visible={projectButtonVisible}
+          curved
+          nPointsInCurve={700}
+        />
+        <Scribble
+          points={(coffeeLiquidPoints as CoordArray[])}
+          size={1}
+          position={[-0.1, 0.55, -0.1]}
+          lineWidth={0.15}
+          color={new Color(0x551F00)}
+          rotation={[Math.PI, 0, 0]}
+          visible={projectButtonVisible}
+          curved
+          nPointsInCurve={100}
+        />
+        <Scribble
+          points={(coffeeLinesPoints as CoordArray[])}
+          size={1.8}
+          position={[0, 0, 0]}
+          lineWidth={0.02}
+          color={new Color(0xffffff)}
+          rotation={[Math.PI, 0, 0]}
+          visible={projectButtonVisible}
+          // curved
+          // nPointsInCurve={700}
+        />
+        <Text
+          position={[-0.3, -0.2, 0.1]}
+          rotation={[0, 0, 0]}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          fontSize={0.5}
+          font={fontUrls.bryantBold}
+          visible={projectButtonVisible}
+        >
+          {'Proj\nects'.toUpperCase()}
+        </Text>
+      </animated.group>
+      <animated.group
+        position={[3, -0.8, 3.5]}
+      >
+        <Scribble
+          points={(bookFillPoints as CoordArray[])}
+          size={1.5}
+          position={[0.2, 0, -0.3]}
+          lineWidth={0.5}
+          color={new Color(0x00FFff)}
+          rotation={[Math.PI, 0, 0]}
+          visible={blogButtonVisible}
+          curved
+          nPointsInCurve={100}
+        />
+        <Scribble
+          points={(bookHighlightPoints as CoordArray[])}
+          size={1}
+          position={[0.2, 0, -0.1]}
+          lineWidth={0.3}
+          color={new Color(0x00ff00)}
+          rotation={[Math.PI, 0, 0]}
+          visible={blogButtonVisible}
+        />
+        <Scribble
+          points={(bookLinesPoints as CoordArray[])}
+          size={1.5}
+          position={[0, 0, 0]}
+          lineWidth={0.02}
+          color={new Color(0x000000)}
+          rotation={[Math.PI, 0, 0]}
+          visible={blogButtonVisible}
+          curved
+          nPointsInCurve={700}
+        />
+        <Text
+          position={[0, 0, 0.1]}
+          rotation={[0, 0, 0]}
+          color="black"
+          anchorX="center"
+          anchorY="middle"
+          fontSize={0.25}
+          font={fontUrls.bryantBold}
+          visible={blogButtonVisible}
+        >
+          {'Blog\ncoming\nsoon'.toUpperCase()}
+        </Text>
+      </animated.group>
     </>
   );
 }

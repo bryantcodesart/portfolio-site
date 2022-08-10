@@ -6,7 +6,7 @@ import { useMouse } from 'rooks';
 // import { useEventListener } from 'usehooks-ts';
 import { useHasNoMouse } from './useHasNoMouse';
 
-export type CustomCursorState = 'normal' | 'contact' | 'computer-on'
+export type CustomCursorState = 'none' | 'normal' | 'contact' | 'computer-on' | 'terminal'
 export type CustomCursorSetter = (_cursorState:CustomCursorState)=>void
 export type CustomCursorArray = [CustomCursorState, CustomCursorSetter]
 
@@ -55,26 +55,16 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
         <div
           className="pointer-events-none fixed top-0 left-0 z-[1000]"
           style={{
-            transform: `translate(${mouse.clientX ?? 0}px,${mouse.clientY ?? 0}px) translate(-50%,-50%)`,
-            filter: 'drop-shadow(0 0 0.2rem white) drop-shadow(0 0 0.2rem white)',
+            transform: `translate(${mouse.clientX ?? 0}px,${mouse.clientY ?? 0}px)`,
+            filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : '',
           }}
         >
-          {cursor === 'normal' && <div className="p-2 border-2 border-white rounded-full bg-blue min-h-2 min-w-2" />}
+          {cursor === 'normal' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />}
 
-          {cursor === 'computer-on' && (
-          <div className="relative grid w-12 h-12 font-mono text-xs font-extrabold text-center text-white border-2 border-white rounded-full bg-blue place-items-center">
-            turn
-            <br />
-            on
-          </div>
-          )}
-          {cursor === 'contact' && (
-          <div className="relative grid w-12 h-12 font-mono text-xs font-extrabold text-center text-white border-2 border-white rounded-full bg-blue place-items-center">
-            say
-            <br />
-            hi
-          </div>
-          )}
+          {cursor === 'computer-on' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />}
+          {cursor === 'contact' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />}
+
+          {cursor === 'terminal' && <img className="w-[1vw]" src="/cursor/terminal.svg" alt="" />}
 
         </div>
       ) : null}
