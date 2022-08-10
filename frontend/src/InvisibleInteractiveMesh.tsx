@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  MeshProps,
-  // ThreeEvent
+  GroupProps,
 } from '@react-three/fiber';
 import { Color } from 'three';
 import { useUnmountEffect } from '@react-hookz/web';
@@ -16,70 +15,82 @@ export const InvisibleInteractiveMesh = ({
   height = 1,
   debug = false,
   cursor = 'normal',
+  /** Must be idemponent */
   onFocus = () => {},
+  /** Must be idemponent */
   onBlur = () => {},
-  // onPointerEnter = () => { },
-  // onPointerLeave = () => { },
-  // onPointerOver = () => { },
-  // onPointerDown = () => { },
-  ...meshProps
+  ...groupProps
 }: {
   width?: number;
   height?: number;
   debug?: boolean;
   cursor?: CustomCursorState;
+  /** Must be idemponent */
   onFocus?: () => void;
+  /** Must be idemponent */
   onBlur?: () => void;
-} & MeshProps) => {
+} & GroupProps) => {
   const setCursor = useCustomCursor()[1];
 
-  const { focus, hover } = useA11y();
+  const [hovering, setHovering] = useState(false);
+
+  const { focus } = useA11y();
 
   // If hovering and the target cursor changes, call setCursor to change the cursor
   useEffect(() => {
-    if (hover) setCursor(cursor);
+    if (hovering) setCursor(cursor);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor]);
 
+  // If the component unmounts, reset cursor and blue
   useUnmountEffect(() => {
-    if (hover) setCursor('normal');
-    if (focus) onBlur();
+    if (hovering) setCursor('normal');
+    if (focus || hovering) onBlur();
   });
 
+  // Fire on
   useEffect(() => {
-    if (focus || hover) onFocus();
+    if (focus || hovering) onFocus();
     else onBlur();
-  }, [focus, hover, onBlur, onFocus]);
+  }, [focus, hovering, onBlur, onFocus]);
 
   return (
-    <mesh
-      renderOrder={1000}
-      onPointerEnter={() => {
-        setCursor(cursor);
-      }}
-      onPointerLeave={() => {
-        setCursor('normal');
-      }}
-      onPointerOver={() => {
-        setCursor(cursor);
-      }}
-      {...meshProps}
+    <group
+      {...groupProps}
     >
-      <boxGeometry
-        attach="geometry"
-        args={[width, height, 0.01]}
-      />
-      <meshStandardMaterial
-        attach="material"
-        color={new Color(0xff0000)}
-        opacity={debug ? 0.3 : 0}
-        transparent
-        depthTest={false}
-      />
+      <mesh
+        renderOrder={1000}
+        onPointerEnter={() => {
+          setCursor(cursor);
+          setHovering(true);
+        }}
+        onPointerLeave={() => {
+          setCursor('normal');
+          setHovering(false);
+        }}
+        onPointerOver={() => {
+          setCursor(cursor);
+          setHovering(true);
+        }}
+        position={[0, 0, 0]}
+      >
+        <boxGeometry
+          attach="geometry"
+          args={[width, height, 0.01]}
+        />
+        <meshStandardMaterial
+          attach="material"
+          color={new Color(0xff0000)}
+          opacity={debug ? 0.3 : 0}
+          transparent
+          depthTest={false}
+        />
+      </mesh>
+
       <Scribble
         points={(circlePoints as CoordArray[])}
-        size={Math.max(height, width) * 1.2}
-        position={[0, 0, 0]}
+        size={Math.max(height, width) * 1.5}
+        position={[0, 0, 0.1]}
         lineWidth={0.1}
         color={new Color(0xff0000)}
         rotation={[Math.PI, 0, -Math.PI / 15]}
@@ -90,6 +101,6 @@ export const InvisibleInteractiveMesh = ({
           duration: 300,
         }}
       />
-    </mesh>
+    </group>
   );
 };

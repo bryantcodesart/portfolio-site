@@ -60,10 +60,6 @@ function ComputerTerminal() {
   );
 }
 
-Computer() {
-
-}
-
 function Content() {
   // This time+= is just a clever way to syntax to timeline each of these
   // relative to the previous use of the time variable, so its quick to adjust.

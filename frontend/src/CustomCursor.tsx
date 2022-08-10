@@ -70,8 +70,6 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
               grid place-items-center`}
             style={{ backgroundImage: 'url(/cursor/circle.svg)' }}
           >
-            {/* {cursor === 'normal' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />} */}
-
             {cursor === 'computer-on' && (
               <>
                 turn
