@@ -16,6 +16,7 @@
     "@react-aria/interactions": "^3.10.0",
     "@react-hookz/web": "^14.2.3",
     "@react-spring/three": "^9.5.2",
+    "@react-three/a11y": "^3.0.0",
     "@react-three/drei": "^9.19.6",
     "@react-three/fiber": "^8.3.0",
     "@react-three/postprocessing": "^2.6.0",

@@ -9,7 +9,9 @@ import { Color } from 'three';
 import {
   useSpring,
   animated,
+  config,
 } from '@react-spring/three';
+import { A11y, A11yAnnouncer } from '@react-three/a11y';
 import { CameraController } from './CameraController';
 import { CodeRings } from './CodeRings';
 import squiggle1Points from './lines/squiggle1';
@@ -22,7 +24,7 @@ import { Scribble } from './Scribble';
 import { CoordArray } from './CoordArray';
 import colors from './colors';
 import { CustomCursorContext } from './CustomCursor';
-import { InvisibleThreeButton } from './InvisibleThreeButton';
+import { InvisibleInteractiveMesh } from './InvisibleInteractiveMesh';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
 import { Typewriter } from './Typewriter';
 import { fontUrls } from './typography';
@@ -46,16 +48,20 @@ function ComputerTerminal() {
         color="white"
         anchorX="left"
         anchorY="top"
-        position={[-1.6, 0.7, 0.1]}
+        position={[-1.6, 0.9, 0.1]}
         fontSize={0.27}
         lineHeight={1.3}
         font={fontUrls.bryantBold}
       >
         {computerScreenText}
       </Typewriter>
-      <InvisibleThreeButton cursor="terminal" position={[0, 0, 0]} width={3.5} height={2} />
+      <InvisibleInteractiveMesh position={[0, 0, 0]} width={3.5} height={2} />
     </group>
   );
+}
+
+Computer() {
+
 }
 
 function Content() {
@@ -75,16 +81,22 @@ function Content() {
   const [computerOn, setComputerOn] = useState(false);
   const [computerTurningOn, setComputerTurningOn] = useState(false);
   const [codeRingsVisible, setCodeRingsVisible] = useState(false);
-  const [projectButtonVisible, setProjectButtonVisible] = useState(false);
-  const [blogButtonVisible, setBlogButtonVisible] = useState(false);
+  const [projectButtonVisible1, setProjectButtonVisible1] = useState(false);
+  const [projectButtonVisible2, setProjectButtonVisible2] = useState(false);
+  const [blogButtonVisible1, setBlogButtonVisible1] = useState(false);
+  const [blogButtonVisible2, setBlogButtonVisible2] = useState(false);
+  const [blogButtonVisible3, setBlogButtonVisible3] = useState(false);
 
   const startComputerScene = () => {
     let delay = 0;
     setComputerTurningOn(true); setComputerOnButtonHovering(false);
     setTimeout(() => { setComputerOn(true); setComputerTurningOn(false); }, delay += 300);
     setTimeout(() => { setCodeRingsVisible(true); }, delay);
-    setTimeout(() => { setProjectButtonVisible(true); }, delay += 1000);
-    setTimeout(() => { setBlogButtonVisible(true); }, delay += 300);
+    setTimeout(() => { setProjectButtonVisible1(true); }, delay += 1000);
+    setTimeout(() => { setProjectButtonVisible2(true); }, delay += 300);
+    setTimeout(() => { setBlogButtonVisible1(true); }, delay += 300);
+    setTimeout(() => { setBlogButtonVisible2(true); }, delay += 800);
+    setTimeout(() => { setBlogButtonVisible3(true); }, delay += 600);
   };
 
   let cameraPosition = [0, 0, 15];
@@ -201,28 +213,35 @@ function Content() {
           color="gray"
           anchorX="center"
           anchorY="middle"
-          fontSize={0.6}
+          fontSize={0.5}
           font={fontUrls.bryantBold}
-          visible={computerCanBeTurnedOn && !computerOn}
+          visible={computerCanBeTurnedOn && !computerTurningOn && !computerOn}
         >
-          {'Click me.'.toUpperCase()}
+          click to start
         </Text>
 
         {computerCanBeTurnedOn && !computerOn && (
-          <InvisibleThreeButton
-            position={[-0.7, 0.05, 2.2]}
-            width={3.7}
-            height={3.3}
-            // @ts-ignore
-            onPointerDown={(_, setCursor) => {
-              if (setCursor) setCursor('normal');
+          <A11y
+            role="button"
+            description="Turn computer on"
+            activationMsg="Computer turns on, rears back, and explodes forward shooting code everywhere."
+            actionCall={() => {
               startComputerScene();
             }}
-            onPointerEnter={() => setComputerOnButtonHovering(true)}
-            onPointerOver={() => setComputerOnButtonHovering(true)}
-            onPointerLeave={() => setComputerOnButtonHovering(false)}
-            cursor="computer-on"
-          />
+          >
+            <InvisibleInteractiveMesh
+              position={[-0.7, 0.05, 2.2]}
+              width={3.7}
+              height={3.3}
+              onFocus={() => {
+                setComputerOnButtonHovering(true);
+              }}
+              onBlur={() => {
+                setComputerOnButtonHovering(false);
+              }}
+              cursor="computer-on"
+            />
+          </A11y>
         )}
       </animated.group>
       <animated.group
@@ -235,7 +254,8 @@ function Content() {
           lineWidth={0.38}
           color={new Color(0xff00ff)}
           rotation={[Math.PI, 0, 0]}
-          visible={projectButtonVisible}
+          visible={projectButtonVisible1}
+          drawSpringConfig={config.molasses}
           curved
           nPointsInCurve={700}
         />
@@ -246,7 +266,8 @@ function Content() {
           lineWidth={0.15}
           color={new Color(0x551F00)}
           rotation={[Math.PI, 0, 0]}
-          visible={projectButtonVisible}
+          visible={projectButtonVisible2}
+          drawSpringConfig={config.molasses}
           curved
           nPointsInCurve={100}
         />
@@ -254,10 +275,11 @@ function Content() {
           points={(coffeeLinesPoints as CoordArray[])}
           size={1.8}
           position={[0, 0, 0]}
-          lineWidth={0.02}
+          lineWidth={0.016}
           color={new Color(0xffffff)}
           rotation={[Math.PI, 0, 0]}
-          visible={projectButtonVisible}
+          visible={projectButtonVisible2}
+          drawSpringConfig={config.molasses}
           // curved
           // nPointsInCurve={700}
         />
@@ -269,7 +291,7 @@ function Content() {
           anchorY="middle"
           fontSize={0.5}
           font={fontUrls.bryantBold}
-          visible={projectButtonVisible}
+          visible={projectButtonVisible1}
         >
           {'Proj\nects'.toUpperCase()}
         </Text>
@@ -284,7 +306,8 @@ function Content() {
           lineWidth={0.5}
           color={new Color(0x00FFff)}
           rotation={[Math.PI, 0, 0]}
-          visible={blogButtonVisible}
+          visible={blogButtonVisible2}
+          drawSpringConfig={config.molasses}
           curved
           nPointsInCurve={100}
         />
@@ -295,16 +318,16 @@ function Content() {
           lineWidth={0.3}
           color={new Color(0x00ff00)}
           rotation={[Math.PI, 0, 0]}
-          visible={blogButtonVisible}
+          visible={blogButtonVisible3}
         />
         <Scribble
           points={(bookLinesPoints as CoordArray[])}
           size={1.5}
           position={[0, 0, 0]}
-          lineWidth={0.02}
+          lineWidth={0.015}
           color={new Color(0x000000)}
           rotation={[Math.PI, 0, 0]}
-          visible={blogButtonVisible}
+          visible={blogButtonVisible1}
           curved
           nPointsInCurve={700}
         />
@@ -316,7 +339,7 @@ function Content() {
           anchorY="middle"
           fontSize={0.25}
           font={fontUrls.bryantBold}
-          visible={blogButtonVisible}
+          visible={blogButtonVisible1}
         >
           {'Blog\ncoming\nsoon'.toUpperCase()}
         </Text>
@@ -328,13 +351,17 @@ function Content() {
 const ThreeScene = () => {
   const ContextBridge = useContextBridge(CustomCursorContext);
   return (
-    <Canvas>
-      <ContextBridge>
-        <Content />
-      </ContextBridge>
-      {new URLSearchParams(window.location.search).get('stats') === 'true' && <Stats />}
-      <ambientLight />
-    </Canvas>
+    <>
+      <Canvas>
+        <ContextBridge>
+          <Content />
+        </ContextBridge>
+        {new URLSearchParams(window.location.search).get('stats') === 'true' && <Stats />}
+        <ambientLight intensity={1} />
+        {/* <pointLight position={[0, 10, 0]} /> */}
+      </Canvas>
+      <A11yAnnouncer />
+    </>
   );
 };
 export default ThreeScene;

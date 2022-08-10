@@ -18,6 +18,7 @@ module.exports = {
     },
     fontFamily: {
       mono: '"Roboto Mono", monospace',
+      display: '"Bryant", Comic Sans MS',
     },
   },
 

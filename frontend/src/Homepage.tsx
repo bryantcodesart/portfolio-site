@@ -16,6 +16,23 @@ export const Homepage = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <main className="w-screen h-screen bg-white">
+      <div
+        className="fixed top-0 left-0 z-10 text-[1.2vw] px-[2vw] py-[1vw] font-mono text-white bg-blue tracking-wide"
+      >
+        CONTACT:
+        {' '}
+        <CustomCursorHover cursor="contact">
+          <a
+            href={`mailto:hello@bryantcodes.art?subject=${encodeURIComponent('Hello, Bryant!')}&body=${encodeURIComponent("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`}
+            className="underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {' '}
+            hello@bryantcodes.art
+          </a>
+        </CustomCursorHover>
+      </div>
       <Suspense
         fallback={(
           <div className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -26,38 +43,6 @@ export const Homepage = () => (
         <DynamicThreeScene />
       </Suspense>
 
-      <div
-        className="fixed bottom-0 left-0 z-10 text-[1.2vw] px-[2vw] py-[1vw] font-mono text-white bg-blue tracking-wide"
-      >
-        CONTACT:
-        {' '}
-        <CustomCursorHover cursor="contact">
-          <a
-            href={`mailto:hello@bryantcodes.art?subject=${encodeURI('Hello, Bryant!')}&body=${encodeURI("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`}
-            className="underline"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {' '}
-            hello@bryantcodes.art
-          </a>
-        </CustomCursorHover>
-      </div>
     </main>
   </>
 );
-
-/*
-<h1 className="fixed top-0 left-0 z-10 text-[3vw] px-[1.5vw]
- py-[0.5vw] font-mono font-bold text-white bg-blue">bryantcodes.art</h1>
-
-<a
-  href="mailto:hello@bryantcodes.art?subject=Hello!&body=(if you
-    're not unsure how to start this email, just tell me your favorite kind of pizza)"
-  className="fixed bottom-0 right-0 z-10 text-[3vw] px-[1.5vw] p
-  y-[0.5vw] font-mono font-bold text-white underline bg-blue"
-  target="_blank"
-  rel="noreferrer"
->
-  contact
-</a> */

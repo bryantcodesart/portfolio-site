@@ -844,6 +844,14 @@
   dependencies:
     "@babel/runtime" "^7.6.2"
 
+"@react-three/a11y@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@react-three/a11y/-/a11y-3.0.0.tgz#5cdb9a7ca910162041f4373da4fe4f754322728b"
+  integrity sha512-lnKIK8oPQBDWdzVMKm4kNi7W8RoGE7s5sHbw7Wz++MhyXih5L4aLyNkWedCn9v/PjRl2x3zIbzzZIWqoabwkJA==
+  dependencies:
+    utility-types "^3.10.0"
+    zustand "^3.2.0"
+
 "@react-three/drei@^9.19.6":
   version "9.19.6"
   resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-9.19.6.tgz#36e26bb9885895a31c42341a2a630735bfa9becc"
@@ -4552,7 +4560,7 @@ zstddec@^0.0.2:
   resolved "https://registry.yarnpkg.com/zstddec/-/zstddec-0.0.2.tgz#57e2f28dd1ff56b750e07d158a43f0611ad9eeb4"
   integrity sha512-DCo0oxvcvOTGP/f5FA6tz2Z6wF+FIcEApSTu0zV5sQgn9hoT5lZ9YRAKUraxt9oP7l4e8TnNdi8IZTCX6WCkwA==
 
-zustand@^3.5.13, zustand@^3.6.9, zustand@^3.7.1:
+zustand@^3.2.0, zustand@^3.5.13, zustand@^3.6.9, zustand@^3.7.1:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.7.2.tgz#7b44c4f4a5bfd7a8296a3957b13e1c346f42514d"
   integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==

@@ -59,13 +59,36 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
             filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : '',
           }}
         >
-          {cursor === 'normal' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />}
+          <div
+            className={`
+              bg-contain bg-center
+              font-display text-white text-center leading-[0.8] text-[2vw]
+              -translate-x-1/2 -translate-y-1/2
+              h-[5vw] w-[5vw]
+              transition-transform
+              ${cursor === 'normal' ? 'scale-[0.25]' : ''}
+              grid place-items-center`}
+            style={{ backgroundImage: 'url(/cursor/circle.svg)' }}
+          >
+            {/* {cursor === 'normal' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />} */}
 
-          {cursor === 'computer-on' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />}
-          {cursor === 'contact' && <img className="w-[3vw]" src="/cursor/normal.svg" alt="" />}
+            {cursor === 'computer-on' && (
+              <>
+                turn
+                <br />
+                on
+              </>
+            )}
+            {cursor === 'contact' && (
+              <>
+                say
+                <br />
+                hi!
+              </>
+            )}
 
-          {cursor === 'terminal' && <img className="w-[1vw]" src="/cursor/terminal.svg" alt="" />}
-
+            {cursor === 'terminal' && <img className="w-[1vw]" src="/cursor/terminal.svg" alt="" />}
+          </div>
         </div>
       ) : null}
     </>
