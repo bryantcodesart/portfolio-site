@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { BeatLoader } from 'react-spinners';
 import { CustomCursorHover } from './CustomCursor';
 
-const DynamicThreeScene = dynamic(() => import('./ThreeScene'), {
+const DynamicThreeCanvas = dynamic(() => import('./ThreeCanvas'), {
   ssr: false,
 });
 
@@ -40,7 +40,7 @@ export const Homepage = () => (
           </div>
         )}
       >
-        <DynamicThreeScene />
+        <DynamicThreeCanvas />
       </Suspense>
 
     </main>

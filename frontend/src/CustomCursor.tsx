@@ -3,7 +3,6 @@ import React, {
   Children, ReactElement, useEffect,
 } from 'react';
 import { useMouse } from 'rooks';
-// import { useEventListener } from 'usehooks-ts';
 import { useHasNoMouse } from './useHasNoMouse';
 
 export type CustomCursorState = 'none' | 'normal' | 'contact' | 'computer-on' | 'terminal'
@@ -25,24 +24,6 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
   const [cursor, setCursor] = useState<CustomCursorState>('normal');
 
   const customCursorStateArray = useMemo(() => [cursor, setCursor] as CustomCursorArray, [cursor]);
-
-  // const determineCursorFromEventTarget = (e:Event) => {
-  //   let newCursor = 'normal';
-
-  //   const dataAttributeCursor =
-  // ((e.target as HTMLElement)?.closest('[data-cursor]') as HTMLElement)?.dataset?.cursor;
-
-  //   if (dataAttributeCursor) {
-  //     newCursor = dataAttributeCursor;
-  //   }
-
-  //   if (newCursor !== cursor) {
-  //     setCursor(newCursor);
-  //   }
-  // };
-  // useEventListener('mousemove', determineCursorFromEventTarget);
-  // useEventListener('mouseup', determineCursorFromEventTarget);
-  // useEventListener('mousedown', determineCursorFromEventTarget);
 
   const hasNoMouse = useHasNoMouse();
 
