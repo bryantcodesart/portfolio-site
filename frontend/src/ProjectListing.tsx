@@ -144,15 +144,15 @@ export function ProjectListing({ active, projects, ...groupProps }:
           points={(leftArrowFill as CoordArray[])}
           size={0.7}
           position={[-0.02, -0.07, -0.1]}
-          lineWidth={0.15}
+          lineWidth={0.25}
           color={new Color(colors.lime)}
-          rotation={[Math.PI, 0, 0]}
+          rotation={[0, Math.PI, 0]}
           visible={leftArrowFillVisible}
           drawSpringConfig={config.slow}
           scaleSpringConfig={config.wobbly}
           curved
-          // closed
-          nPointsInCurve={500}
+          closed
+          nPointsInCurve={700}
         />
         <Scribble
           points={(leftArrowLines as CoordArray[])}
@@ -189,15 +189,15 @@ export function ProjectListing({ active, projects, ...groupProps }:
           points={(rightArrowFill as CoordArray[])}
           size={0.7}
           position={[0.02, -0.07, -0.1]}
-          lineWidth={0.15}
+          lineWidth={0.25}
           color={new Color(colors.lime)}
           rotation={[Math.PI, 0, 0]}
           visible={rightArrowFillVisible}
           drawSpringConfig={config.slow}
           scaleSpringConfig={config.wobbly}
           curved
-          // closed
-          nPointsInCurve={500}
+          closed
+          nPointsInCurve={700}
         />
         <Scribble
           points={(rightArrowLines as CoordArray[])}

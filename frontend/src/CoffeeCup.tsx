@@ -36,7 +36,6 @@ export function CoffeeCup({
   const projectButtonVisible1 = useTrueAfterDelay(time += 1000);
   const projectButtonVisible2 = useTrueAfterDelay(time += 1000);
   const projectButtonPressable = useTrueAfterDelay(time += 1000);
-  // const spillVisible = useTrueAfterDelay(time += 1000);
   const [hovering, setHovering] = useState(false);
 
   const sceneController = useSceneController();
@@ -56,23 +55,6 @@ export function CoffeeCup({
     ],
     config: config.wobbly,
   });
-
-  // const test = useControls({
-  //   x: rangeParams(0, -5, 5, 0.01),
-  //   y: rangeParams(0, -5, 5, 0.01),
-  //   lineWidth: rangeParams(0.1, 0, 5, 0.01),
-  //   size: rangeParams(0.1, 0, 10, 0.01),
-  // });
-
-  // let liquidScale = 1;
-  // if (hovering) liquidScale = 1.3;
-
-  // const test = useControls({
-  //   x: rangeParams(0, -5, 5, 0.01),
-  //   y: rangeParams(0, -5, 5, 0.01),
-  //   size: rangeParams(0, -5, 5, 0.01),
-  //   lineWidth: rangeParams(0, -5, 5, 0.01),
-  // });
 
   return (
     <animated.group
