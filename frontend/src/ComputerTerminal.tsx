@@ -3,7 +3,6 @@ import { InvisibleInteractiveMesh } from './InvisibleInteractiveMesh';
 import { Typewriter } from './Typewriter';
 import { fontUrls } from './typography';
 
-
 export function ComputerTerminal() {
   const computerScreenText = `I'm Bryant! (he/him)
     I build web experiences.`;

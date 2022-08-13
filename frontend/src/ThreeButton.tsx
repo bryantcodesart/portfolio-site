@@ -8,7 +8,7 @@ export function ThreeButton({
   width,
   height,
   cursor,
-  onClick,
+  onClick = () => { },
   onFocus = () => { },
   onBlur = () => { },
   description,

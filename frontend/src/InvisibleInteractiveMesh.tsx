@@ -30,7 +30,7 @@ export const InvisibleInteractiveMesh = ({
   onFocus?: () => void;
   /** Must be idemponent */
   onBlur?: () => void;
-  onClick: () => void;
+  onClick?: () => void;
 } & GroupProps) => {
   const setCursor = useCustomCursor()[1];
 
