@@ -4,8 +4,17 @@ import React, {
 } from 'react';
 import { useMouse } from 'rooks';
 import { useHasNoMouse } from './useHasNoMouse';
+import { useParamOnLoad } from './useParamOnLoad';
 
-export type CustomCursorState = 'none' | 'normal' | 'contact' | 'computer-on' | 'terminal'
+export type CustomCursorState = 'none'
+ | 'normal'
+ | 'contact'
+ | 'computer-on'
+ | 'terminal'
+ | 'projects'
+ | 'menu'
+ | 'next'
+ | 'previous'
 export type CustomCursorSetter = (_cursorState:CustomCursorState)=>void
 export type CustomCursorArray = [CustomCursorState, CustomCursorSetter]
 
@@ -27,14 +36,23 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
 
   const hasNoMouse = useHasNoMouse();
 
+  const disabledByParam = useParamOnLoad('cursor', 'true') === 'false';
+
+  const enabled = !hasNoMouse && !disabledByParam;
+
   return (
     <>
+      <style>
+        {enabled && `* {
+          cursor: none !important;
+        }`}
+      </style>
       <CustomCursorContext.Provider value={customCursorStateArray}>
         {children}
       </CustomCursorContext.Provider>
-      {!hasNoMouse ? (
+      {enabled ? (
         <div
-          className="pointer-events-none fixed top-0 left-0 z-[1000]"
+          className="pointer-events-none fixed top-0 left-0 z-[999999]"
           style={{
             transform: `translate(${mouse.clientX ?? 0}px,${mouse.clientY ?? 0}px)`,
             filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : '',
@@ -43,7 +61,7 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
           <div
             className={`
               bg-contain bg-center
-              font-display text-white text-center leading-[0.8] text-[2vw]
+              font-display text-white text-center leading-[0.8] text-[1.9vw]
               -translate-x-1/2 -translate-y-1/2
               h-[5vw] w-[5vw]
               transition-transform
@@ -63,6 +81,28 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
                 say
                 <br />
                 hi!
+              </>
+            )}
+            {cursor === 'projects' && (
+              <>
+                neat
+                <br />
+                stuff
+              </>
+            )}
+            {cursor === 'menu' && (
+              <>
+                home
+              </>
+            )}
+            {cursor === 'next' && (
+              <>
+                next
+              </>
+            )}
+            {cursor === 'previous' && (
+              <>
+                prev
               </>
             )}
 

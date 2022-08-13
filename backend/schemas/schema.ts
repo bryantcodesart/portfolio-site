@@ -11,6 +11,9 @@ import post from './post'
 import author from './author'
 import youtube from './youtube'
 import vimeo from './vimeo'
+import project from './project'
+import imageFigure from './imageFigure'
+import videoFigure from './videoFigure'
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -22,10 +25,13 @@ export default createSchema({
     // The following are document types which will appear
     // in the studio.
     post,
+    project,
     author,
     category,
     // When added to this list, object types can be used as
     // { type: 'typename' } in other document schemas
+    imageFigure,
+    videoFigure,
     blockContent,
     youtube,
     vimeo,

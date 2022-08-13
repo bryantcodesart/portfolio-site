@@ -89,7 +89,7 @@ export const InvisibleInteractiveMesh = ({
 
       <Scribble
         points={(circlePoints as CoordArray[])}
-        size={Math.max(height, width) * 1.5}
+        size={Math.max(height, width)}
         position={[0, 0, 0.1]}
         lineWidth={0.1}
         color={new Color(0xff0000)}

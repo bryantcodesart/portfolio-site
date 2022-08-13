@@ -23,7 +23,10 @@
     "@sanity/client": "^3.3.2",
     "@sanity/image-url": "^1.0.1",
     "@u-wave/react-vimeo": "^0.9.8",
+    "babel-plugin-glsl": "^1.0.0",
+    "babel-plugin-macros": "^3.1.0",
     "debug": "^4.3.4",
+    "glslify": "^7.1.1",
     "leva": "^0.9.29",
     "meshline": "^2.0.4",
     "next": "12.1.6",
@@ -39,9 +42,11 @@
     "three": "^0.143.0",
     "three-stdlib": "^2.13.0",
     "use-font-face-observer": "^1.2.1",
-    "usehooks-ts": "^2.6.0"
+    "usehooks-ts": "^2.6.0",
+    "zod": "^3.18.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.10",
     "@portabletext/types": "^1.0.3",
     "@types/chai": "^4.3.1",
     "@types/debug": "^4.1.7",

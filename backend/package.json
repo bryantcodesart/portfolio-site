@@ -9,7 +9,9 @@
   "scripts": {
     "start": "sanity start",
     "dev": "sanity start",
-    "build": "sanity build"
+    "build": "sanity build",
+    "build:types": "npx sanity-codegen",
+    "deploy": "sanity deploy"
   },
   "keywords": [
     "sanity"
@@ -34,6 +36,8 @@
     "styled-components": "^5.2.0"
   },
   "devDependencies": {
-    "@sanity/types": "^2.29.5"
+    "@sanity/types": "^2.29.5",
+    "prettier": "^2.7.1",
+    "sanity-codegen": "^0.9.8"
   }
 }

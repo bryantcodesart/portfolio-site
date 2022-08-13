@@ -37,6 +37,69 @@ export type {
 };
 
 /**
+ * Post
+ *
+ *
+ */
+export interface Post extends SanityDocument {
+  _type: "post";
+
+  /**
+   * Title — `string`
+   *
+   *
+   */
+  title?: string;
+
+  /**
+   * Slug — `slug`
+   *
+   *
+   */
+  slug?: { _type: "slug"; current: string };
+
+  /**
+   * Author — `reference`
+   *
+   *
+   */
+  author?: SanityReference<Author>;
+
+  /**
+   * Main image — `image`
+   *
+   *
+   */
+  mainImage?: {
+    _type: "image";
+    asset: SanityReference<SanityImageAsset>;
+    crop?: SanityImageCrop;
+    hotspot?: SanityImageHotspot;
+  };
+
+  /**
+   * Categories — `array`
+   *
+   *
+   */
+  categories?: Array<SanityKeyedReference<Category>>;
+
+  /**
+   * Published at — `datetime`
+   *
+   *
+   */
+  publishedAt?: string;
+
+  /**
+   * Body — `blockContent`
+   *
+   *
+   */
+  body?: BlockContent;
+}
+
+/**
  * Project
  *
  *
@@ -52,40 +115,67 @@ export interface Project extends SanityDocument {
   title?: string;
 
   /**
-   * URL Slug — `slug`
+   * Subtitle — `string`
    *
-   * The URL safe version of the title that will be used for the permalink
+   *
+   */
+  subTitle?: string;
+
+  /**
+   * Slug — `slug`
+   *
+   *
    */
   slug?: { _type: "slug"; current: string };
 
   /**
-   * Summary — `array`
+   * URL — `url`
    *
-   * Short project summary that can be revealed by user.
+   *
    */
-  summary?: Array<SanityKeyed<SanityBlock>>;
+  url?: string;
 
   /**
-   * Homepage Thumbnail — `imageFigure`
+   * Gallery — `array`
    *
-   * Image that appears on the homepage sliding tile board, ideally square aspect ratio.
+   *
    */
-  homepageThumbnail?: ImageFigure;
+  gallery?: Array<SanityKeyed<ImageFigure> | SanityKeyed<VideoFigure>>;
 
   /**
-   * Showcase — `array`
+   * Body — `blockContent`
    *
-   * Vimeo and image figures that showcase the project
+   *
    */
-  showcase?: Array<SanityKeyed<ImageFigure> | SanityKeyed<VimeoFigure>>;
+  body?: BlockContent;
 }
 
-export type ImageFigure = {
-  _type: "imageFigure";
+/**
+ * Author
+ *
+ *
+ */
+export interface Author extends SanityDocument {
+  _type: "author";
+
+  /**
+   * Name — `string`
+   *
+   *
+   */
+  name?: string;
+
+  /**
+   * Slug — `slug`
+   *
+   *
+   */
+  slug?: { _type: "slug"; current: string };
+
   /**
    * Image — `image`
    *
-   * Images should be large and high quality. (Don't worry about size.  They will be sized/optimized by the code.)
+   *
    */
   image?: {
     _type: "image";
@@ -95,15 +185,74 @@ export type ImageFigure = {
   };
 
   /**
-   * Alt Text — `string`
+   * Bio — `array`
    *
-   * Copy that describes the image for those who cannot see it – e.g. users without sight and SEO robots.
+   *
+   */
+  bio?: Array<SanityKeyed<SanityBlock>>;
+}
+
+/**
+ * Category
+ *
+ *
+ */
+export interface Category extends SanityDocument {
+  _type: "category";
+
+  /**
+   * Title — `string`
+   *
+   *
+   */
+  title?: string;
+
+  /**
+   * Description — `text`
+   *
+   *
+   */
+  description?: string;
+}
+
+export type ImageFigure = {
+  _type: "imageFigure";
+  /**
+   * Image — `image`
+   *
+   *
+   */
+  image?: {
+    _type: "image";
+    asset: SanityReference<SanityImageAsset>;
+    crop?: SanityImageCrop;
+    hotspot?: SanityImageHotspot;
+  };
+
+  /**
+   * Alt text — `string`
+   *
+   *
    */
   alt?: string;
 };
 
-export type VimeoFigure = {
-  _type: "vimeoFigure";
+export type VideoFigure = {
+  _type: "videoFigure";
+  /**
+   * Video — `file`
+   *
+   *
+   */
+  video?: { _type: "file"; asset: SanityReference<any> };
+
+  /**
+   * Alt text — `string`
+   *
+   *
+   */
+  alt?: string;
+
   /**
    * Thumbnail — `image`
    *
@@ -115,20 +264,46 @@ export type VimeoFigure = {
     crop?: SanityImageCrop;
     hotspot?: SanityImageHotspot;
   };
+};
 
+export type BlockContent = Array<
+  | SanityKeyed<SanityBlock>
+  | SanityKeyed<{
+      _type: "image";
+      asset: SanityReference<SanityImageAsset>;
+      crop?: SanityImageCrop;
+      hotspot?: SanityImageHotspot;
+    }>
+  | SanityKeyed<Youtube>
+  | SanityKeyed<Vimeo>
+  | SanityKeyed<Code>
+>;
+
+export type Youtube = {
+  _type: "youtube";
+  /**
+   * Youtube ID — `string`
+   *
+   *
+   */
+  id?: string;
+};
+
+export type Vimeo = {
+  _type: "vimeo";
   /**
    * Vimeo ID — `string`
    *
-   * The ID can be found as part of the URL
-   */
-  vimeoId?: string;
-
-  /**
-   * Alt Text — `string`
    *
-   * Copy that describes the thumbnail for those who cannot see it – e.g. users without sight and SEO robots.
    */
-  alt?: string;
+  id?: string;
 };
 
-export type Documents = Project;
+export type Documents = Post | Project | Author | Category;
+
+/**
+ * This interface is a stub. It was referenced in your sanity schema but
+ * the definition was not actually found. Future versions of
+ * sanity-codegen will let you type this explicity.
+ */
+type Code = any;

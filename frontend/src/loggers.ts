@@ -1,3 +1,3 @@
 import debug from 'debug';
 
-export const matrixLog = debug('CDIZON:matrix');
+export const routerLog = debug('BCA:routing');

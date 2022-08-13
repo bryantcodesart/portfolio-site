@@ -2,13 +2,19 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import React from 'react';
 import { CustomCursorProvider } from '../src/CustomCursor';
-import { Homepage } from '../src/Homepage';
+import { ThreePage } from '../src/ThreePage';
+import { SiteData } from '../src/SiteData';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const siteData:SiteData = {
+    startingScene: pageProps.scene ?? 'error',
+    projects: pageProps.projects ?? null,
+  };
   return (
     <CustomCursorProvider>
-      {true // check for homepage props once they exist here
-        && <Homepage />}
+      <ThreePage
+        siteData={siteData}
+      />
       <Component {...pageProps} />
     </CustomCursorProvider>
   );

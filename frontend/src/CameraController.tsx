@@ -4,7 +4,8 @@ import * as THREE from 'three';
 import { useEventListener } from 'usehooks-ts';
 // import { useScroll } from '@react-three/drei';
 
-export const CameraController = ({ position }:{position:[number, number, number]}) => {
+export const CameraController = ({ position, speed = 0.05 }:
+  {position:[number, number, number], speed?:number}) => {
   const mouse = useRef<{ x: number; y: number; } | null>(null);
 
   useEventListener('mousemove', (e) => {
@@ -20,7 +21,7 @@ export const CameraController = ({ position }:{position:[number, number, number]
       x * 2 + position[0],
       y * 1 + position[1],
       position[2],
-    ), 0.1);
+    ), speed);
   });
 
   return null;

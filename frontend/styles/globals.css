@@ -23,11 +23,3 @@ canvas {
 body {
   @apply no-scrollbar;
 }
-
-* {
-  @apply !cursor-none;
-}
-
-#leva__root {
-  @apply !cursor-auto;
-}

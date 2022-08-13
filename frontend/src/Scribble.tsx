@@ -1,8 +1,6 @@
 import React, {
   Ref,
-  // useEffect,
   useMemo, useRef,
-  // useRef,
 } from 'react';
 import {
   extend, ReactThreeFiber, useFrame,
@@ -11,12 +9,6 @@ import {
   CatmullRomCurve3,
   Color, Vector3,
 } from 'three';
-// import {
-//   // config,
-//   easings,
-//   SpringConfig,
-//   useSpring,
-// } from 'react-spring';
 import {
   useSpring,
   animated,
@@ -59,6 +51,7 @@ export const Scribble = ({
   visible,
   curved = false,
   nPointsInCurve = 0,
+  closed = false,
   rotation = [0, 0, 0],
   scale = 1,
   drawSpringConfig = {
@@ -75,6 +68,7 @@ export const Scribble = ({
   lineWidth: number;
   visible: boolean;
   curved?: boolean;
+  closed?: boolean;
   nPointsInCurve?: number;
   rotation?: CoordArray;
   scale?: number;
@@ -92,7 +86,7 @@ export const Scribble = ({
 
     // Optionally extrapolate points into a curve
     if (curved) {
-      vectors = new CatmullRomCurve3(vectors, true)
+      vectors = new CatmullRomCurve3(vectors, closed)
         .getPoints(nPointsInCurve);
     }
 

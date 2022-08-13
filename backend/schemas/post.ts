@@ -12,6 +12,8 @@ export default {
       name: "slug",
       title: "Slug",
       type: "slug",
+      // @ts-ignore
+      validation: (Rule: {}) => Rule.required(),
       options: {
         source: "title",
         maxLength: 96,
@@ -55,7 +57,7 @@ export default {
       author: "author.name",
       media: "mainImage",
     },
-    prepare(selection) {
+    prepare(selection:{author:string}) {
       const { author } = selection;
       return Object.assign({}, selection, {
         subtitle: author && `by ${author}`,
