@@ -5,18 +5,30 @@ import { MeshDistortMaterial } from '@react-three/drei';
 import { GroupProps } from '@react-three/fiber';
 import { animated, useSpring, config } from '@react-spring/three';
 import {
+  Color,
   DoubleSide,
 } from 'three';
 // @ts-ignore
 import { Project } from '../generatedSanitySchemaTypes';
 import { ThreeButton } from './ThreeButton';
 import { ProjectEntry } from './ProjectEntry';
+import rightArrowFill from './lines/rightArrowFill';
+import { Scribble } from './Scribble';
+import { CoordArray } from './CoordArray';
+import colors from './colors';
+import rightArrowLines from './lines/rightArrowLines';
+import leftArrowFill from './lines/leftArrowFill';
+import leftArrowLines from './lines/leftArrowLines';
 
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
   const [blobIsBig, setBlobIsBig] = useState(false);
   const [carouselIsActive, setCarouselIsActive] = useState(false);
   const [carouselHasAnimated, setCarouselHasAnimated] = useState(false);
+  const [rightArrowLinesVisible, setRightArrowLinesVisible] = useState(false);
+  const [leftArrowLinesVisible, setLeftArrowLinesVisible] = useState(false);
+  const [rightArrowFillVisible, setRightArrowFillVisible] = useState(false);
+  const [leftArrowFillVisible, setLeftArrowFillVisible] = useState(false);
 
   const { blobScale, blobPosition } = useSpring({
     blobPosition: blobIsBig ? [0, 0, 0] : [3.62, 1.91, 0],
@@ -49,15 +61,39 @@ export function ProjectListing({ active, projects, ...groupProps }:
       setTimeout(() => {
         setCarouselHasAnimated(true);
       }, delay += 1000);
+      setTimeout(() => {
+        setLeftArrowFillVisible(true);
+      }, delay -= 300);
+      setTimeout(() => {
+        setRightArrowFillVisible(true);
+      }, delay += 100);
+      setTimeout(() => {
+        setLeftArrowLinesVisible(true);
+      }, delay += 500);
+      setTimeout(() => {
+        setRightArrowLinesVisible(true);
+      }, delay += 100);
     } else {
       setTimeout(() => {
         setCarouselIsActive(false);
         setBlobIsBig(false);
         setCarouselHasAnimated(false);
+        setLeftArrowLinesVisible(false);
+        setRightArrowLinesVisible(false);
+        setLeftArrowFillVisible(false);
+        setRightArrowFillVisible(false);
         setNTurns(0);
       }, 500);
     }
   }, [active]);
+
+  const [rightArrowHovering, setRightArrowHovering] = useState(false);
+  const [leftArrowHovering, setLeftArrowHovering] = useState(false);
+  const { rightArrowScale, leftArrowScale } = useSpring({
+    rightArrowScale: rightArrowHovering ? 1.2 : 1,
+    leftArrowScale: leftArrowHovering ? 1.2 : 1,
+    config: config.wobbly,
+  });
 
   return (
     <group {...groupProps}>
@@ -100,30 +136,96 @@ export function ProjectListing({ active, projects, ...groupProps }:
         ))}
 
       </animated.group>
-      <ThreeButton
-        position={[2, -2, 1]}
-        width={1.5}
-        height={1.5}
-        description=""
-        activationMsg=""
-        onFocus={() => {}}
-        onBlur={() => {}}
-        cursor="next"
-        debug
-        onClick={() => setNTurns((n) => n + 1)}
-      />
-      <ThreeButton
-        position={[-2, -2, 1]}
-        width={1.5}
-        height={1.5}
-        description=""
-        activationMsg=""
-        onFocus={() => {}}
-        onBlur={() => {}}
-        cursor="previous"
-        debug
-        onClick={() => setNTurns((n) => n - 1)}
-      />
+      <animated.group
+        position={[-0.6, -1, 3.5]}
+        scale={leftArrowScale}
+      >
+        <Scribble
+          points={(leftArrowFill as CoordArray[])}
+          size={0.7}
+          position={[-0.02, -0.07, -0.1]}
+          lineWidth={0.15}
+          color={new Color(colors.lime)}
+          rotation={[Math.PI, 0, 0]}
+          visible={leftArrowFillVisible}
+          drawSpringConfig={config.slow}
+          scaleSpringConfig={config.wobbly}
+          curved
+          // closed
+          nPointsInCurve={500}
+        />
+        <Scribble
+          points={(leftArrowLines as CoordArray[])}
+          size={0.5}
+          position={[0, 0, 0.1]}
+          lineWidth={0.01}
+          color={new Color(colors.black)}
+          rotation={[Math.PI, 0, 0]}
+          visible={leftArrowLinesVisible}
+          drawSpringConfig={config.slow}
+          scaleSpringConfig={config.wobbly}
+          curved
+          nPointsInCurve={500}
+        />
+        {leftArrowFillVisible && (
+          <ThreeButton
+            position={[0, 0, 0]}
+            width={1}
+            height={0.5}
+            description=""
+            activationMsg=""
+            onFocus={() => { setLeftArrowHovering(true); }}
+            onBlur={() => { setLeftArrowHovering(false); }}
+            cursor="previous"
+            onClick={() => setNTurns((n) => n - 1)}
+          />
+        )}
+      </animated.group>
+      <animated.group
+        position={[0.6, -1, 3.5]}
+        scale={rightArrowScale}
+      >
+        <Scribble
+          points={(rightArrowFill as CoordArray[])}
+          size={0.7}
+          position={[0.02, -0.07, -0.1]}
+          lineWidth={0.15}
+          color={new Color(colors.lime)}
+          rotation={[Math.PI, 0, 0]}
+          visible={rightArrowFillVisible}
+          drawSpringConfig={config.slow}
+          scaleSpringConfig={config.wobbly}
+          curved
+          // closed
+          nPointsInCurve={500}
+        />
+        <Scribble
+          points={(rightArrowLines as CoordArray[])}
+          size={0.5}
+          position={[0, 0, 0.1]}
+          lineWidth={0.01}
+          color={new Color(colors.black)}
+          rotation={[Math.PI, 0, 0]}
+          visible={rightArrowLinesVisible}
+          drawSpringConfig={config.slow}
+          scaleSpringConfig={config.wobbly}
+          curved
+          nPointsInCurve={500}
+        />
+        {rightArrowFillVisible && (
+          <ThreeButton
+            position={[0, 0, 0]}
+            width={1}
+            height={0.5}
+            description=""
+            activationMsg=""
+            onFocus={() => { setRightArrowHovering(true); }}
+            onBlur={() => { setRightArrowHovering(false); }}
+            cursor="next"
+            onClick={() => setNTurns((n) => n + 1)}
+          />
+        )}
+      </animated.group>
     </group>
   );
 }

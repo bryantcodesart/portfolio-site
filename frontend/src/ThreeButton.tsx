@@ -32,9 +32,6 @@ export function ThreeButton({
       description={description}
       activationMsg={activationMsg}
       a11yElStyle={{ pointerEvents: 'none' }}
-      actionCall={() => {
-        onClick();
-      }}
     >
       <InvisibleInteractiveMesh
         {...groupProps}
@@ -46,9 +43,9 @@ export function ThreeButton({
         onBlur={() => {
           onBlur();
         }}
-        // onPointerDown={() => {
-        //   onClick();
-        // }}
+        onClick={() => {
+          onClick();
+        }}
         cursor={cursor}
         debug={debug}
       />

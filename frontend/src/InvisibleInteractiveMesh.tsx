@@ -19,6 +19,7 @@ export const InvisibleInteractiveMesh = ({
   onFocus = () => {},
   /** Must be idemponent */
   onBlur = () => {},
+  onClick = () => {},
   ...groupProps
 }: {
   width?: number;
@@ -29,6 +30,7 @@ export const InvisibleInteractiveMesh = ({
   onFocus?: () => void;
   /** Must be idemponent */
   onBlur?: () => void;
+  onClick: () => void;
 } & GroupProps) => {
   const setCursor = useCustomCursor()[1];
 
@@ -72,6 +74,7 @@ export const InvisibleInteractiveMesh = ({
           setCursor(cursor);
           setHovering(true);
         }}
+        onPointerDown={() => { onClick(); }}
         position={[0, 0, 0]}
       >
         <boxGeometry
@@ -89,7 +92,7 @@ export const InvisibleInteractiveMesh = ({
 
       <Scribble
         points={(circlePoints as CoordArray[])}
-        size={Math.max(height, width)}
+        size={Math.min(height, width)}
         position={[0, 0, 0.1]}
         lineWidth={0.1}
         color={new Color(0xff0000)}
