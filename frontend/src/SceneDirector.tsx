@@ -33,12 +33,12 @@ export function SceneDirector({
   let cameraPosition = [0, 0, 15];
   if (scene === 'start') { cameraPosition = [-1, 0, 5.5]; }
   if (scene === 'menu') { cameraPosition = [1, 0, 6]; }
-  if (scene === 'projects') { cameraPosition = [0, -12, 6]; }
+  if (scene === 'projects') { cameraPosition = [0, -12, 6.3]; }
 
   let coffeeCupPosition = [3.5, -0.8, 3.5];
   let coffeeCupRotation = [0, 0, 0];
   if (scene === 'projects') {
-    coffeeCupPosition = [3.28, -10.60, 3.02];
+    coffeeCupPosition = [3.48, -10.60, 3.02];
     coffeeCupRotation = [0.00, 0.00, 1.88 + Math.PI * 2];
   }
 

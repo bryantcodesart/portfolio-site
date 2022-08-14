@@ -1,27 +1,85 @@
-import React from 'react';
+import { Text } from '@react-three/drei';
+import React, { useEffect, useState } from 'react';
+import { Color } from 'three';
+import { config, animated, useSpring } from '@react-spring/three';
 import { Project } from '../generatedSanitySchemaTypes';
-import { VideoMaterial } from './VideoMaterial';
+import colors from './colors';
+import { fontUrls } from './typography';
+import { CoffeeVideoMaterial } from './CoffeeVideoMaterial';
+import labelBackPoints from './lines/labelBack';
+import { Scribble } from './Scribble';
+import { CoordArray } from './CoordArray';
 
-// eslint-disable-next-line no-unused-vars
-export const ProjectEntry = ({ project, active }: { project: Project; active: boolean; }) => (
-  <>
-    {/* {active && (
-        <Html
-          position={[-1, 1, 3]}
-          rotation={[0, 0, -Math.PI / 4]}
+const TITLE_BACK_COLOR = colors.cyan;
+const TITLE_TEXT_COLOR = colors.blue;
+
+export const ProjectEntry = ({ project, active }: { project: Project; active: boolean; }) => {
+  const [showText, setShowText] = useState(false);
+  const [showBack, setShowBack] = useState(false);
+
+  useEffect(() => {
+    const timeouts:ReturnType<typeof setTimeout>[] = [];
+    if (active) {
+      let delay = 0;
+      timeouts.push(setTimeout(() => {
+        setShowBack(true);
+      }, delay += 400));
+      timeouts.push(setTimeout(() => {
+        setShowText(true);
+      }, delay += 1000));
+    } else {
+      setShowBack(false);
+      setShowText(false);
+    }
+    return () => {
+      timeouts.forEach((timeout) => { clearTimeout(timeout); });
+    };
+  }, [active]);
+
+  const { videoScale } = useSpring({
+    videoScale: showBack ? 1 : 0.7,
+    config: config.wobbly,
+  });
+
+  return (
+    <>
+      <animated.mesh
+        position={[0, 0, 3]}
+        scale={videoScale}
+        renderOrder={1}
+      >
+        <boxGeometry args={[1, 1, 1]} attach="geometry" />
+        <CoffeeVideoMaterial src="/videos/test.mp4" playing={active} />
+      </animated.mesh>
+      <group
+        position={[-1.4, 0.8, 3.2]}
+        rotation={[0, 0, Math.PI / 9]}
+      >
+        <Scribble
+          position={[0, 0, -0.1]}
+          points={(labelBackPoints as CoordArray[])}
+          size={2}
+          lineWidth={0.15}
+          color={new Color(TITLE_BACK_COLOR)}
+          rotation={[Math.PI, 0, 0]}
+          visible={showBack}
+          drawSpringConfig={active ? config.molasses : config.stiff}
+          scaleSpringConfig={config.wobbly}
+          curved
+          nPointsInCurve={1200}
+        />
+        <Text
+          position={[0, -0.0, -0.1]}
+          color={TITLE_TEXT_COLOR}
+          anchorX="center"
+          anchorY="middle"
+          fontSize={0.25}
+          font={fontUrls.bryantBold}
+          visible={showText}
         >
-          <h1
-            className="font-display text-black text-[5vw] w-max"
-          >
-            {project.title}
-          </h1>
-        </Html>
-        )} */}
-    <mesh
-      position={[0, 0, 3]}
-    >
-      <planeGeometry args={[2, 2]} attach="geometry" />
-      <VideoMaterial src="/videos/test.mp4" playing={active} />
-    </mesh>
-  </>
-);
+          {project.title}
+        </Text>
+      </group>
+    </>
+  );
+};

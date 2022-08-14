@@ -20,6 +20,9 @@ import rightArrowLines from './lines/rightArrowLines';
 import leftArrowFill from './lines/leftArrowFill';
 import leftArrowLines from './lines/leftArrowLines';
 
+const ARROW_FILL_COLOR = colors.cyan;
+const ARROW_LINES_COLOR = colors.blue;
+
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
   const [blobIsBig, setBlobIsBig] = useState(false);
@@ -40,7 +43,9 @@ export function ProjectListing({ active, projects, ...groupProps }:
   const nProjects = projects?.length ?? 0;
   const arcPerProject = projects ? ((Math.PI * 2) / nProjects) : 0;
   const { carouselRotation, carouselScale } = useSpring({
-    carouselRotation: carouselIsActive ? [0, nTurns * -arcPerProject, 0] : [0, -1 * Math.PI, 0],
+    carouselRotation: carouselIsActive
+      ? [0, nTurns * -arcPerProject, 0]
+      : [0, -1 * Math.PI, 0],
     carouselScale: carouselIsActive ? 1 : 0,
     config: config.gentle,
   });
@@ -103,11 +108,12 @@ export function ProjectListing({ active, projects, ...groupProps }:
         position={blobPosition}
       >
         <sphereBufferGeometry
-          args={[3.5, 70, 70]}
+          args={[4, 70, 70]}
           attach="geometry"
         />
         <MeshDistortMaterial
-          color="#551F00"
+          color={colors.coffee}
+          // color={colors.violet}
           speed={6}
           radius={1}
           distort={0.3}
@@ -137,7 +143,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
 
       </animated.group>
       <animated.group
-        position={[-0.6, -1, 3.5]}
+        position={[-0.9, -1.2, 3.5]}
         scale={leftArrowScale}
       >
         <Scribble
@@ -145,7 +151,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           size={0.7}
           position={[-0.02, -0.07, -0.1]}
           lineWidth={0.25}
-          color={new Color(colors.lime)}
+          color={new Color(ARROW_FILL_COLOR)}
           rotation={[0, Math.PI, 0]}
           visible={leftArrowFillVisible}
           drawSpringConfig={config.slow}
@@ -159,7 +165,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           size={0.5}
           position={[0, 0, 0.1]}
           lineWidth={0.01}
-          color={new Color(colors.black)}
+          color={new Color(ARROW_LINES_COLOR)}
           rotation={[Math.PI, 0, 0]}
           visible={leftArrowLinesVisible}
           drawSpringConfig={config.slow}
@@ -182,7 +188,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
         )}
       </animated.group>
       <animated.group
-        position={[0.6, -1, 3.5]}
+        position={[0.9, -1.2, 3.5]}
         scale={rightArrowScale}
       >
         <Scribble
@@ -190,7 +196,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           size={0.7}
           position={[0.02, -0.07, -0.1]}
           lineWidth={0.25}
-          color={new Color(colors.lime)}
+          color={new Color(ARROW_FILL_COLOR)}
           rotation={[Math.PI, 0, 0]}
           visible={rightArrowFillVisible}
           drawSpringConfig={config.slow}
@@ -204,7 +210,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           size={0.5}
           position={[0, 0, 0.1]}
           lineWidth={0.01}
-          color={new Color(colors.black)}
+          color={new Color(ARROW_LINES_COLOR)}
           rotation={[Math.PI, 0, 0]}
           visible={rightArrowLinesVisible}
           drawSpringConfig={config.slow}

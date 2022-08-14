@@ -9,4 +9,5 @@ export default {
   green: '#03fc20',
   orange: '#FFC700',
   yellow: '#ffff00',
+  coffee: '#551F00',
 };
