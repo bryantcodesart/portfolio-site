@@ -30,11 +30,21 @@ export function SceneDirector({
   const showCoffeeCup = scene !== 'intro' && scene !== 'start';
   const showNotebook = scene !== 'intro' && scene !== 'start';
 
-  let stagePosition = [0, 0, 3];
-  const stageSize = [6, 8, 0.01];
+  let stagePosition = [-1, 0, 3];
+  let stageSize = [15, 15];
   // if (scene === 'start') { stagePosition = [0, 0, 0]; }
-  // if (scene === 'menu') { stagePosition = [0, 0, 0]; }
-  if (scene === 'projects') { stagePosition = [0, -12, 0]; }
+  if (scene === 'start') {
+    stagePosition = [-1, 0, 3];
+    stageSize = [5, 4];
+  }
+  if (scene === 'menu') {
+    stagePosition = [1.25, 0, 3];
+    stageSize = [8, 4.5];
+  }
+  if (scene === 'projects') {
+    stagePosition = [0.5, -12, 3];
+    stageSize = [8.5, 5.5];
+  }
 
   let coffeeCupPosition = [3.5, -0.8, 3.5];
   let coffeeCupRotation = [0, 0, 0];
@@ -48,7 +58,7 @@ export function SceneDirector({
       <>
         <CameraController
           stagePosition={stagePosition as CoordArray}
-          stageSize={stageSize as CoordArray}
+          stageSize={stageSize as [number, number]}
         />
         <BackgroundScribbles />
         <Text fontSize={1} color="red">ERROR!</Text>
@@ -72,9 +82,9 @@ export function SceneDirector({
     >
       <CameraController
         stagePosition={stagePosition as CoordArray}
-        stageSize={stageSize as CoordArray}
+        stageSize={stageSize as [number, number]}
       />
-      {/* <BackgroundScribbles />
+      <BackgroundScribbles />
       <Computer />
       {showCoffeeCup && (
         <CoffeeCup
@@ -92,7 +102,7 @@ export function SceneDirector({
         projects={projects}
         position={[0, -12, 1]}
         active={scene === 'projects'}
-      /> */}
+      />
     </SceneControllerProvider>
   );
 }
