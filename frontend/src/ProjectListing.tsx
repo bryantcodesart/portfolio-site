@@ -5,100 +5,100 @@ import { MeshDistortMaterial } from '@react-three/drei';
 import { GroupProps } from '@react-three/fiber';
 import { animated, useSpring, config } from '@react-spring/three';
 import {
-  Color,
+  // Color,
   DoubleSide,
 } from 'three';
 // @ts-ignore
 import { Project } from '../generatedSanitySchemaTypes';
-import { ThreeButton } from './ThreeButton';
+// import { ThreeButton } from './ThreeButton';
 import { ProjectEntry } from './ProjectEntry';
-import rightArrowFill from './lines/rightArrowFill';
-import { Scribble } from './Scribble';
-import { CoordArray } from './CoordArray';
+// import rightArrowFill from './lines/rightArrowFill';
+// import { Scribble } from './Scribble';
+// import { CoordArray } from './CoordArray';
 import colors from './colors';
-import rightArrowLines from './lines/rightArrowLines';
-import leftArrowFill from './lines/leftArrowFill';
-import leftArrowLines from './lines/leftArrowLines';
+// import rightArrowLines from './lines/rightArrowLines';
+// import leftArrowFill from './lines/leftArrowFill';
+// import leftArrowLines from './lines/leftArrowLines';
 
-const ARROW_FILL_COLOR = colors.cyan;
-const ARROW_LINES_COLOR = colors.blue;
+// const ARROW_FILL_COLOR = colors.cyan;
+// const ARROW_LINES_COLOR = colors.blue;
 
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
   const [blobIsBig, setBlobIsBig] = useState(false);
-  const [carouselIsActive, setCarouselIsActive] = useState(false);
-  const [carouselHasAnimated, setCarouselHasAnimated] = useState(false);
-  const [rightArrowLinesVisible, setRightArrowLinesVisible] = useState(false);
-  const [leftArrowLinesVisible, setLeftArrowLinesVisible] = useState(false);
-  const [rightArrowFillVisible, setRightArrowFillVisible] = useState(false);
-  const [leftArrowFillVisible, setLeftArrowFillVisible] = useState(false);
+  // const [carouselIsActive, setCarouselIsActive] = useState(false);
+  // const [carouselHasAnimated, setCarouselHasAnimated] = useState(false);
+  // const [rightArrowLinesVisible, setRightArrowLinesVisible] = useState(false);
+  // const [leftArrowLinesVisible, setLeftArrowLinesVisible] = useState(false);
+  // const [rightArrowFillVisible, setRightArrowFillVisible] = useState(false);
+  // const [leftArrowFillVisible, setLeftArrowFillVisible] = useState(false);
 
   const { blobScale, blobPosition } = useSpring({
     blobPosition: blobIsBig ? [0, 0, 0] : [3.62, 1.91, 0],
     blobScale: blobIsBig ? 1 : 0,
     config: config.wobbly,
   });
-  const [nTurns, setNTurns] = useState(0);
+  // const [nTurns, setNTurns] = useState(0);
 
   const nProjects = projects?.length ?? 0;
   const arcPerProject = projects ? ((Math.PI * 2) / nProjects) : 0;
-  const { carouselRotation, carouselScale } = useSpring({
-    carouselRotation: carouselIsActive
-      ? [0, nTurns * -arcPerProject, 0]
-      : [0, -1 * Math.PI, 0],
-    carouselScale: carouselIsActive ? 1 : 0,
-    config: config.gentle,
-  });
+  // const { carouselScale } = useSpring({
+  //   carouselRotation: carouselIsActive
+  //     ? [0, nTurns * -arcPerProject, 0]
+  //     : [0, -1 * Math.PI, 0],
+  //   carouselScale: carouselIsActive ? 1 : 0,
+  //   config: config.gentle,
+  // });
 
-  const activeIndex = (nTurns
-    + (nTurns < 0 ? nProjects * Math.ceil(-nTurns / nProjects) : 0)) % nProjects;
+  // const activeIndex = (nTurns
+  //   + (nTurns < 0 ? nProjects * Math.ceil(-nTurns / nProjects) : 0)) % nProjects;
 
   useEffect(() => {
     if (active) {
       let delay = 0;
-      setNTurns(0);
+      // setNTurns(0);
       setTimeout(() => {
         setBlobIsBig(true);
       }, delay += 500);
-      setTimeout(() => {
-        setCarouselIsActive(true);
-      }, delay += 500);
-      setTimeout(() => {
-        setCarouselHasAnimated(true);
-      }, delay += 1000);
-      setTimeout(() => {
-        setLeftArrowFillVisible(true);
-      }, delay -= 300);
-      setTimeout(() => {
-        setRightArrowFillVisible(true);
-      }, delay += 100);
-      setTimeout(() => {
-        setLeftArrowLinesVisible(true);
-      }, delay += 500);
-      setTimeout(() => {
-        setRightArrowLinesVisible(true);
-      }, delay += 100);
+      // setTimeout(() => {
+      //   setCarouselIsActive(true);
+      // }, delay += 500);
+      // setTimeout(() => {
+      //   setCarouselHasAnimated(true);
+      // }, delay += 1000);
+      // setTimeout(() => {
+      //   setLeftArrowFillVisible(true);
+      // }, delay -= 300);
+      // setTimeout(() => {
+      //   setRightArrowFillVisible(true);
+      // }, delay += 100);
+      // setTimeout(() => {
+      //   setLeftArrowLinesVisible(true);
+      // }, delay += 500);
+      // setTimeout(() => {
+      //   setRightArrowLinesVisible(true);
+      // }, delay += 100);
     } else {
       setTimeout(() => {
-        setCarouselIsActive(false);
+        // setCarouselIsActive(false);
         setBlobIsBig(false);
-        setCarouselHasAnimated(false);
-        setLeftArrowLinesVisible(false);
-        setRightArrowLinesVisible(false);
-        setLeftArrowFillVisible(false);
-        setRightArrowFillVisible(false);
-        setNTurns(0);
+        // setCarouselHasAnimated(false);
+        // setLeftArrowLinesVisible(false);
+        // setRightArrowLinesVisible(false);
+        // setLeftArrowFillVisible(false);
+        // setRightArrowFillVisible(false);
+        // setNTurns(0);
       }, 500);
     }
   }, [active]);
 
-  const [rightArrowHovering, setRightArrowHovering] = useState(false);
-  const [leftArrowHovering, setLeftArrowHovering] = useState(false);
-  const { rightArrowScale, leftArrowScale } = useSpring({
-    rightArrowScale: rightArrowHovering ? 1.2 : 1,
-    leftArrowScale: leftArrowHovering ? 1.2 : 1,
-    config: config.wobbly,
-  });
+  // const [rightArrowHovering, setRightArrowHovering] = useState(false);
+  // const [leftArrowHovering, setLeftArrowHovering] = useState(false);
+  // const { rightArrowScale, leftArrowScale } = useSpring({
+  //   rightArrowScale: rightArrowHovering ? 1.2 : 1,
+  //   leftArrowScale: leftArrowHovering ? 1.2 : 1,
+  //   config: config.wobbly,
+  // });
 
   return (
     <group {...groupProps}>
@@ -126,23 +126,21 @@ export function ProjectListing({ active, projects, ...groupProps }:
       </animated.mesh>
       <animated.group
         // @ts-ignore
-        rotation={carouselRotation}
-        scale={carouselScale}
+        // rotation={carouselRotation}
+        scale={blobScale}
+        // @ts-ignore
+        position={blobPosition}
       >
         {projects && projects.map((project, index) => (
-          <group
-            rotation={[0, index * arcPerProject, 0]}
+          <ProjectEntry
+            project={project}
+            theta={index * arcPerProject}
             key={project._id + index.toString()}
-          >
-            <ProjectEntry
-              project={project}
-              active={carouselHasAnimated && index === activeIndex}
-            />
-          </group>
+          />
         ))}
 
       </animated.group>
-      <animated.group
+      {/* <animated.group
         position={[-0.9, -1.2, 3.5]}
         scale={leftArrowScale}
       >
@@ -231,7 +229,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
             onClick={() => setNTurns((n) => n + 1)}
           />
         )}
-      </animated.group>
+      </animated.group> */}
     </group>
   );
 }
