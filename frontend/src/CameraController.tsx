@@ -60,7 +60,7 @@ export const CameraController = ({
   });
 
   const meshRef = useRef<Mesh>(null);
-  useHelper(debug && meshRef, BoxHelper, 'red');
+  useHelper(debug ? meshRef : undefined, BoxHelper, 'red');
 
   return (
     <mesh

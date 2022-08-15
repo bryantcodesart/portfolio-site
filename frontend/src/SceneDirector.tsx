@@ -12,7 +12,8 @@ import { Notebook } from './Notebook';
 import { routerLog } from './loggers';
 import { SiteData } from './SiteData';
 import { ProjectListing } from './ProjectListing';
-// import { rangeParams } from './rangeParams';
+import { useWindowAspectRatio } from './useWindowAspectRatio';
+import { getIsPortraitProjects } from './getIsPortraitProjects';
 
 export function SceneDirector({
   siteData,
@@ -27,6 +28,11 @@ export function SceneDirector({
 
   const [scene, setScene] = useState(startingScene);
 
+  const aspectRatio = useWindowAspectRatio();
+  const isPortraitMenu = aspectRatio < 1;
+  const isPortraitProjects = getIsPortraitProjects(aspectRatio);
+  console.log(aspectRatio);
+
   const showCoffeeCup = scene !== 'intro' && scene !== 'start';
   const showNotebook = scene !== 'intro' && scene !== 'start';
 
@@ -40,18 +46,35 @@ export function SceneDirector({
   if (scene === 'menu') {
     stagePosition = [1.25, 0, 3];
     stageSize = [8, 4.5];
+    if (isPortraitMenu) {
+      stagePosition = [-0.5, -1.9, 3];
+      stageSize = [5, 10];
+    }
   }
   if (scene === 'projects') {
     stagePosition = [0.5, -12, 3];
     stageSize = [8.5, 5.5];
+
+    if (isPortraitProjects) {
+      stagePosition = [0, -14.5, 3];
+      stageSize = [5, 10];
+    }
   }
 
-  let coffeeCupPosition = [3.5, -0.8, 3.5];
+  let coffeeCupPosition = isPortraitMenu ? [0.5, -4.3, 4.5] : [3.5, -0.8, 3.5];
   let coffeeCupRotation = [0, 0, 0];
+
   if (scene === 'projects') {
     coffeeCupPosition = [3.48, -10.60, 3.02];
     coffeeCupRotation = [0.00, 0.00, 1.88 + Math.PI * 2];
+
+    if (isPortraitProjects) {
+      coffeeCupPosition = [1.5, -11.5, 3.02];
+      coffeeCupRotation = [0.00, 0.00, 2 + Math.PI * 2];
+    }
   }
+
+  const noteBookPosition = isPortraitMenu ? [-1.8, -4, 3] : [4, 1.3, 2.5];
 
   if (scene === 'error') {
     return (
@@ -83,6 +106,7 @@ export function SceneDirector({
       <CameraController
         stagePosition={stagePosition as CoordArray}
         stageSize={stageSize as [number, number]}
+        debug
       />
       <BackgroundScribbles />
       <Computer />
@@ -95,12 +119,12 @@ export function SceneDirector({
       )}
       {showNotebook && (
       <Notebook
-        position={[4, 1.3, 2.5]}
+        position={noteBookPosition as CoordArray}
       />
       )}
       <ProjectListing
         projects={projects}
-        position={[0, -12, 1]}
+        position={[0, isPortraitProjects ? -15 : -12, 1]}
         active={scene === 'projects'}
       />
     </SceneControllerProvider>

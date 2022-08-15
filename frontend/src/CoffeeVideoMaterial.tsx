@@ -74,7 +74,7 @@ const CoffeeShaderMaterial = shaderMaterial(
 
       vec3 color = mix(duoToneColor,texColor,visible);
 
-      gl_FragColor.rgba = vec4(color, 1.0);
+      gl_FragColor.rgba = vec4(color, 0.8+0.2*inColor);
     }
   `,
 );

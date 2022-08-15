@@ -131,7 +131,6 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
 
     if (open) {
       cubeRef.current.getWorldPosition(worldPosition.position);
-      // console.log(offset);
       cubeRef.current.position.x -= camera.position.x - worldPosition.position.x;
       cubeRef.current.position.y -= camera.position.y - worldPosition.position.y;
     }
@@ -165,6 +164,7 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
           // @ts-ignore
           scale={animatedCubeScale}
         >
+          <pointLight intensity={0.2} />
           <mesh
             renderOrder={1}
             ref={cubeRef as Ref<Mesh>}
