@@ -31,7 +31,7 @@ export function SceneDirector({
   const showNotebook = scene !== 'intro' && scene !== 'start';
 
   let stagePosition = [0, 0, 3];
-  const stageSize = [6, 6, 0.01];
+  const stageSize = [6, 8, 0.01];
   // if (scene === 'start') { stagePosition = [0, 0, 0]; }
   // if (scene === 'menu') { stagePosition = [0, 0, 0]; }
   if (scene === 'projects') { stagePosition = [0, -12, 0]; }

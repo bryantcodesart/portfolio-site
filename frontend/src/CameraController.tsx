@@ -78,23 +78,15 @@ export const CameraController = ({ stagePosition, stageSize, speed = 0.05 }:{
     //   ({ x: displaceX, y: displaceY } = defaultMouseCoords);
     // }
 
-    // if (perspectiveCamera.aspect > planeAspectRatio) {
-    //   // window too large
-    //   perspectiveCamera.fov = fov;
-    // } else {
-    //   // window too narrow
-    //   const cameraHeight = Math.tan(MathUtils.degToRad(fov / 2));
-    //   const ratio = perspectiveCamera.aspect / planeAspectRatio;
-    //   const newCameraHeight = cameraHeight / ratio;
-    //   perspectiveCamera.fov = MathUtils.radToDeg(Math.atan(newCameraHeight)) * 2;
-    // }
-
     const [width, height] = stageSize;
-    // const { fov } = perspectiveCamera;
+
     const heightFitDistance = (height / 2)
+      / Math.tan(MathUtils.degToRad(perspectiveCamera.fov / 2));
+
+    const widthFitDistance = ((width / 2) / perspectiveCamera.aspect)
     / Math.tan(MathUtils.degToRad(perspectiveCamera.fov / 2));
 
-    const distance = heightFitDistance;
+    const distance = Math.max(widthFitDistance, heightFitDistance);
     console.log(distance);
 
     const [x, y, z] = stagePosition;
