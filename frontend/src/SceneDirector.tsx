@@ -30,7 +30,7 @@ export function SceneDirector({
   const showCoffeeCup = scene !== 'intro' && scene !== 'start';
   const showNotebook = scene !== 'intro' && scene !== 'start';
 
-  let stagePosition = [0, 0, 0];
+  let stagePosition = [0, 0, 3];
   const stageSize = [6, 6, 0.01];
   // if (scene === 'start') { stagePosition = [0, 0, 0]; }
   // if (scene === 'menu') { stagePosition = [0, 0, 0]; }

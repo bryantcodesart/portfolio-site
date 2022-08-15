@@ -10,7 +10,6 @@ import React, { useRef } from 'react';
 import { useHelper } from '@react-three/drei';
 import {
   BoxHelper, Mesh, Vector3,
-  // MathUtils,
   PerspectiveCamera,
   MathUtils,
 } from 'three';
@@ -90,47 +89,19 @@ export const CameraController = ({ stagePosition, stageSize, speed = 0.05 }:{
     //   perspectiveCamera.fov = MathUtils.radToDeg(Math.atan(newCameraHeight)) * 2;
     // }
 
-    const fitOffset = 1.06;
-    const fov = 50;
-    const planeAspectRatio = stageSize[0] / stageSize[1];
+    const [width, height] = stageSize;
+    // const { fov } = perspectiveCamera;
+    const heightFitDistance = (height / 2)
+    / Math.tan(MathUtils.degToRad(perspectiveCamera.fov / 2));
 
-    const size = new Vector3().fromArray(stageSize);
-    // const center = new Vector3().fromArray(stagePosition);
+    const distance = heightFitDistance;
+    console.log(distance);
 
-    // const maxSize = Math.max(size.x, size.y, size.z);
-    const fitHeightDistance = size.y / (2 * Math.atan(Math.PI * (perspectiveCamera.fov / 360)));
-    const fitWidthDistance = size.x / perspectiveCamera.aspect;
-    const distance = fitOffset * fitHeightDistance; // Math.max(fitHeightDistance, fitWidthDistance);
-
-    // if (perspectiveCamera.aspect > planeAspectRatio) {
-    //   // window too large
-    //   perspectiveCamera.fov = fov;
-    // } else {
-    //   // window too narrow
-    //   const cameraHeight = Math.tan(MathUtils.degToRad(fov / 2));
-    //   const ratio = perspectiveCamera.aspect / planeAspectRatio;
-    //   const newCameraHeight = cameraHeight / ratio;
-    //   perspectiveCamera.fov = MathUtils.radToDeg(Math.atan(newCameraHeight)) * 2;
-    // }
-
-    // const direction = controls.target.clone()
-    //   .sub(camera.position)
-    //   .normalize()
-    //   .multiplyScalar(distance);
-
-    // controls.maxDistance = distance * 10;
-    // controls.target.copy(center);
-
-    // camera.near = distance / 100;
-    // camera.far = distance * 100;
-    // camera.updateProjectionMatrix();
-
-    // camera.position.copy(controls.target).sub(direction);
-
+    const [x, y, z] = stagePosition;
     camera.position.lerp(new Vector3(
-      stagePosition[0],
-      stagePosition[1],
-      distance + stagePosition[2],
+      x,
+      y,
+      distance + z,
       // displaceX * 2 + position[0],
       // displaceY * 1 + position[1],
       // position[2],
@@ -147,17 +118,17 @@ export const CameraController = ({ stagePosition, stageSize, speed = 0.05 }:{
   return (
     <mesh
       position={stagePosition}
-      scale={stageSize}
+      // scale={stageSize}
       ref={meshRef}
     >
       <boxGeometry
         attach="geometry"
-        args={[1, 1, 1]}
+        args={stageSize}
       />
       <meshBasicMaterial
         attach="material"
         color="blue"
-        visible={false}
+        // visible={false}
       />
     </mesh>
   );
