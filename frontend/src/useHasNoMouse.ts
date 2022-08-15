@@ -8,5 +8,7 @@ export function useHasNoMouse() {
     setMounted(true);
   }, []);
 
-  return mounted ? hasNoMouseFromMediaQuery : null;
+  const hasNoMouse = mounted ? hasNoMouseFromMediaQuery : null;
+
+  return hasNoMouse;
 }
