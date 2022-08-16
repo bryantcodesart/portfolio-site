@@ -51,6 +51,8 @@ export const CameraController = ({
     // console.log('cameraDistance', cameraDistance.current);
   }, [stageSize]);
 
+  const targetPosition = useRef(new Vector3());
+
   useFrame(() => {
     const defaultMouseCoords = { x: 0, y: 0 };
     let { x: displaceX, y: displaceY } = mouseNormalizeCoords.current
@@ -65,11 +67,13 @@ export const CameraController = ({
     }
 
     const [x, y, z] = stagePosition;
-    camera.position.lerp(new Vector3(
+
+    targetPosition.current.set(
       x + displaceX * 2,
       y + displaceY * 1,
       cameraDistance.current + z,
-    ), lerpAlpha);
+    );
+    camera.position.lerp(targetPosition.current, lerpAlpha);
   });
 
   const meshRef = useRef<Mesh>(null);
@@ -79,7 +83,7 @@ export const CameraController = ({
     <mesh
       position={stagePosition}
       ref={meshRef}
-      // renderOrder
+      // renderOrder={2}
     >
       <boxGeometry
         attach="geometry"
@@ -87,9 +91,9 @@ export const CameraController = ({
       />
       <meshBasicMaterial
         attach="material"
-        color="blue"
+        // color="blue"
         // transparent
-        // opacity={0.5}
+        // opacity={0.2}
         // depthTest={false}
         visible={false}
       />

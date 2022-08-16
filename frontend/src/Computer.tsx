@@ -91,7 +91,7 @@ export function Computer() {
         rotation={[Math.PI, 0, -Math.PI / 15]}
         visible={computerFillVisible}
         curved
-        nPointsInCurve={700} // renderOrder={1}
+        nPointsInCurve={700}
         scale={computerPartScale}
         closed
       />
@@ -104,7 +104,7 @@ export function Computer() {
         rotation={[Math.PI, 0, -Math.PI / 15]}
         visible={computerScreenVisible}
         curved
-        nPointsInCurve={700} // renderOrder={1}
+        nPointsInCurve={700}
         scale={computerPartScale}
         closed
       />
@@ -117,7 +117,7 @@ export function Computer() {
         rotation={[Math.PI, 0, -Math.PI / 15]}
         visible={computerBodyVisible}
         curved
-        nPointsInCurve={700} // renderOrder={1}
+        nPointsInCurve={700}
         scale={computerPartScale}
       />
       <Scribble
@@ -129,7 +129,7 @@ export function Computer() {
         rotation={[Math.PI, 0, -Math.PI / 15]}
         visible={computerKeyboardVisible}
         curved
-        nPointsInCurve={700} // renderOrder={1}
+        nPointsInCurve={700}
         scale={computerPartScale}
       />
 

@@ -65,7 +65,7 @@ export function SceneDirector({
       projectListingPosition[1],
       projectListingPosition[2] + 4.5,
     ];
-    stageSize = [2, 0.8];
+    stageSize = [2, 1.1];
   }
 
   const noteBookPosition = isPortraitMenu ? [-1.5, 3.8, 1.8] : [4, 1.3, 2.5];
@@ -74,7 +74,7 @@ export function SceneDirector({
   let coffeeCupRotation = [0, 0, 0];
 
   if (scene === 'projects' || scene === 'project-open') {
-    coffeeCupPosition = [3.48, -10.60, 3.02];
+    coffeeCupPosition = [4, -10.5, 3.02];
     coffeeCupRotation = [0.00, 0.00, 1.88 + Math.PI * 2];
 
     if (isPortraitProjects) {

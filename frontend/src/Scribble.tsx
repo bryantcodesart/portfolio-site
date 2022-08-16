@@ -19,7 +19,7 @@ import {
 
 // This is a fork of the threejs-meshline lib, as it is no longer maintained.
 // See https://github.com/spite/THREE.MeshLine/issues/140#issuecomment-1208355220
-import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'meshline';
+import { MeshLine, MeshLineMaterial } from 'meshline';
 import { CoordArray } from './CoordArray';
 
 // This extends r3f to include the meshline lib.
@@ -58,7 +58,7 @@ export const Scribble = ({
     duration: 1000,
     easing: easings.easeInOutQuint,
   },
-  renderOrder = 0,
+  // renderOrder = 0,
   scaleSpringConfig = config.wobbly,
 }: {
   points: CoordArray[];
@@ -73,7 +73,7 @@ export const Scribble = ({
   rotation?: CoordArray;
   scale?: number;
   drawSpringConfig?: SpringConfig;
-  renderOrder?: number;
+  // renderOrder?: number;
   scaleSpringConfig?: SpringConfig;
 }) => {
   // Calculate our points, sized via the size prop
@@ -118,8 +118,8 @@ export const Scribble = ({
       position={position}
       rotation={rotation}
       scale={animatedScale}
-      raycast={MeshLineRaycast}
-      renderOrder={renderOrder}
+      // raycast={MeshLineRaycast}
+      // renderOrder={renderOrder}
     >
       <meshLine
         attach="geometry"
@@ -128,7 +128,7 @@ export const Scribble = ({
       <meshLineMaterial
         attach="material"
         transparent
-        depthTest={false}
+        // depthTest={false}
         lineWidth={lineWidth}
         color={color}
         ref={materialRef as Ref<MeshLineMaterial>}

@@ -8,10 +8,11 @@ const createVideoElement = ({ url, setCanPlay, debug = false }:{
   setCanPlay(false);
   const vid = document.createElement('video');
   vid.src = url;
-  vid.crossOrigin = 'Anonymous';
+  // vid.crossOrigin = 'Anonymous';
   vid.loop = true;
   vid.muted = true;
-  vid.play();
+  vid.playsInline = true;
+  vid.autoplay = true;
   vid.oncanplay = () => {
     setCanPlay(true);
   };

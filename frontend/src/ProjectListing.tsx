@@ -1,7 +1,7 @@
 import React, {
   useEffect, useState,
 } from 'react';
-import { MeshDistortMaterial } from '@react-three/drei';
+import { MeshDistortMaterial, Text } from '@react-three/drei';
 import { GroupProps } from '@react-three/fiber';
 import { animated, useSpring, config } from '@react-spring/three';
 import {
@@ -15,6 +15,7 @@ import { useWindowAspectRatio } from './useWindowAspectRatio';
 import { getIsPortraitProjects } from './getIsPortraitProjects';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useSceneController } from './SceneController';
+import { fontUrls } from './typography';
 
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
@@ -47,6 +48,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
   });
 
   const aProjectIsOpen = openIndex !== null;
+
   const { backgroundOpacity } = useSpring({
     backgroundOpacity: aProjectIsOpen ? 1 : 0,
     delay: aProjectIsOpen ? 500 : 0,
@@ -74,29 +76,46 @@ export function ProjectListing({ active, projects, ...groupProps }:
 
   return (
     <group {...groupProps}>
-      <animated.mesh
+      <animated.group
         scale={blobScale}
         // @ts-ignore
         position={blobPosition}
       >
-        <sphereBufferGeometry
-          args={[4, 70, 70]}
-          attach="geometry"
-        />
-        <MeshDistortMaterial
-          color={colors.coffee}
-          speed={6}
-          radius={1}
-          distort={0.3}
-          depthTest={false}
-          transparent
-          opacity={0.7}
-          side={DoubleSide}
-        />
-      </animated.mesh>
-      <animated.mesh
-        position={[0, 0, 0.5]}
-        renderOrder={1}
+        <mesh
+          position={[0, 0, -5]}
+          scale={[2.5, 2.5, 1]}
+        >
+          <sphereBufferGeometry
+            args={[4, 70, 70]}
+            attach="geometry"
+          />
+          <MeshDistortMaterial
+            color={colors.coffee}
+            speed={6}
+            radius={1}
+            distort={0.3}
+          // depthTest={false}
+            transparent
+            opacity={0.7}
+            side={DoubleSide}
+          />
+        </mesh>
+        <Text
+          position={[0, 0, 0]}
+          rotation={[0, 0, 0]}
+          color={colors.cyan}
+          anchorX="center"
+          anchorY="middle"
+          textAlign="center"
+          fontSize={0.7}
+          font={fontUrls.bryantBold}
+        >
+          {'Some things\nI made!'}
+        </Text>
+      </animated.group>
+      <mesh
+        position={[0, 0, 3]}
+        // renderOrder={1}
       >
         <boxGeometry
           attach="geometry"
@@ -108,9 +127,9 @@ export function ProjectListing({ active, projects, ...groupProps }:
           color="black"
           transparent
           opacity={backgroundOpacity}
-          depthTest={false}
+          // depthTest={false}
         />
-      </animated.mesh>
+      </mesh>
       <animated.group
         scale={blobScale}
         // @ts-ignore

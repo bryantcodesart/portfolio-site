@@ -11,7 +11,7 @@ import React, {
 // } from '@react-spring/three';
 // import { useInterval } from 'usehooks-ts';
 import {
-  DoubleSide,
+  // DoubleSide,
   // BufferGeometry, Material,
   MathUtils, Mesh, // Object3D,
   // Vector3,
@@ -20,7 +20,7 @@ import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import { useInterval } from 'usehooks-ts';
 import { animated, config, useSpring } from '@react-spring/three';
 import { RoundedBoxGeometry } from 'three-stdlib';
-import { MeshDistortMaterial } from '@react-three/drei';
+import { Html, MeshDistortMaterial } from '@react-three/drei';
 import { Project } from '../generatedSanitySchemaTypes';
 // import colors from './colors';
 // import { fontUrls } from './typography';
@@ -166,7 +166,7 @@ export const ProjectEntry = ({
         >
           <mesh
             position={[0, 0, -0.1]}
-            renderOrder={1}
+            // renderOrder={1}
           >
             <sphereBufferGeometry
               args={[1, 10, 10]}
@@ -177,7 +177,7 @@ export const ProjectEntry = ({
               speed={6}
               radius={1}
               distort={0.5}
-              depthTest={false}
+              // depthTest={false}
               transparent
               opacity={0.1}
             />
@@ -197,14 +197,14 @@ export const ProjectEntry = ({
           rotation={animatedCubeRotation}
         >
           <mesh
-            renderOrder={1}
+            // renderOrder={1}
             ref={cubeRef as Ref<Mesh>}
           >
             <roundedBoxGeometry
               args={[1, 1, 1, 4, 0.1]}
               attach="geometry"
             />
-            <CoffeeVideoMaterial src="/videos/test.mp4" playing={hovering || open} />
+            <CoffeeVideoMaterial src="/videos/test3.mp4" playing={hovering || open} />
           </mesh>
           <ThreeButton
             position={[0, 0, 0.5]}
@@ -226,6 +226,33 @@ export const ProjectEntry = ({
           />
         </animated.group>
       </animated.group>
+
+      {open && (
+        <Html
+          position={[-1.6, 0.5, 4.5]}
+          // transform
+          // rotation={[0, Math.PI / 10, 0]}
+          // transform
+          className="text-white w-[50vw] h-[50vw] border-2 border-[red] p-[2rem] text-[1rem]"
+        >
+          <h1>{project.title}</h1>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+            Accusamus odio ad fugiat necessitatibus. Veniam, ut culpa optio,
+            fugiat expedita quibusdam modi praesentium doloribus aperiam quae
+            quisquam ullam consequatur eum cum?
+
+          </p>
+
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+            Accusamus odio ad fugiat necessitatibus. Veniam, ut culpa optio,
+            fugiat expedita quibusdam modi praesentium doloribus aperiam quae
+            quisquam ullam consequatur eum cum?
+
+          </p>
+        </Html>
+      )}
       {/* <group
         position={[-1.4, 0.8, 3.2]}
         rotation={[0, 0, Math.PI / 9]}
