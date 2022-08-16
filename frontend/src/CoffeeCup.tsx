@@ -85,7 +85,7 @@ export function CoffeeCup({
           size={1}
           position={[-0.1, 0.47, -0.15]}
           lineWidth={0.15}
-          color={new Color(0x990B00)}
+          color={new Color(colors.coffee)}
           rotation={[Math.PI, 0, 0]}
           visible={!spilled && projectButtonVisible2}
           drawSpringConfig={config.molasses}
@@ -118,7 +118,7 @@ export function CoffeeCup({
         font={fontUrls.bryantBold}
         visible={projectButtonVisible1}
       >
-        {scene === 'projects' ? 'Back'.toUpperCase() : 'Proj\nects'.toUpperCase()}
+        {scene === 'projects' || scene === 'project-open' ? 'Back'.toUpperCase() : 'Proj\nects'.toUpperCase()}
       </Text>
       {coffeeCupButtonEnabled && scene === 'menu' && (
       <ThreeButton

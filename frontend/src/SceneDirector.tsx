@@ -113,7 +113,7 @@ export function SceneDirector({
       <CameraController
         stagePosition={stagePosition as CoordArray}
         stageSize={stageSize as [number, number]}
-        debug
+        // debug
         controllable={scene !== 'project-open'}
       />
       <BackgroundScribbles />

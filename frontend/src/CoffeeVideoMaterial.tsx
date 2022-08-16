@@ -59,7 +59,7 @@ const CoffeeShaderMaterial = shaderMaterial(
         (d - b) * u.x * u.y;
     }
 
-    vec3 darkColor = vec3(0.333,0.122,0.);
+    vec3 darkColor = vec3(0.,1.,1.)*0.7; //vec3(0.333,0.122,0.);
     vec3 lightColor = vec3(1.,1.,1.);
 
     void main() {
@@ -97,7 +97,7 @@ declare global {
 
 export const CoffeeVideoMaterial = ({ src, playing = true }:
   { src: string; playing: boolean; }) => {
-  const { videoElement } = useVideoElement(src, playing);
+  const { videoElement } = useVideoElement(src, playing, { debug: true });
   const materialRef = React.useRef<CoffeeShaderMaterial>(null);
 
   const inColorClock = useMemo(() => {

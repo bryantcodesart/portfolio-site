@@ -11,6 +11,7 @@ import React, {
 // } from '@react-spring/three';
 // import { useInterval } from 'usehooks-ts';
 import {
+  DoubleSide,
   // BufferGeometry, Material,
   MathUtils, Mesh, // Object3D,
   // Vector3,
@@ -19,11 +20,13 @@ import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import { useInterval } from 'usehooks-ts';
 import { animated, config, useSpring } from '@react-spring/three';
 import { RoundedBoxGeometry } from 'three-stdlib';
+import { MeshDistortMaterial } from '@react-three/drei';
 import { Project } from '../generatedSanitySchemaTypes';
 // import colors from './colors';
 // import { fontUrls } from './typography';
 import { CoffeeVideoMaterial } from './CoffeeVideoMaterial';
 import { ThreeButton } from './ThreeButton';
+import colors from './colors';
 // import labelBackPoints from './lines/labelBack';
 // import { Scribble } from './Scribble';
 // import { CoordArray } from './CoordArray';
@@ -154,6 +157,33 @@ export const ProjectEntry = ({
 
   return (
     <>
+      <group
+        position={basePosition}
+      >
+        <animated.group
+          // @ts-ignore
+          position={animatedCubeFloatingOffset}
+        >
+          <mesh
+            position={[0, 0, -0.1]}
+            renderOrder={1}
+          >
+            <sphereBufferGeometry
+              args={[1, 10, 10]}
+              attach="geometry"
+            />
+            <MeshDistortMaterial
+              color={colors.cyan}
+              speed={6}
+              radius={1}
+              distort={0.5}
+              depthTest={false}
+              transparent
+              opacity={0.1}
+            />
+          </mesh>
+        </animated.group>
+      </group>
       <animated.group
           // @ts-ignore
         position={animatedCubePosition}
