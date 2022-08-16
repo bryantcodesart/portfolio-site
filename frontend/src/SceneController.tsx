@@ -6,6 +6,7 @@ export const sceneNames = [
   'start',
   'menu',
   'projects',
+  'project-open',
   'error',
 ] as const;
 

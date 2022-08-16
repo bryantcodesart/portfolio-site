@@ -18,7 +18,7 @@ export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
     </Head>
     <main className="w-screen h-screen bg-white">
       <div
-        className="fixed top-0 left-0 z-10 text-[1.2vw] px-[2vw] py-[1vw] font-mono text-white bg-blue tracking-wide"
+        className="fixed top-0 left-0 z-10 text-[1rem] px-[2rem] py-[1rem] font-mono text-white bg-blue tracking-wide"
       >
         CONTACT:
         {' '}

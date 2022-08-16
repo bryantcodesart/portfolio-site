@@ -74,7 +74,7 @@ const CoffeeShaderMaterial = shaderMaterial(
 
       vec3 color = mix(duoToneColor,texColor,visible);
 
-      gl_FragColor.rgba = vec4(color, 0.8+0.2*inColor);
+      gl_FragColor.rgba = vec4(color, 1.); //0.8+0.2*inColor);
     }
   `,
 );
@@ -113,7 +113,7 @@ export const CoffeeVideoMaterial = ({ src, playing = true }:
 
   useFrame(() => {
     if (!materialRef.current) return;
-    const transitionTime = 0.9;
+    const transitionTime = 0.7;
 
     const increment = inColorClock.getDelta() / transitionTime;
 

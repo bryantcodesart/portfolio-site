@@ -54,7 +54,9 @@ export const InvisibleInteractiveMesh = ({
   useEffect(() => {
     if (focus || hovering) onFocus();
     else onBlur();
-  }, [focus, hovering, onBlur, onFocus]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus, hovering]);
 
   return (
     <group

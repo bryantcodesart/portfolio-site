@@ -12,7 +12,7 @@ import React, {
 // import { useInterval } from 'usehooks-ts';
 import {
   // BufferGeometry, Material,
-  MathUtils, Mesh, Object3D,
+  MathUtils, Mesh, // Object3D,
   // Vector3,
 } from 'three';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
@@ -54,17 +54,22 @@ declare global {
 }
 /* eslint-enable no-unused-vars */
 
-// type RoundedBoxType = Mesh<BufferGeometry, Material | Material[]>
-
-const radius = 2.7; // useMemo(() => Math.random() * 1.2 + 3, []);
-
-// eslint-disable-next-line no-unused-vars
-export const ProjectEntry = ({ project, theta }: { project: Project; theta: number }) => {
-  const [open] = useState(false);
-
-  const setOpen = (_open:boolean) => {};
-
-  const [hovering, setHovering] = useState(false);
+export const ProjectEntry = ({
+  // eslint-disable-next-line no-unused-vars
+  project,
+  basePosition,
+  open,
+  setOpen,
+  hovering,
+  setHovering,
+}:{
+  project: Project;
+  basePosition: [number, number, number];
+  open: boolean;
+  setOpen: (_open: boolean) => void;
+  hovering: boolean;
+  setHovering: (_hovering: boolean) => void;
+}) => {
   // const [showText, setShowText] = useState(false);
   // const [showBack, setShowBack] = useState(false);
 
@@ -114,9 +119,9 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
     z: (Math.random() * 2 - 1) * ROTATION_MAX_SPEED,
   });
 
-  const worldPosition:Object3D = useMemo(() => new Object3D(), []);
+  // const worldPosition:Object3D = useMemo(() => new Object3D(), []);
 
-  useFrame(({ camera }) => {
+  useFrame(() => {
     if (!cubeRef.current) return;
     if (hovering || open) {
       const { x, y, z } = cubeRef.current.rotation;
@@ -128,12 +133,6 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
       cubeRef.current.rotation.y += rotationSpeeds.current.y;
       cubeRef.current.rotation.z += rotationSpeeds.current.z;
     }
-
-    if (open) {
-      cubeRef.current.getWorldPosition(worldPosition.position);
-      cubeRef.current.position.x -= camera.position.x - worldPosition.position.x;
-      cubeRef.current.position.y -= camera.position.y - worldPosition.position.y;
-    }
   });
 
   let cubeScale = 1;
@@ -143,12 +142,13 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
   const { animatedCubePosition } = useSpring({
     animatedCubePosition: open
       ? [0, 0, 4]
-      : [Math.sin(theta) * radius, Math.cos(theta) * radius, 0],
+      : basePosition,
     config: config.stiff,
   });
 
-  const { animatedCubeScale } = useSpring({
+  const { animatedCubeScale, animatedCubeRotation } = useSpring({
     animatedCubeScale: cubeScale,
+    animatedCubeRotation: open ? [0, -Math.PI / 10, 0] : [0, 0, 0],
     config: config.wobbly,
   });
 
@@ -163,14 +163,15 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
           position={animatedCubeFloatingOffset}
           // @ts-ignore
           scale={animatedCubeScale}
+          // @ts-ignore
+          rotation={animatedCubeRotation}
         >
-          <pointLight intensity={0.2} />
           <mesh
             renderOrder={1}
             ref={cubeRef as Ref<Mesh>}
           >
             <roundedBoxGeometry
-              args={[1, 1, 1, 2, 0.1]}
+              args={[1, 1, 1, 4, 0.1]}
               attach="geometry"
             />
             <CoffeeVideoMaterial src="/videos/test.mp4" playing={hovering || open} />
@@ -182,6 +183,7 @@ export const ProjectEntry = ({ project, theta }: { project: Project; theta: numb
             description=""
             activationMsg=""
             cursor="normal"
+            // debug
             onClick={() => {
               setOpen(!open);
             }}

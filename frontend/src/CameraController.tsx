@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useHelper } from '@react-three/drei';
 import {
   BoxHelper, Mesh, Vector3,
   PerspectiveCamera,
   MathUtils,
 } from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useEventListener } from 'usehooks-ts';
 import { useHasNoMouse } from './useHasNoMouse';
 
@@ -14,11 +14,13 @@ export const CameraController = ({
   stageSize,
   lerpAlpha = 0.05,
   debug = false,
+  controllable = true,
 }:{
   stagePosition:[number, number, number],
   stageSize: [number, number],
   lerpAlpha?:number,
   debug?:boolean,
+  controllable?:boolean,
 }) => {
   const mouseNormalizeCoords = useRef<{ x: number; y: number; } | null>(null);
 
@@ -31,16 +33,12 @@ export const CameraController = ({
     };
   });
 
-  useFrame(({ camera }) => {
+  const cameraDistance = useRef(5);
+
+  const { camera } = useThree();
+
+  useEffect(() => {
     const perspectiveCamera = camera as PerspectiveCamera;
-    const defaultMouseCoords = { x: 0, y: 0 };
-    let { x: displaceX, y: displaceY } = mouseNormalizeCoords.current
-      ? mouseNormalizeCoords.current : defaultMouseCoords;
-
-    if (hasNoMouse) {
-      ({ x: displaceX, y: displaceY } = defaultMouseCoords);
-    }
-
     const [width, height] = stageSize;
 
     const heightFitDistance = (height / 2)
@@ -49,13 +47,28 @@ export const CameraController = ({
     const widthFitDistance = ((width / 2) / perspectiveCamera.aspect)
     / Math.tan(MathUtils.degToRad(perspectiveCamera.fov / 2));
 
-    const distance = Math.max(widthFitDistance, heightFitDistance);
+    cameraDistance.current = Math.max(widthFitDistance, heightFitDistance);
+    // console.log('cameraDistance', cameraDistance.current);
+  }, [stageSize]);
+
+  useFrame(() => {
+    const defaultMouseCoords = { x: 0, y: 0 };
+    let { x: displaceX, y: displaceY } = mouseNormalizeCoords.current
+      ? mouseNormalizeCoords.current : defaultMouseCoords;
+
+    if (hasNoMouse) {
+      ({ x: displaceX, y: displaceY } = defaultMouseCoords);
+    }
+
+    if (!controllable) {
+      ({ x: displaceX, y: displaceY } = defaultMouseCoords);
+    }
 
     const [x, y, z] = stagePosition;
     camera.position.lerp(new Vector3(
       x + displaceX * 2,
       y + displaceY * 1,
-      distance + z,
+      cameraDistance.current + z,
     ), lerpAlpha);
   });
 
@@ -66,6 +79,7 @@ export const CameraController = ({
     <mesh
       position={stagePosition}
       ref={meshRef}
+      // renderOrder
     >
       <boxGeometry
         attach="geometry"
@@ -74,6 +88,9 @@ export const CameraController = ({
       <meshBasicMaterial
         attach="material"
         color="blue"
+        // transparent
+        // opacity={0.5}
+        // depthTest={false}
         visible={false}
       />
     </mesh>

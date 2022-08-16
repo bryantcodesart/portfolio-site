@@ -31,14 +31,14 @@ export function SceneDirector({
   const aspectRatio = useWindowAspectRatio();
   const isPortraitMenu = aspectRatio < 1;
   const isPortraitProjects = getIsPortraitProjects(aspectRatio);
-  console.log(aspectRatio);
 
   const showCoffeeCup = scene !== 'intro' && scene !== 'start';
   const showNotebook = scene !== 'intro' && scene !== 'start';
 
+  const projectListingPosition = [0, isPortraitProjects ? -11 : -12, 1];
+
   let stagePosition = [-1, 0, 3];
   let stageSize = [15, 15];
-  // if (scene === 'start') { stagePosition = [0, 0, 0]; }
   if (scene === 'start') {
     stagePosition = [-1, 0, 3];
     stageSize = [5, 4];
@@ -47,34 +47,41 @@ export function SceneDirector({
     stagePosition = [1.25, 0, 3];
     stageSize = [8, 4.5];
     if (isPortraitMenu) {
-      stagePosition = [-0.5, -1.9, 3];
-      stageSize = [5, 10];
+      stagePosition = [-0.8, -0.2, 3];
+      stageSize = [4.3, 9];
     }
   }
   if (scene === 'projects') {
     stagePosition = [0.5, -12, 3];
     stageSize = [8.5, 5.5];
-
     if (isPortraitProjects) {
-      stagePosition = [0, -14.5, 3];
+      stagePosition = [0, -10, 3];
       stageSize = [5, 10];
     }
   }
+  if (scene === 'project-open') {
+    stagePosition = [
+      projectListingPosition[0] - 0.6,
+      projectListingPosition[1],
+      projectListingPosition[2] + 4.5,
+    ];
+    stageSize = [2, 0.8];
+  }
 
-  let coffeeCupPosition = isPortraitMenu ? [0.5, -4.3, 4.5] : [3.5, -0.8, 3.5];
+  const noteBookPosition = isPortraitMenu ? [-1.5, 3.8, 1.8] : [4, 1.3, 2.5];
+
+  let coffeeCupPosition = isPortraitMenu ? [0.2, -2.9, 3.8] : [3.5, -0.8, 3.5];
   let coffeeCupRotation = [0, 0, 0];
 
-  if (scene === 'projects') {
+  if (scene === 'projects' || scene === 'project-open') {
     coffeeCupPosition = [3.48, -10.60, 3.02];
     coffeeCupRotation = [0.00, 0.00, 1.88 + Math.PI * 2];
 
     if (isPortraitProjects) {
-      coffeeCupPosition = [1.5, -11.5, 3.02];
+      coffeeCupPosition = [1.5, -6.5, 3.02];
       coffeeCupRotation = [0.00, 0.00, 2 + Math.PI * 2];
     }
   }
-
-  const noteBookPosition = isPortraitMenu ? [-1.8, -4, 3] : [4, 1.3, 2.5];
 
   if (scene === 'error') {
     return (
@@ -107,6 +114,7 @@ export function SceneDirector({
         stagePosition={stagePosition as CoordArray}
         stageSize={stageSize as [number, number]}
         debug
+        controllable={scene !== 'project-open'}
       />
       <BackgroundScribbles />
       <Computer />
@@ -114,7 +122,7 @@ export function SceneDirector({
         <CoffeeCup
           rotation={coffeeCupRotation as CoordArray}
           position={coffeeCupPosition as CoordArray}
-          spilled={scene === 'projects'}
+          spilled={scene === 'projects' || scene === 'project-open'}
         />
       )}
       {showNotebook && (
@@ -124,8 +132,8 @@ export function SceneDirector({
       )}
       <ProjectListing
         projects={projects}
-        position={[0, isPortraitProjects ? -15 : -12, 1]}
-        active={scene === 'projects'}
+        position={projectListingPosition as CoordArray}
+        active={scene === 'projects' || scene === 'project-open'}
       />
     </SceneControllerProvider>
   );

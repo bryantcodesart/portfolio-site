@@ -7,15 +7,29 @@ import { animated, useSpring, config } from '@react-spring/three';
 import {
   DoubleSide,
 } from 'three';
+import { useInterval } from 'usehooks-ts';
 import { Project } from '../generatedSanitySchemaTypes';
 import { ProjectEntry } from './ProjectEntry';
 import colors from './colors';
 import { useWindowAspectRatio } from './useWindowAspectRatio';
 import { getIsPortraitProjects } from './getIsPortraitProjects';
+import { useHasNoMouse } from './useHasNoMouse';
+import { useSceneController } from './SceneController';
 
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
   const [blobIsBig, setBlobIsBig] = useState(false);
+
+  const [hoveredIndex, setHoveredIndex] = useState<null|number>(null);
+  const [openIndex, setOpenIndex] = useState<null|number>(null);
+
+  const nProjects = projects?.length ?? 0;
+  const arcPerProject = projects ? ((Math.PI * 2) / nProjects) : 0;
+
+  const hasNoMouse = useHasNoMouse();
+  useInterval(() => {
+    if (hasNoMouse) setHoveredIndex(((hoveredIndex ?? 0) + 1) % nProjects);
+  }, 3000);
 
   const aspectRatio = useWindowAspectRatio();
   const isPortraitProjects = getIsPortraitProjects(aspectRatio);
@@ -32,8 +46,14 @@ export function ProjectListing({ active, projects, ...groupProps }:
     config: active ? config.gentle : config.stiff,
   });
 
-  const nProjects = projects?.length ?? 0;
-  const arcPerProject = projects ? ((Math.PI * 2) / nProjects) : 0;
+  const aProjectIsOpen = openIndex !== null;
+  const { backgroundOpacity } = useSpring({
+    backgroundOpacity: aProjectIsOpen ? 1 : 0,
+    delay: aProjectIsOpen ? 500 : 0,
+    config: aProjectIsOpen ? config.slow : {
+      duration: 150,
+    },
+  });
 
   useEffect(() => {
     if (active) {
@@ -48,13 +68,12 @@ export function ProjectListing({ active, projects, ...groupProps }:
     }
   }, [active]);
 
+  const radius = isPortraitProjects ? 2.4 : 2.7;
+
+  const { setScene } = useSceneController();
+
   return (
     <group {...groupProps}>
-      <pointLight
-        position={[10, 10, 40]}
-        intensity={2}
-        color="#993F00"
-      />
       <animated.mesh
         scale={blobScale}
         // @ts-ignore
@@ -73,7 +92,23 @@ export function ProjectListing({ active, projects, ...groupProps }:
           transparent
           opacity={0.7}
           side={DoubleSide}
-          roughness={0.4}
+        />
+      </animated.mesh>
+      <animated.mesh
+        position={[0, 0, 0.5]}
+        renderOrder={1}
+      >
+        <boxGeometry
+          attach="geometry"
+          args={[20, 20, 0.01]}
+        />
+        {/* @ts-ignore */}
+        <animated.meshBasicMaterial
+          attach="material"
+          color="black"
+          transparent
+          opacity={backgroundOpacity}
+          depthTest={false}
         />
       </animated.mesh>
       <animated.group
@@ -84,8 +119,28 @@ export function ProjectListing({ active, projects, ...groupProps }:
         {projects && projects.map((project, index) => (
           <ProjectEntry
             project={project}
-            theta={index * arcPerProject}
             key={project._id + index.toString()}
+            basePosition={[
+              Math.sin(index * arcPerProject) * radius,
+              Math.cos(index * arcPerProject) * radius,
+              0,
+            ]}
+            hovering={openIndex === null && hoveredIndex === index}
+            setHovering={(isHovering:boolean) => {
+              if (isHovering) setHoveredIndex(index);
+              else if (!isHovering && hoveredIndex === index) setHoveredIndex(null);
+            }}
+            open={openIndex === index}
+            setOpen={(isOpening:boolean) => {
+              if (isOpening && !aProjectIsOpen) {
+                setOpenIndex(index);
+                setScene('project-open');
+              } else if (!isOpening && openIndex === index) {
+                setOpenIndex(null);
+                setScene('projects');
+                setHoveredIndex(null);
+              }
+            }}
           />
         ))}
       </animated.group>
