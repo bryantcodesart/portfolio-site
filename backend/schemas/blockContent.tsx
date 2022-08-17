@@ -26,7 +26,7 @@ export default {
         {title: 'H2', value: 'h2'},
         {title: 'H3', value: 'h3'},
         // {title: 'H4', value: 'h4'},
-        {title: 'Quote', value: 'blockquote'},
+        // {title: 'Quote', value: 'blockquote'},
       ],
       lists: [{title: 'Bullet', value: 'bullet'}],
       // Marks let you mark up inline text in the block editor.
@@ -72,6 +72,50 @@ export default {
       name: 'code',
       title: 'Code',
       type: 'code',
+    },
+    {
+      name: 'quote',
+      title: 'Quote',
+      type: 'object',
+      fields: [
+        {
+          name: 'quote',
+          title: 'Quote',
+          type: 'string',
+        },
+        {
+          name: 'author',
+          title: 'Author',
+          type: 'string',
+        },
+        {
+          name: 'title',
+          title: 'Title',
+          type: 'string',
+        },
+        {
+          name: 'headshot',
+          title: 'Headshot',
+          type: 'image',
+        }
+      ]
+    },
+    {
+      name: 'link',
+      title: 'Link',
+      type: 'object',
+      fields: [
+        {
+          name: 'url',
+          title: 'URL',
+          type: 'url',
+        },
+        {
+          name: 'text',
+          title: 'Text',
+          type: 'string',
+        },
+      ]
     },
   ],
 }

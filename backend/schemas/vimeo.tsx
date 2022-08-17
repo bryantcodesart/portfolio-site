@@ -1,15 +1,14 @@
 import React from 'react'
 import Vimeo from '@u-wave/react-vimeo';
-import {Box} from '@sanity/ui'
 
 function VimeoPreview ({value}:{value:{id:string}}) {
   const {id} = value
 
   return (
-    <Box><Vimeo
+    <Vimeo
       video={id}
       responsive
-    /></Box>
+    />
   )
 }
 
@@ -24,17 +23,10 @@ export default {
       type: 'string',
     },
   ],
-  components: { preview: VimeoPreview, input: ()=><></>},
   preview: {
     select: {
       id: 'id',
     },
-    prepare: (value:{
-      id:string
-    }) => {
-      return {
-        title: 'VIMEO '+value.id
-      }
-    }
+    component: VimeoPreview,
   },
 }

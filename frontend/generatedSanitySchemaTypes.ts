@@ -122,6 +122,13 @@ export interface Project extends SanityDocument {
   subTitle?: string;
 
   /**
+   * Client — `string`
+   *
+   *
+   */
+  client?: string;
+
+  /**
    * Slug — `slug`
    *
    *
@@ -129,18 +136,11 @@ export interface Project extends SanityDocument {
   slug?: { _type: "slug"; current: string };
 
   /**
-   * URL — `url`
+   * Thumbnail Video — `url`
    *
    *
    */
-  url?: string;
-
-  /**
-   * Gallery — `array`
-   *
-   *
-   */
-  gallery?: Array<SanityKeyed<ImageFigure> | SanityKeyed<VideoFigure>>;
+  video?: string;
 
   /**
    * Body — `blockContent`
@@ -148,6 +148,30 @@ export interface Project extends SanityDocument {
    *
    */
   body?: BlockContent;
+
+  /**
+   * Collaborators — `array`
+   *
+   *
+   */
+  collaborators?: Array<
+    SanityKeyed<{
+      _type: "designers";
+      /**
+       * Name — `string`
+       *
+       *
+       */
+      name?: string;
+
+      /**
+       * URL — `url`
+       *
+       *
+       */
+      url?: string;
+    }>
+  >;
 }
 
 /**
@@ -277,6 +301,57 @@ export type BlockContent = Array<
   | SanityKeyed<Youtube>
   | SanityKeyed<Vimeo>
   | SanityKeyed<Code>
+  | SanityKeyed<{
+      _type: "quote";
+      /**
+       * Quote — `string`
+       *
+       *
+       */
+      quote?: string;
+
+      /**
+       * Author — `string`
+       *
+       *
+       */
+      author?: string;
+
+      /**
+       * Title — `string`
+       *
+       *
+       */
+      title?: string;
+
+      /**
+       * Headshot — `image`
+       *
+       *
+       */
+      headshot?: {
+        _type: "image";
+        asset: SanityReference<SanityImageAsset>;
+        crop?: SanityImageCrop;
+        hotspot?: SanityImageHotspot;
+      };
+    }>
+  | SanityKeyed<{
+      _type: "link";
+      /**
+       * URL — `url`
+       *
+       *
+       */
+      url?: string;
+
+      /**
+       * Text — `string`
+       *
+       *
+       */
+      text?: string;
+    }>
 >;
 
 export type Youtube = {

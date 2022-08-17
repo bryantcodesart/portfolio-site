@@ -110,7 +110,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           fontSize={0.7}
           font={fontUrls.bryantBold}
         >
-          {'Some things\nI made!'}
+          {'Some things\nI built!'}
         </Text>
       </animated.group>
       <mesh

@@ -1,3 +1,5 @@
+import { Rule } from "@sanity/types/dist/dts";
+
 export default {
   name: "post",
   title: "Post",
@@ -12,8 +14,7 @@ export default {
       name: "slug",
       title: "Slug",
       type: "slug",
-      // @ts-ignore
-      validation: (Rule: {}) => Rule.required(),
+      validation: (Rule:Rule) => Rule.required(),
       options: {
         source: "title",
         maxLength: 96,

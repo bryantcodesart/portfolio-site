@@ -204,7 +204,7 @@ export const ProjectEntry = ({
               args={[1, 1, 1, 4, 0.1]}
               attach="geometry"
             />
-            <CoffeeVideoMaterial src="/videos/test3.mp4" playing={hovering || open} />
+            <CoffeeVideoMaterial src={`/videos/${}`} playing={hovering || open} />
           </mesh>
           <ThreeButton
             position={[0, 0, 0.5]}

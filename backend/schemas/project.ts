@@ -1,3 +1,5 @@
+import { Rule } from "@sanity/types/dist/dts";
+
 export default {
   name: "project",
   title: "Project",
@@ -13,7 +15,11 @@ export default {
       title: "Subtitle",
       type: "string",
     },
-
+    {
+      name: "client",
+      title: "Client",
+      type: "string",
+    },
     {
       name: "slug",
       title: "Slug",
@@ -24,27 +30,58 @@ export default {
       },
     },
     {
-      name: "url",
-      title: "URL",
+      name: "video",
+      title: "Thumbnail Video",
       type: "url",
-    },
-    {
-      name: "gallery",
-      title: "Gallery",
-      type: "array",
-      of: [
-        {
-          type: 'imageFigure'
-        },
-        {
-          type: 'videoFigure'
-        }
-      ]
+      validation: (Rule:Rule) => Rule.uri({
+        allowRelative: true,
+      })
     },
     {
       name: "body",
       title: "Body",
       type: "blockContent",
     },
+    {
+      name: "collaborators",
+      title: "Collaborators",
+      type: "array",
+      of: [
+        {
+          name: "designers",
+          type: "object",
+          title: "Designers",
+          fields: [
+            {
+              name: 'name',
+              title: 'Name',
+              type: 'string',
+            },
+            {
+              name: 'url',
+              title: 'URL',
+              type: 'url',
+            },
+          ],
+          preview: {
+            select: {
+              title: 'name',
+            }
+          }
+        }
+      ]
+    },
+    // {
+    //   name: "tech",
+    //   title: "Tech",
+    //   type: "array",
+    //   of: [
+    //     {
+    //       name: "name",
+    //       type: "string",
+    //       title: "Name",
+    //     }
+    //   ]
+    // },
   ],
 };
