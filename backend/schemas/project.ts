@@ -48,9 +48,9 @@ export default {
       type: "array",
       of: [
         {
-          name: "designers",
+          name: "designer",
           type: "object",
-          title: "Designers",
+          title: "Designer",
           fields: [
             {
               name: 'name',

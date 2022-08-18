@@ -1,5 +1,6 @@
 import React, {
   Ref,
+  useEffect,
   // useEffect,
   useMemo, useRef, useState,
   // useState,
@@ -13,26 +14,21 @@ import React, {
 import {
   // DoubleSide,
   // BufferGeometry, Material,
-  MathUtils, Mesh, // Object3D,
+  MathUtils, Mesh, Object3D, // Object3D,
   // Vector3,
 } from 'three';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import { useInterval } from 'usehooks-ts';
 import { animated, config, useSpring } from '@react-spring/three';
 import { RoundedBoxGeometry } from 'three-stdlib';
-import { Html, MeshDistortMaterial } from '@react-three/drei';
+import { MeshDistortMaterial } from '@react-three/drei';
 import { Project } from '../generatedSanitySchemaTypes';
 // import colors from './colors';
 // import { fontUrls } from './typography';
 import { CoffeeVideoMaterial } from './CoffeeVideoMaterial';
 import { ThreeButton } from './ThreeButton';
 import colors from './colors';
-// import labelBackPoints from './lines/labelBack';
-// import { Scribble } from './Scribble';
-// import { CoordArray } from './CoordArray';
-
-// const TITLE_BACK_COLOR = colors.cyan;
-// const TITLE_TEXT_COLOR = colors.blue;
+import { ProjectHtml } from './ProjectHtml';
 
 const ROTATION_MAX_SPEED = 0.01;
 const MAX_WANDER_DISTANCE = 0.5;
@@ -73,27 +69,24 @@ export const ProjectEntry = ({
   hovering: boolean;
   setHovering: (_hovering: boolean) => void;
 }) => {
+  const [showSpotlight, setShowSpotlight] = useState(false);
   // const [showText, setShowText] = useState(false);
   // const [showBack, setShowBack] = useState(false);
 
-  // useEffect(() => {
-  //   const timeouts:ReturnType<typeof setTimeout>[] = [];
-  //   if (active) {
-  //     let delay = 0;
-  //     timeouts.push(setTimeout(() => {
-  //       setShowBack(true);
-  //     }, delay += 400));
-  //     timeouts.push(setTimeout(() => {
-  //       setShowText(true);
-  //     }, delay += 1000));
-  //   } else {
-  //     setShowBack(false);
-  //     setShowText(false);
-  //   }
-  //   return () => {
-  //     timeouts.forEach((timeout) => { clearTimeout(timeout); });
-  //   };
-  // }, [active]);
+  useEffect(() => {
+    const timeouts:ReturnType<typeof setTimeout>[] = [];
+    if (open) {
+      let delay = 0;
+      timeouts.push(setTimeout(() => {
+        setShowSpotlight(true);
+      }, delay += 1500));
+    } else {
+      setShowSpotlight(false);
+    }
+    return () => {
+      timeouts.forEach((timeout) => { clearTimeout(timeout); });
+    };
+  }, [open]);
 
   // const { cubeScale } = useSpring({
   //   cubeScale: showBack ? 1 : 0.7,
@@ -122,15 +115,33 @@ export const ProjectEntry = ({
     z: (Math.random() * 2 - 1) * ROTATION_MAX_SPEED,
   });
 
-  // const worldPosition:Object3D = useMemo(() => new Object3D(), []);
+  // const worldPosition = useMemo(() => new Object3D(), []);
 
-  useFrame(() => {
+  const objectAimedAtCamera = useMemo(() => new Object3D(), []);
+
+  useFrame(({ camera }) => {
     if (!cubeRef.current) return;
     if (hovering || open) {
+      cubeRef.current.getWorldPosition(objectAimedAtCamera.position);
+      objectAimedAtCamera.lookAt(camera.position);
+      console.log(objectAimedAtCamera.position, camera.position);
+
       const { x, y, z } = cubeRef.current.rotation;
-      cubeRef.current.rotation.x = MathUtils.lerp(x, Math.round(x / (circle)) * circle, 0.1);
-      cubeRef.current.rotation.y = MathUtils.lerp(y, Math.round(y / (circle)) * circle, 0.1);
-      cubeRef.current.rotation.z = MathUtils.lerp(z, Math.round(z / (circle)) * circle, 0.1);
+      cubeRef.current.rotation.x = MathUtils.lerp(
+        x,
+        Math.round(x / (circle)) * circle + objectAimedAtCamera.rotation.x,
+        0.1,
+      );
+      cubeRef.current.rotation.y = MathUtils.lerp(
+        y,
+        Math.round(y / (circle)) * circle + objectAimedAtCamera.rotation.y,
+        0.1,
+      );
+      cubeRef.current.rotation.z = MathUtils.lerp(
+        z,
+        Math.round(z / (circle)) * circle + objectAimedAtCamera.rotation.z,
+        0.1,
+      );
     } else {
       cubeRef.current.rotation.x += rotationSpeeds.current.x;
       cubeRef.current.rotation.y += rotationSpeeds.current.y;
@@ -139,7 +150,7 @@ export const ProjectEntry = ({
   });
 
   let cubeScale = 1;
-  if (hovering) cubeScale = 2;
+  if (hovering) cubeScale = 3;
   if (open) cubeScale = 1;
 
   const { animatedCubePosition } = useSpring({
@@ -149,9 +160,8 @@ export const ProjectEntry = ({
     config: config.stiff,
   });
 
-  const { animatedCubeScale, animatedCubeRotation } = useSpring({
+  const { animatedCubeScale } = useSpring({
     animatedCubeScale: cubeScale,
-    animatedCubeRotation: open ? [0, -Math.PI / 10, 0] : [0, 0, 0],
     config: config.wobbly,
   });
 
@@ -169,7 +179,7 @@ export const ProjectEntry = ({
             // renderOrder={1}
           >
             <sphereBufferGeometry
-              args={[1, 10, 10]}
+              args={[1, 20, 20]}
               attach="geometry"
             />
             <MeshDistortMaterial
@@ -179,7 +189,8 @@ export const ProjectEntry = ({
               distort={0.5}
               // depthTest={false}
               transparent
-              opacity={0.1}
+              opacity={0.4}
+              roughness={0}
             />
           </mesh>
         </animated.group>
@@ -193,8 +204,6 @@ export const ProjectEntry = ({
           position={animatedCubeFloatingOffset}
           // @ts-ignore
           scale={animatedCubeScale}
-          // @ts-ignore
-          rotation={animatedCubeRotation}
         >
           <mesh
             // renderOrder={1}
@@ -204,7 +213,7 @@ export const ProjectEntry = ({
               args={[1, 1, 1, 4, 0.1]}
               attach="geometry"
             />
-            <CoffeeVideoMaterial src={`/videos/${}`} playing={hovering || open} />
+            <CoffeeVideoMaterial src={`/videos/${project?.video}`} playing={hovering || open} />
           </mesh>
           <ThreeButton
             position={[0, 0, 0.5]}
@@ -224,34 +233,12 @@ export const ProjectEntry = ({
               setHovering(false);
             }}
           />
+          {showSpotlight && <pointLight position={[2, 0, 4]} intensity={1} />}
         </animated.group>
       </animated.group>
 
       {open && (
-        <Html
-          position={[-1.6, 0.5, 4.5]}
-          // transform
-          // rotation={[0, Math.PI / 10, 0]}
-          // transform
-          className="text-white w-[50vw] h-[50vw] border-2 border-[red] p-[2rem] text-[1rem]"
-        >
-          <h1>{project.title}</h1>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-            Accusamus odio ad fugiat necessitatibus. Veniam, ut culpa optio,
-            fugiat expedita quibusdam modi praesentium doloribus aperiam quae
-            quisquam ullam consequatur eum cum?
-
-          </p>
-
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-            Accusamus odio ad fugiat necessitatibus. Veniam, ut culpa optio,
-            fugiat expedita quibusdam modi praesentium doloribus aperiam quae
-            quisquam ullam consequatur eum cum?
-
-          </p>
-        </Html>
+        <ProjectHtml project={project} />
       )}
       {/* <group
         position={[-1.4, 0.8, 3.2]}

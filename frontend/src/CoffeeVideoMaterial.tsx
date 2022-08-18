@@ -59,20 +59,32 @@ const CoffeeShaderMaterial = shaderMaterial(
         (d - b) * u.x * u.y;
     }
 
-    vec3 darkColor = vec3(0.,1.,1.)*0.7; //vec3(0.333,0.122,0.);
-    vec3 lightColor = vec3(1.,1.,1.);
+    vec3 darkColor = vec3(0.,0.,1.); //vec3(0.333,0.122,0.);
+    vec3 middleColor = vec3(0.,1.,1.);
+    vec3 lightColor = vec3(0.8,1.,1.);
 
     void main() {
+
+      float noiseValue1 = noise(vUv*5.0-seed);
+      float noiseValue2 = noise(vUv*10.0-seed*50.);
+      float noiseValue3 = noise(vUv*2.0-seed*100.);
+      float noiseValue4 = noise(vUv*8.0-seed*150.*inColor);
+      float noiseValue5 = noise(vUv*100.0-seed*250.*inColor);
+      float noiseValue6 = noise(vUv*-seed*300.);
+      float noiseValue = (noiseValue1+noiseValue2+noiseValue3+noiseValue4+noiseValue5+noiseValue6)/6.;
+      float visible = smoothstep(0.0,2.0,(noiseValue+inColor*2.));
+
+
+      vec3 texColorDistorted = texture2D(map, (vUv-0.5)*visible+0.5).rgb;
       vec3 texColor = texture2D(map, vUv).rgb;
 
-      float grayscaleValue = (texColor.r + texColor.g + texColor.b) / 3.0;
+      float grayscaleValue = (texColor.r + texColor.g + texColor.b) / 3.0 * 1. + 0.33;
 
-      vec3 duoToneColor = mix(darkColor,lightColor,grayscaleValue);
+      vec3 triToneColor =
+      (1.-step(0.5, grayscaleValue)) * mix(darkColor,middleColor,grayscaleValue*2.)
+        + step(0.5, grayscaleValue) * mix(middleColor,lightColor,grayscaleValue*2.-1.);
 
-      float noiseValue = noise(vUv*10.0-seed);
-      float visible = smoothstep(1.5,2.0,(noiseValue+inColor*2.));
-
-      vec3 color = mix(duoToneColor,texColor,visible);
+      vec3 color = mix(triToneColor,texColorDistorted,visible);
 
       gl_FragColor.rgba = vec4(color, 1.); //0.8+0.2*inColor);
     }
@@ -110,7 +122,7 @@ export const CoffeeVideoMaterial = ({ src, playing = true }:
 
   useFrame(() => {
     if (!materialRef.current) return;
-    const transitionTime = 0.7;
+    const transitionTime = 0.6;
 
     const increment = inColorClock.getDelta() / transitionTime;
 

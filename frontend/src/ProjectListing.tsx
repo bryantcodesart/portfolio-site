@@ -122,14 +122,17 @@ export function ProjectListing({ active, projects, ...groupProps }:
           args={[20, 20, 0.01]}
         />
         {/* @ts-ignore */}
-        <animated.meshBasicMaterial
+        <animated.meshStandardMaterial
           attach="material"
           color="black"
           transparent
           opacity={backgroundOpacity}
+          roughness={0.7}
           // depthTest={false}
         />
       </mesh>
+      {/* @ts-ignore */}
+      {/* <animated.pointLight position={[2, 0, 6]} intensity={backgroundOpacity * 1.5} /> */}
       <animated.group
         scale={blobScale}
         // @ts-ignore
