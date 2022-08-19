@@ -98,7 +98,7 @@ export function Computer() {
       <Scribble
         points={(computerScreenPoints as CoordArray[])}
         size={3.3}
-        position={[-1, 0.7, 2]}
+        position={[-1, 0.7, 2.1]}
         lineWidth={0.6}
         color={computerOn ? new Color(colors.blue) : new Color('darkblue')}
         rotation={[Math.PI, 0, -Math.PI / 15]}

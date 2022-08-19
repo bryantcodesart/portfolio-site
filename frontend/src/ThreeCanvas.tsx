@@ -5,7 +5,6 @@ import {
   useContextBridge,
 } from '@react-three/drei';
 import { A11yAnnouncer } from '@react-three/a11y';
-import { useRouter } from 'next/router';
 import { LinearToneMapping } from 'three';
 import { CustomCursorContext } from './CustomCursor';
 import { SceneDirector } from './SceneDirector';
@@ -13,7 +12,6 @@ import { SiteData } from './SiteData';
 import { useParamOnLoad } from './useParamOnLoad';
 
 const ThreeCanvas = ({ siteData }:{siteData:SiteData}) => {
-  const router = useRouter();
   const ContextBridge = useContextBridge(CustomCursorContext);
   const showStats = useParamOnLoad('stats') === 'true';
   return (
@@ -23,7 +21,7 @@ const ThreeCanvas = ({ siteData }:{siteData:SiteData}) => {
         onCreated={({ gl }) => { gl.toneMapping = LinearToneMapping; }}
       >
         <ContextBridge>
-          <SceneDirector siteData={siteData} router={router} />
+          <SceneDirector siteData={siteData} />
         </ContextBridge>
         {showStats && <Stats />}
         {/* <pointLight position={[0, 0, 5]} /> */}

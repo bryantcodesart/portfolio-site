@@ -11,8 +11,7 @@ import { useInterval } from 'usehooks-ts';
 import { Project } from '../generatedSanitySchemaTypes';
 import { ProjectEntry } from './ProjectEntry';
 import colors from './colors';
-import { useWindowAspectRatio } from './useWindowAspectRatio';
-import { getIsPortraitProjects } from './getIsPortraitProjects';
+import { useBreakpoints } from './useBreakpoints';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useSceneController } from './SceneController';
 import { fontUrls } from './typography';
@@ -24,6 +23,8 @@ export function ProjectListing({ active, projects, ...groupProps }:
   const [hoveredIndex, setHoveredIndex] = useState<null|number>(null);
   const [openIndex, setOpenIndex] = useState<null|number>(null);
 
+  const breakpoints = useBreakpoints();
+
   const nProjects = projects?.length ?? 0;
   const arcPerProject = projects ? ((Math.PI * 2) / nProjects) : 0;
 
@@ -32,13 +33,10 @@ export function ProjectListing({ active, projects, ...groupProps }:
     if (hasNoMouse) setHoveredIndex(((hoveredIndex ?? 0) + 1) % nProjects);
   }, 3000);
 
-  const aspectRatio = useWindowAspectRatio();
-  const isPortraitProjects = getIsPortraitProjects(aspectRatio);
-
   let blobTargetPosition = [0, 0, 0];
   if (!blobIsBig) {
-    blobTargetPosition = [3.62, 1.91, 0];
-    if (isPortraitProjects) blobTargetPosition = [1, 3.91, 0];
+    blobTargetPosition = [1, 3.91, 0];
+    if (breakpoints.projects) blobTargetPosition = [3.62, 1.91, 0];
   }
 
   const { blobScale, blobPosition } = useSpring({
@@ -70,7 +68,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
     }
   }, [active]);
 
-  const radius = isPortraitProjects ? 2.4 : 2.7;
+  const radius = breakpoints.projects ? 2.7 : 2.4;
 
   const { setScene } = useSceneController();
 

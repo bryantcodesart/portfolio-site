@@ -11,10 +11,9 @@ export type CustomCursorState = 'none'
  | 'contact'
  | 'computer-on'
  | 'terminal'
- | 'projects'
- | 'menu'
- | 'next'
- | 'previous'
+ | 'spill'
+ | 'open-project'
+ | 'unspill'
 export type CustomCursorSetter = (_cursorState:CustomCursorState)=>void
 export type CustomCursorArray = [CustomCursorState, CustomCursorSetter]
 
@@ -52,7 +51,7 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
       </CustomCursorContext.Provider>
       {enabled ? (
         <div
-          className="pointer-events-none fixed top-0 left-0 z-[999999]"
+          className="pointer-events-none fixed top-0 left-0 z-[99999999]"
           style={{
             transform: `translate(${mouse.clientX ?? 0}px,${mouse.clientY ?? 0}px)`,
             filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : '',
@@ -61,9 +60,9 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
           <div
             className={`
               bg-contain bg-center
-              font-display text-white text-center leading-[0.8] text-[1.9vw]
+              font-mono text-white text-center leading-[0.8] text-[16px]
               -translate-x-1/2 -translate-y-1/2
-              h-[5vw] w-[5vw]
+              h-[100px] w-[100px]
               transition-transform
               ${cursor === 'normal' ? 'scale-[0.25]' : ''}
               grid place-items-center`}
@@ -71,41 +70,30 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
           >
             {cursor === 'computer-on' && (
               <>
-                turn
-                <br />
-                on
+                boot up
               </>
             )}
             {cursor === 'contact' && (
               <>
-                say
-                <br />
-                hi!
+                say hi!
               </>
             )}
-            {cursor === 'projects' && (
+            {cursor === 'spill' && (
               <>
-                neat
-                <br />
-                stuff
+                spill
               </>
             )}
-            {cursor === 'menu' && (
+            {cursor === 'unspill' && (
               <>
-                home
+                unspill
               </>
             )}
-            {cursor === 'next' && (
+            {cursor === 'open-project' && (
               <>
-                next
+                explore
               </>
             )}
-            {cursor === 'previous' && (
-              <>
-                prev
-              </>
-            )}
-
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             {cursor === 'terminal' && <img className="w-[1vw]" src="/cursor/terminal.svg" alt="" />}
           </div>
         </div>

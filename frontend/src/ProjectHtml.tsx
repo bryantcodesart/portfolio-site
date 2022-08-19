@@ -7,17 +7,18 @@ import { TypedObject } from '@portabletext/types';
 import Vimeo from '@u-wave/react-vimeo';
 // import Image from 'next/image';
 import { Project } from '../generatedSanitySchemaTypes';
+import { CoordArray } from './CoordArray';
 
 const VimeoBlock = ({ value }:{ value: { id:string } }) => (<Vimeo video={value.id} />);
-const PBlock:PortableTextBlockComponent = ({ children }) => (<p className="mt-4 text-[red]">{children}</p>);
-const H2Block:PortableTextBlockComponent = ({ children }) => (<h2 className="mt-4 text-[blue]">{children}</h2>);
-const H3Block:PortableTextBlockComponent = ({ children }) => (<h3 className="mt-4 text-[red]">{children}</h3>);
+const PBlock:PortableTextBlockComponent = ({ children }) => (<p className="my-4">{children}</p>);
+const H2Block:PortableTextBlockComponent = ({ children }) => (<h2 className="my-4">{children}</h2>);
+const H3Block:PortableTextBlockComponent = ({ children }) => (<h3 className="my-4">{children}</h3>);
 const LinkBlock = ({ value }:{
   value: {
     url: string;
     text: string;
   }
-}) => (<div className="my-4 py-4 bg-[white]"><a href={value.url} className="text-[black] py-4">{value.text}</a></div>);
+}) => (<a href={value.url} className="block text-white underline">{value.text}</a>);
 
 const QuoteBlock = ({ value }:{
   value: {
@@ -40,7 +41,7 @@ const QuoteBlock = ({ value }:{
   </figure>
 );
 
-export const ProjectHtml = ({ project }: { project: Project; }) => {
+export const ProjectHtml = ({ project, position }: { project: Project; position: CoordArray }) => {
   const renderedPortableText = useMemo(() => (
     <PortableText
       value={((project?.body ?? {}) as TypedObject)}
@@ -62,19 +63,38 @@ export const ProjectHtml = ({ project }: { project: Project; }) => {
 
   return (
     <Html
-      position={[-1.6, 0.5, 4.5]}
-      className="text-white w-[50vw] h-[50vw] border-2 border-[red] p-[2rem] text-[1rem] overflow-scroll"
+      position={position}
+      className="text-white w-[50vw] relative"
     >
-      <h1>{project.title}</h1>
-      <p>
-        {project.subTitle}
-      </p>
-      <p>
-        {project.client}
-      </p>
 
-      {/* <pre>{JSON.stringify(project.body, null, 2)}</pre> */}
-      {renderedPortableText}
+      <div
+        className="
+          absolute top-[5vh] left-0
+          w-[45vw] h-[90vh] -translate-y-1/2
+          border-2 border-[red]
+          overflow-y-scroll no-scrollbar
+        "
+      >
+        <h1
+          className=""
+        >
+          {project.title}
+        </h1>
+        <h2
+          className="my-4"
+        >
+          {project.subTitle}
+        </h2>
+        <dl
+          className="my-4"
+        >
+          <dt>Client:</dt>
+          <dd>{project.client}</dd>
+        </dl>
+
+        {/* <pre>{JSON.stringify(project.body, null, 2)}</pre> */}
+        {renderedPortableText}
+      </div>
     </Html>
   );
 };

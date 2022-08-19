@@ -5,7 +5,7 @@ import { SceneName } from '../src/SceneController';
 export async function getStaticProps() {
   const projects = await sanityExperimentalTypesafeClient.getAll('project');
   const scene:SceneName = 'intro';
-  // console.log(JSON.stringify(projects, null, 2));
+  console.log(JSON.stringify(projects, null, 2));
   return {
     props: {
       projects,

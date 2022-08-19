@@ -43,8 +43,8 @@ export default {
       type: "blockContent",
     },
     {
-      name: "collaborators",
-      title: "Collaborators",
+      name: "designers",
+      title: "Designers",
       type: "array",
       of: [
         {

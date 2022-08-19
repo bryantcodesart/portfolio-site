@@ -19,19 +19,14 @@ import coffeeLiquidPoints from './lines/coffeeLiquid';
 import { ThreeButton } from './ThreeButton';
 import { useSceneController } from './SceneController';
 import colors from './colors';
+import { useBreakpoints } from './useBreakpoints';
 // import { rangeParams } from './rangeParams';
 // import spillPoints from './lines/spill';
 // import { rangeParams } from './rangeParams';
 
-export function CoffeeCup({
-  position,
-  rotation,
-  spilled,
-}:{
-  position:CoordArray,
-  rotation:CoordArray,
-  spilled:boolean,
-}) {
+export function CoffeeCup() {
+  const breakpoints = useBreakpoints();
+
   let time = 450;
   const projectButtonVisible1 = useTrueAfterDelay(time += 1000);
   const projectButtonVisible2 = useTrueAfterDelay(time += 1000);
@@ -44,6 +39,21 @@ export function CoffeeCup({
   let mugHoverRotation = 0;
   if (scene === 'menu' && hovering) mugHoverRotation = Math.PI / 6;
   if (scene === 'projects' && hovering) mugHoverRotation = -Math.PI / 6;
+
+  let position = breakpoints.menu ? [3.5, -0.8, 3.5] : [0.2, -2.9, 3.8];
+  let rotation = [0, 0, 0];
+
+  if (scene === 'projects' || scene === 'project-open') {
+    position = [1.5, -6.5, 3.02];
+    rotation = [0.00, 0.00, 2 + Math.PI * 2];
+
+    if (breakpoints.projects) {
+      position = [4, -10.5, 3.02];
+      rotation = [0.00, 0.00, 1.88 + Math.PI * 2];
+    }
+  }
+
+  const spilled = scene === 'projects' || scene === 'project-open';
 
   const { animatedPosition, animatedRotation } = useSpring({
     animatedPosition: position,
@@ -58,6 +68,7 @@ export function CoffeeCup({
 
   return (
     <animated.group
+      // @ts-ignore
       position={animatedPosition}
       // @ts-ignore
       rotation={animatedRotation}
@@ -129,7 +140,7 @@ export function CoffeeCup({
         activationMsg="Mug tips, cofee spills everywhere, a project carousel animates into view from the 3d floating liquid."
         onFocus={() => setHovering(true)}
         onBlur={() => setHovering(false)}
-        cursor="projects"
+        cursor="spill"
         onClick={() => sceneController.setScene('projects')}
       />
       )}
@@ -142,7 +153,7 @@ export function CoffeeCup({
         activationMsg="Coffee unspills, returning us to the desk / main menu."
         onFocus={() => setHovering(true)}
         onBlur={() => setHovering(false)}
-        cursor="menu"
+        cursor="unspill"
         onClick={() => sceneController.setScene('menu')}
       />
       )}

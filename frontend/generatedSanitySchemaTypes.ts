@@ -150,13 +150,13 @@ export interface Project extends SanityDocument {
   body?: BlockContent;
 
   /**
-   * Collaborators — `array`
+   * Designers — `array`
    *
    *
    */
-  collaborators?: Array<
+  designers?: Array<
     SanityKeyed<{
-      _type: "designers";
+      _type: "designer";
       /**
        * Name — `string`
        *

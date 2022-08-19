@@ -1,8 +1,17 @@
 import { useWindowSize } from 'usehooks-ts';
 
-// import { rangeParams } from './rangeParams';
 export const useWindowAspectRatio = () => {
   const windowSize = useWindowSize();
   const aspectRatio = windowSize.width / windowSize.height;
   return aspectRatio;
+};
+
+export const useBreakpoints = () => {
+  const aspectRatio = useWindowAspectRatio();
+
+  return {
+    projects: aspectRatio >= 0.8,
+    projectOpen: aspectRatio >= 1,
+    menu: aspectRatio >= 1,
+  };
 };

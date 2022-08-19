@@ -1,21 +1,9 @@
 import React, {
   Ref,
-  useEffect,
-  // useEffect,
   useMemo, useRef, useState,
-  // useState,
 } from 'react';
-// import { Color } from 'three';
-// import {
-//   // config,
-//   animated, useSpring,
-// } from '@react-spring/three';
-// import { useInterval } from 'usehooks-ts';
 import {
-  // DoubleSide,
-  // BufferGeometry, Material,
-  MathUtils, Mesh, Object3D, // Object3D,
-  // Vector3,
+  MathUtils, Mesh, Object3D,
 } from 'three';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import { useInterval } from 'usehooks-ts';
@@ -23,17 +11,17 @@ import { animated, config, useSpring } from '@react-spring/three';
 import { RoundedBoxGeometry } from 'three-stdlib';
 import { MeshDistortMaterial } from '@react-three/drei';
 import { Project } from '../generatedSanitySchemaTypes';
-// import colors from './colors';
-// import { fontUrls } from './typography';
 import { CoffeeVideoMaterial } from './CoffeeVideoMaterial';
 import { ThreeButton } from './ThreeButton';
 import colors from './colors';
 import { ProjectHtml } from './ProjectHtml';
+import { useBreakpoints } from './useBreakpoints';
+import { CoordArray } from './CoordArray';
 
 const ROTATION_MAX_SPEED = 0.01;
 const MAX_WANDER_DISTANCE = 0.5;
 
-const getRandomCubeOffset = () => [
+const getRandomCubeOffset = ():CoordArray => [
   (Math.random() * 2 - 1) * MAX_WANDER_DISTANCE,
   (Math.random() * 2 - 1) * MAX_WANDER_DISTANCE,
   (Math.random() * 2 - 1) * MAX_WANDER_DISTANCE,
@@ -54,7 +42,6 @@ declare global {
 /* eslint-enable no-unused-vars */
 
 export const ProjectEntry = ({
-  // eslint-disable-next-line no-unused-vars
   project,
   basePosition,
   open,
@@ -63,42 +50,20 @@ export const ProjectEntry = ({
   setHovering,
 }:{
   project: Project;
-  basePosition: [number, number, number];
+  basePosition: CoordArray;
   open: boolean;
   setOpen: (_open: boolean) => void;
   hovering: boolean;
   setHovering: (_hovering: boolean) => void;
 }) => {
-  const [showSpotlight, setShowSpotlight] = useState(false);
-  // const [showText, setShowText] = useState(false);
-  // const [showBack, setShowBack] = useState(false);
-
-  useEffect(() => {
-    const timeouts:ReturnType<typeof setTimeout>[] = [];
-    if (open) {
-      let delay = 0;
-      timeouts.push(setTimeout(() => {
-        setShowSpotlight(true);
-      }, delay += 1500));
-    } else {
-      setShowSpotlight(false);
-    }
-    return () => {
-      timeouts.forEach((timeout) => { clearTimeout(timeout); });
-    };
-  }, [open]);
-
-  // const { cubeScale } = useSpring({
-  //   cubeScale: showBack ? 1 : 0.7,
-  //   config: config.wobbly,
-  // });
+  const breakpoints = useBreakpoints();
 
   const directionInterval = useMemo(() => Math.random() * 5000 + 2500, []);
-  const [cubeFloatingOffset, setCubeFloatingOffset] = useState(
+  const [cubeFloatingOffset, setCubeFloatingOffset] = useState<CoordArray>(
     getRandomCubeOffset(),
   );
   const { animatedCubeFloatingOffset } = useSpring({
-    animatedCubeFloatingOffset: open ? [0, 0, 0] : cubeFloatingOffset,
+    animatedCubeFloatingOffset: open ? [0, 0, 0] as CoordArray : cubeFloatingOffset,
     config: {
       duration: open ? 100 : directionInterval,
     },
@@ -115,8 +80,6 @@ export const ProjectEntry = ({
     z: (Math.random() * 2 - 1) * ROTATION_MAX_SPEED,
   });
 
-  // const worldPosition = useMemo(() => new Object3D(), []);
-
   const objectAimedAtCamera = useMemo(() => new Object3D(), []);
 
   useFrame(({ camera }) => {
@@ -124,7 +87,6 @@ export const ProjectEntry = ({
     if (hovering || open) {
       cubeRef.current.getWorldPosition(objectAimedAtCamera.position);
       objectAimedAtCamera.lookAt(camera.position);
-      console.log(objectAimedAtCamera.position, camera.position);
 
       const { x, y, z } = cubeRef.current.rotation;
       cubeRef.current.rotation.x = MathUtils.lerp(
@@ -150,14 +112,23 @@ export const ProjectEntry = ({
   });
 
   let cubeScale = 1;
-  if (hovering) cubeScale = 3;
+  if (hovering) cubeScale = breakpoints.projects ? 3 : 2;
   if (open) cubeScale = 1;
 
+  const cubePosition:CoordArray = open
+    ? [0, 0, 4]
+    : basePosition;
   const { animatedCubePosition } = useSpring({
-    animatedCubePosition: open
-      ? [0, 0, 4]
-      : basePosition,
+    animatedCubePosition: cubePosition,
     config: config.stiff,
+  });
+
+  const { spotlightIntensity } = useSpring({
+    spotlightIntensity: open ? 1.5 : 0,
+    delay: open ? 500 : 0,
+    config: {
+      duration: open ? 1000 : 0,
+    },
   });
 
   const { animatedCubeScale } = useSpring({
@@ -171,12 +142,10 @@ export const ProjectEntry = ({
         position={basePosition}
       >
         <animated.group
-          // @ts-ignore
           position={animatedCubeFloatingOffset}
         >
           <mesh
             position={[0, 0, -0.1]}
-            // renderOrder={1}
           >
             <sphereBufferGeometry
               args={[1, 20, 20]}
@@ -187,7 +156,6 @@ export const ProjectEntry = ({
               speed={6}
               radius={1}
               distort={0.5}
-              // depthTest={false}
               transparent
               opacity={0.4}
               roughness={0}
@@ -196,17 +164,13 @@ export const ProjectEntry = ({
         </animated.group>
       </group>
       <animated.group
-          // @ts-ignore
         position={animatedCubePosition}
       >
         <animated.group
-          // @ts-ignore
           position={animatedCubeFloatingOffset}
-          // @ts-ignore
           scale={animatedCubeScale}
         >
           <mesh
-            // renderOrder={1}
             ref={cubeRef as Ref<Mesh>}
           >
             <roundedBoxGeometry
@@ -221,7 +185,7 @@ export const ProjectEntry = ({
             height={1.1}
             description=""
             activationMsg=""
-            cursor="normal"
+            cursor="open-project"
             // debug
             onClick={() => {
               setOpen(!open);
@@ -233,12 +197,19 @@ export const ProjectEntry = ({
               setHovering(false);
             }}
           />
-          {showSpotlight && <pointLight position={[2, 0, 4]} intensity={1} />}
+          {/* @ts-ignore */}
+          <animated.pointLight
+            position={[2, 0, 4]}
+            intensity={spotlightIntensity}
+          />
         </animated.group>
       </animated.group>
 
       {open && (
-        <ProjectHtml project={project} />
+        <ProjectHtml
+          project={project}
+          position={[-1.6, 0, 4.5]}
+        />
       )}
       {/* <group
         position={[-1.4, 0.8, 3.2]}
