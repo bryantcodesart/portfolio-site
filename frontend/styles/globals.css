@@ -16,10 +16,6 @@
   }
 }
 
-html {
-  font-size: max(14px, 1.2vw);
-}
-
 canvas {
   @apply absolute top-0 left-0 w-full h-full;
 }

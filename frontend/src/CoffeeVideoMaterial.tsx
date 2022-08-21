@@ -122,7 +122,7 @@ export const CoffeeVideoMaterial = ({ src, playing = true }:
 
   useFrame(() => {
     if (!materialRef.current) return;
-    const transitionTime = 0.6;
+    const transitionTime = 1;
 
     const increment = inColorClock.getDelta() / transitionTime;
 

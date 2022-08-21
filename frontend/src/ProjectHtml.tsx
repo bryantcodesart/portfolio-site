@@ -5,8 +5,6 @@ import { PortableText, PortableTextBlockComponent } from '@portabletext/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { TypedObject } from '@portabletext/types';
 import Vimeo from '@u-wave/react-vimeo';
-// import Image from 'next/image';
-import { useWindowSize } from 'usehooks-ts';
 import { Project } from '../generatedSanitySchemaTypes';
 import { CoordArray } from './CoordArray';
 import { useBreakpoints } from './useBreakpoints';
@@ -56,7 +54,7 @@ const QuoteBlock = ({ value }:{
 );
 
 export const ProjectHtml = ({ project, position }: { project: Project; position: CoordArray }) => {
-  const windowSize = useWindowSize();
+  // const windowSize = useWindowSize();
   const renderedPortableText = useMemo(() => (
     <PortableText
       value={((project?.body ?? {}) as TypedObject)}
@@ -74,7 +72,7 @@ export const ProjectHtml = ({ project, position }: { project: Project; position:
         },
       }}
     />
-  ), [project.body, windowSize]);
+  ), [project?.body]);
 
   const breakpoints = useBreakpoints();
 
@@ -102,26 +100,26 @@ export const ProjectHtml = ({ project, position }: { project: Project; position:
       >
         <div className="pb-16">
           <h1
-            className="text-4xl"
+            className="text-[max(35px,7vw)] font-display"
           >
             {project.title}
           </h1>
           <h2
-            className="my-4 text-2xl"
+            className="my-4 font-mono text-2xl"
           >
             {project.subTitle}
           </h2>
           {(project.client || project.designers?.length) && (
-          <dl>
+          <dl className="grid grid-cols-2 mt-4">
             {project.client && (
-            <>
-              <dt className="mt-4">Client:</dt>
+            <div>
+              <dt>Client:</dt>
               <dd>{project.client}</dd>
-            </>
+            </div>
             )}
             {project.designers?.length && (
-            <>
-              <dt className="mt-4">Design:</dt>
+            <div>
+              <dt>Design:</dt>
               <dd>
                 <ul>
                   {project.designers.map((designer) => (
@@ -142,7 +140,7 @@ export const ProjectHtml = ({ project, position }: { project: Project; position:
                 </ul>
 
               </dd>
-            </>
+            </div>
             )}
           </dl>
           )}

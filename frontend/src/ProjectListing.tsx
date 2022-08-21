@@ -28,10 +28,11 @@ export function ProjectListing({ active, projects, ...groupProps }:
   const nProjects = projects?.length ?? 0;
   const arcPerProject = projects ? ((Math.PI * 2) / nProjects) : 0;
 
+  const [autoHover, setAutoHover] = useState(false);
   const hasNoMouse = useHasNoMouse();
   useInterval(() => {
-    if (hasNoMouse) setHoveredIndex(((hoveredIndex ?? 0) + 1) % nProjects);
-  }, 3000);
+    if (hasNoMouse && autoHover) setHoveredIndex(((hoveredIndex ?? 0) + 1) % nProjects);
+  }, 2000);
 
   let blobTargetPosition = [0, 0, 0];
   if (!blobIsBig) {
@@ -61,7 +62,12 @@ export function ProjectListing({ active, projects, ...groupProps }:
       setTimeout(() => {
         setBlobIsBig(true);
       }, delay += 500);
+      setTimeout(() => {
+        setAutoHover(true);
+      }, delay += 2000);
     } else {
+      setHoveredIndex(null);
+      setAutoHover(false);
       setTimeout(() => {
         setBlobIsBig(false);
       }, 500);

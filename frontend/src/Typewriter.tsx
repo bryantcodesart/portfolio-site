@@ -5,7 +5,7 @@ import { useInterval } from 'usehooks-ts';
 type TextProps = React.ComponentProps<typeof Text>;
 
 export const ThreeTextTypewriter = ({
-  children, showCarat = true, timePerChar = 40, ...textProps
+  children, showCarat = true, timePerChar = 20, ...textProps
 }:
 { children: string; showCarat?: boolean; timePerChar?:number } & TextProps) => {
   const targetText = children;

@@ -17,6 +17,7 @@ import colors from './colors';
 import { ProjectHtml } from './ProjectHtml';
 import { useBreakpoints } from './useBreakpoints';
 import { CoordArray } from './CoordArray';
+import { useHasNoMouse } from './useHasNoMouse';
 
 const ROTATION_MAX_SPEED = 0.01;
 const MAX_WANDER_DISTANCE = 0.5;
@@ -111,8 +112,14 @@ export const ProjectEntry = ({
     }
   });
 
+  const hasNoMouse = useHasNoMouse();
   let cubeScale = 1;
-  if (hovering) cubeScale = breakpoints.projects ? 3 : 2;
+  if (hovering) {
+    cubeScale = hasNoMouse ? 1.5 : 2;
+    if (breakpoints.projects) {
+      cubeScale = hasNoMouse ? 2 : 3;
+    }
+  }
   if (open) cubeScale = 1;
 
   const cubePosition:CoordArray = open

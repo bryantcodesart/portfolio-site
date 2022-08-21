@@ -69,8 +69,11 @@ export function SceneDirector({
     }
   }
   if (scene === 'about') {
+    stageSize = [1, 1];
     stagePosition = [-1, 0.7, 2.1];
-    stageSize = [4.2, 3];
+    if (breakpoints.about) {
+      stageSize = [4.2, 3];
+    }
   }
 
   if (scene === 'error') {
