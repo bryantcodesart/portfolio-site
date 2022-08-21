@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { useHelper } from '@react-three/drei';
 import {
-  BoxHelper, Mesh, Vector3,
+  Vector3,
   PerspectiveCamera,
   MathUtils,
 } from 'three';
@@ -48,8 +47,7 @@ export const CameraController = ({
     / Math.tan(MathUtils.degToRad(perspectiveCamera.fov / 2));
 
     cameraDistance.current = Math.max(widthFitDistance, heightFitDistance);
-    // console.log('cameraDistance', cameraDistance.current);
-  }, [stageSize]);
+  }, [camera, stageSize]);
 
   const targetPosition = useRef(new Vector3());
 
@@ -76,14 +74,12 @@ export const CameraController = ({
     camera.position.lerp(targetPosition.current, lerpAlpha);
   });
 
-  const meshRef = useRef<Mesh>(null);
-  useHelper(debug ? meshRef : undefined, BoxHelper, 'red');
-
   return (
     <mesh
       position={stagePosition}
-      ref={meshRef}
-      // renderOrder={2}
+      {...(debug ? {
+        renderOrder: 2,
+      } : {})}
     >
       <boxGeometry
         attach="geometry"
@@ -91,11 +87,14 @@ export const CameraController = ({
       />
       <meshBasicMaterial
         attach="material"
-        // color="blue"
-        // transparent
-        // opacity={0.2}
-        // depthTest={false}
-        visible={false}
+        {...(debug ? {
+          color: 'lime',
+          transparent: true,
+          opacity: 0.2,
+          depthTest: false,
+        } : {
+          visible: false,
+        })}
       />
     </mesh>
   );

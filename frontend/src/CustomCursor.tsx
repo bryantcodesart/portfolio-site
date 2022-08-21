@@ -54,17 +54,21 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
           className="pointer-events-none fixed top-0 left-0 z-[99999999]"
           style={{
             transform: `translate(${mouse.clientX ?? 0}px,${mouse.clientY ?? 0}px)`,
-            filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : '',
+            filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : 'drop-shadow(0 0 0.1rem black) drop-shadow(0 0 0.1rem black)',
           }}
         >
+
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {cursor === 'terminal' && <img className="w-[15px]" src="/cursor/terminal.svg" alt="" />}
           <div
             className={`
               bg-contain bg-center
-              font-mono text-white text-center leading-[0.8] text-[16px]
+              font-mono text-white text-center leading-[0.8] text-[12px]
               -translate-x-1/2 -translate-y-1/2
-              h-[100px] w-[100px]
-              transition-transform
+              h-[75px] w-[75px]
+              transition-all
               ${cursor === 'normal' ? 'scale-[0.25]' : ''}
+              ${cursor === 'terminal' ? 'opacity-0' : ''}
               grid place-items-center`}
             style={{ backgroundImage: 'url(/cursor/circle.svg)' }}
           >
@@ -93,8 +97,6 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
                 explore
               </>
             )}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {cursor === 'terminal' && <img className="w-[1vw]" src="/cursor/terminal.svg" alt="" />}
           </div>
         </div>
       ) : null}

@@ -19,6 +19,9 @@ export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
     <main className="w-screen h-screen bg-white">
       <div
         className="fixed top-0 left-0 text-[1rem] px-[2rem] py-[1rem] font-mono text-white bg-blue tracking-wide z-[88888888]"
+        style={{
+          filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
+        }}
       >
         CONTACT:
         {' '}

@@ -208,7 +208,7 @@ export const ProjectEntry = ({
       {open && (
         <ProjectHtml
           project={project}
-          position={[-1.6, 0, 4.5]}
+          position={breakpoints.projectOpen ? [-1.6, 0, 4.5] : [0, -0.6, 4.5]}
         />
       )}
       {/* <group

@@ -1,10 +1,10 @@
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import { env } from 'process';
-import { createClient as createExperimentalTypesafeClient } from 'sanity-codegen';
+// import { createClient as createExperimentalTypesafeClient } from 'sanity-codegen';
 import createClient from '@sanity/client';
-// import { Project } from '../../generatedSanitySchemaTypes';
+import { Project } from '../../generatedSanitySchemaTypes';
 // eslint-disable-next-line import/no-relative-packages
-import { Documents } from '../../generatedSanitySchemaTypes';
+// import { Documents } from '../../generatedSanitySchemaTypes';
 
 const clientConfig = {
   projectId: env.SANITY_PROJECT_ID ?? '',
@@ -16,17 +16,16 @@ const clientConfig = {
 };
 
 // @ts-ignore
-export const sanityExperimentalTypesafeClient = createExperimentalTypesafeClient<Documents>({
-  ...clientConfig,
-  // @ts-ignore
-  fetch,
-});
+// export const sanityExperimentalTypesafeClient = createExperimentalTypesafeClient<Documents>({
+//   ...clientConfig,
+//   // @ts-ignore
+//   fetch,
+// });
 
 export const sanityClient = createClient(clientConfig);
 
 // For dummy content
 
-/*
 export const sanityExperimentalTypesafeClient = {
   getAll: (_:string):Project[] => (
     [
@@ -67,10 +66,10 @@ export const sanityExperimentalTypesafeClient = {
           },
         ],
         client: 'Handshake',
-        collaborators: [
+        designers: [
           {
             _key: 'ed83b79b9bf8',
-            _type: 'designers',
+            _type: 'designer',
             name: 'Stef Jung',
           },
         ],
@@ -315,16 +314,16 @@ export const sanityExperimentalTypesafeClient = {
           },
         ],
         client: 'Typeforce',
-        collaborators: [
+        designers: [
           {
             _key: 'a03cb751f494',
-            _type: 'designers',
+            _type: 'designer',
             name: 'Nermin Moufti',
             url: 'https://www.instagram.com/q_type/',
           },
           {
             _key: 'fb93cbaababe',
-            _type: 'designers',
+            _type: 'designer',
             name: 'Will Miller',
             url: 'https://www.instagram.com/q_type/',
           },
@@ -456,10 +455,10 @@ export const sanityExperimentalTypesafeClient = {
           },
         ],
         client: 'Typeforce',
-        collaborators: [
+        designers: [
           {
             _key: 'dd461d020829',
-            _type: 'designers',
+            _type: 'designer',
             name: 'Tom Tian',
             url: 'https://tomtian.com/',
           },
@@ -476,4 +475,3 @@ export const sanityExperimentalTypesafeClient = {
 
   ),
 };
-*/

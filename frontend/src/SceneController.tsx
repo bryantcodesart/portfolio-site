@@ -8,6 +8,7 @@ export const sceneNames = [
   'projects',
   'project-open',
   'error',
+  'about',
 ] as const;
 
 type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]

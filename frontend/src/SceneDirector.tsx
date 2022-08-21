@@ -54,19 +54,23 @@ export function SceneDirector({
   }
   if (scene === 'project-open') {
     stagePosition = [
-      projectListingPosition[0] - 0.6,
-      projectListingPosition[1],
+      projectListingPosition[0],
+      projectListingPosition[1] - 0.9,
       projectListingPosition[2] + 4.5,
     ];
-    stageSize = [2, 1.1];
+    stageSize = [0.1, 3];
     if (breakpoints.projectOpen) {
       stagePosition = [
         projectListingPosition[0] - 0.6,
         projectListingPosition[1],
         projectListingPosition[2] + 4.5,
       ];
-      stageSize = [2, 1.1];
+      stageSize = [2, 0.1];
     }
+  }
+  if (scene === 'about') {
+    stagePosition = [-1, 0.7, 2.1];
+    stageSize = [4.2, 3];
   }
 
   if (scene === 'error') {
@@ -97,7 +101,7 @@ export function SceneDirector({
         stagePosition={stagePosition as CoordArray}
         stageSize={stageSize as [number, number]}
         // debug
-        controllable={scene !== 'project-open'}
+        controllable={scene !== 'project-open' && scene !== 'about'}
       />
       <BackgroundScribbles />
       <Computer />
