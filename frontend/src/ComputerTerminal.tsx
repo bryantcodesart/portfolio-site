@@ -241,23 +241,50 @@ export function ComputerTerminal() {
 
   const [slide, setSlide] = useState<SlideName>('intro');
 
+  // We cant use drei/HTML transform property to manage the size of this div
+  // Why? Because a close camera will scale it up so much
+  // On Safari (which kinda isnt great for subpixel rendering things)
+  // it will be blurry
+  // Instead, we do trigonometry to get the exact pixel size
+
+  // Position and size of plane that our div should cover as closely as possible
   const position:CoordArray = [-1, 0.7, 2];
   const planeSizeInWorldUnits = [3.4, 2];
+
+  // Canvas is full window
   const windowSize = useWindowSize();
+
+  // The div we will style
   const terminalDivRef = useRef<HTMLDivElement>(null);
+
   useFrame(({ camera }) => {
     if (!terminalDivRef.current) return;
-    const perspectiveCamera = camera as PerspectiveCamera;
-    const vFOV = MathUtils.degToRad(perspectiveCamera.fov); // convert vertical fov to radians
 
+    // get FOV in radians
+    const perspectiveCamera = camera as PerspectiveCamera;
+    const vFOV = MathUtils.degToRad(perspectiveCamera.fov);
+
+    /** Distance of plane from camera */
     const dist = Math.abs(perspectiveCamera.position.z - position[2]);
-    const worldCameraHeight = 2 * Math.tan(vFOV / 2) * dist; // visible height
-    const worldCameraWidth = worldCameraHeight * perspectiveCamera.aspect; // visible width
+
+    /** Height of full plane in view of camera at this dist */
+    const worldCameraHeight = 2 * Math.tan(vFOV / 2) * dist;
+
+    /** Width of full plane in view of camera at this dist */
+    const worldCameraWidth = worldCameraHeight * perspectiveCamera.aspect;
+
+    /** Width of our plane in screen pixels */
     const planeWidthInPixels = (planeSizeInWorldUnits[0] / worldCameraWidth) * windowSize.width;
+
+    /** Height of our plane in screen pixels */
     const planeHeightInPixels = (planeSizeInWorldUnits[1] / worldCameraHeight) * windowSize.height;
 
+    // We can help out with responsive behavior here by limiting this
+    // div to be always smaller than the screen
     const width = Math.min(planeWidthInPixels, windowSize.width * 0.9);
     const height = Math.min(planeHeightInPixels, windowSize.height * 0.9);
+
+    // Apply sizing to our terminal div via CSS vars
     terminalDivRef.current.style.setProperty('--terminal-width', `${width}px`);
     terminalDivRef.current.style.setProperty('--terminal-height', `${height}px`);
   });
