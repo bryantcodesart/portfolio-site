@@ -23,32 +23,33 @@ export const TerminalWindow = ({
         ${showWindow ? '' : 'scale-0'}
         transition-transform ease-[steps(8)]
         duration-500
+        font-mono
+        text-[max(16px,1em)]
       `}
     >
       <div
         className={`absolute top-0 left-0 right-0 bottom-0
-          bg-black translate-x-[-1px] translate-y-[-1px]
+          bg-black translate-x-[-0.2em] translate-y-[-0.2em]
         `}
       />
       <div
-        className="border-[0.3px] border-black overflow-scroll text-black relative w-full h-full"
+        className="border-[2px] border-black overflow-scroll text-black relative w-full h-full"
         style={{
           backgroundColor: color,
         }}
       >
-        <div className="border-b-[0.3px] border-black grid place-items-center relative">
+        <div className="border-b-[2px] border-black grid place-items-center relative">
           {title}
-          <div className="border-black border-[0.3px] h-[2px] w-[2px] absolute right-[1px]" />
+          <div className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]" />
         </div>
         <div className="relative h-full">
-          <div className="p-[4px] h-full">{showWindow && children}</div>
+          <div className="p-[1em] h-full">{showWindow && children}</div>
         </div>
       </div>
     </div>
   );
 };
-
-export const TerminalButton = ({
+export const TerminalWindowButton = ({
   onClick, children, className = '', delay = 300, color, bgColor, shadow = true,
 }:{
   onClick: ()=>void,
@@ -67,7 +68,7 @@ export const TerminalButton = ({
         transition-transform ease-[steps(5)] duration-300
       `}
     >
-      {shadow && <div className="absolute top-0 left-0 right-0 bottom-0 bg-black translate-x-[-0.5px] translate-y-[-0.5px]" />}
+      {shadow && <div className="absolute top-0 left-0 right-0 bottom-0 bg-black translate-x-[-0.15em] translate-y-[-0.15em]" />}
       <button
         type="button"
         style={{
@@ -78,7 +79,42 @@ export const TerminalButton = ({
           color: 'var(--color)',
         }}
         className={`
-          border-[0.5px] border-[var(--color)] py-[2px] px-[4px]
+          border-[2px] border-[var(--color)] py-[0.5em] px-[1em]
+          relative
+          ${className}
+        `}
+        onClick={onClick}
+      >
+        {children}
+      </button>
+
+    </div>
+  );
+};
+
+export const TerminalButton = ({
+  onClick, children, className = '', delay = 300,
+}:{
+  onClick: ()=>void,
+  children: ReactNode,
+  className?: string,
+  delay?:number,
+}) => {
+  const show = useTrueAfterDelay(delay);
+  return (
+    <div
+      className={`relative
+        text-[2em]
+        ${show ? '' : 'scale-0'}
+        transition-transform ease-[steps(5)] duration-400
+      `}
+    >
+      <button
+        type="button"
+        className={`
+          border-[2px] border-white py-[0.5em] px-[0.5em] text-white
+          hover:bg-white
+          hover:text-blue
           relative
           ${className}
         `}
@@ -103,20 +139,17 @@ export const Slides = ({
   if (slide === 'intro') {
     return (
       <>
-        <Typewriter key={slide} className="p-[5px]">
+        <Typewriter key={slide} className="p-[1em] font-mono text-white text-[2em]">
           {`I'm Bryant! (he/him)
   I build web experiences`}
         </Typewriter>
-        <div className="grid place-items-center absolute bottom-[15px] w-full">
+        <div className="grid place-items-center absolute bottom-[15px] w-full font-mono">
           <TerminalButton
             onClick={() => {
               setScene('about');
               setSlide('design');
             }}
             delay={2000}
-            color="white"
-            bgColor="blue"
-            shadow={false}
           >
             ABOUT_BRYANT
           </TerminalButton>
@@ -130,20 +163,16 @@ export const Slides = ({
       <>
         <TerminalWindow
           title="ABOUT_BRYANT.exe"
-          className="absolute top-[10px] left-[10px] w-[73%] h-[80%] "
+          className="m-[1em] relative max-w-[20em]"
           delay={1000}
           key="about-bryant"
         >
-          <Typewriter>
-            {`I partner with awesome designers
-  to build their wildest dreams.
-
-  And I'm happiest
-when the finished product
-  makes people say, "woah."`}
+          <Typewriter className="max-w-full">
+            {`I partner with awesome designers to build their wildest dreams.
+            And I'm happiest when the finished product makes people say, "woah."`}
           </Typewriter>
-          <div className="absolute bottom-[10px] grid place-items-center w-full">
-            <TerminalButton
+          <div className="grid w-full place-items-center mt-[1em]">
+            <TerminalWindowButton
               onClick={() => {
                 setSlide('skills');
               }}
@@ -152,7 +181,7 @@ when the finished product
               bgColor="pink"
             >
               MY_SKILLS
-            </TerminalButton>
+            </TerminalWindowButton>
           </div>
         </TerminalWindow>
         <TerminalWindow
@@ -185,7 +214,7 @@ when the finished product
   But most of all I LOVE a challenge.`}
           </Typewriter>
           <div className="absolute bottom-[10px] grid place-items-center w-full">
-            <TerminalButton
+            <TerminalWindowButton
               onClick={() => {
                 setScene('menu');
                 setSlide('intro');
@@ -195,7 +224,7 @@ when the finished product
               bgColor="yellow"
             >
               HOME
-            </TerminalButton>
+            </TerminalWindowButton>
           </div>
         </TerminalWindow>
         <TerminalWindow
@@ -282,7 +311,7 @@ export function ComputerTerminal() {
     // We can help out with responsive behavior here by limiting this
     // div to be always smaller than the screen
     const width = Math.min(planeWidthInPixels, windowSize.width * 0.9);
-    const height = Math.min(planeHeightInPixels, windowSize.height * 0.9);
+    const height = Math.min(planeHeightInPixels, windowSize.height * 0.8);
 
     // Apply sizing to our terminal div via CSS vars
     terminalDivRef.current.style.setProperty('--terminal-width', `${width}px`);
@@ -309,7 +338,7 @@ export function ComputerTerminal() {
                 w-[var(--terminal-width)] h-[var(--terminal-height)]
                 "
               style={{
-                fontSize: 'calc(var(--terminal-width)/20)',
+                fontSize: 'calc(var(--terminal-width)/40)',
               }}
               ref={terminalDivRef}
             >

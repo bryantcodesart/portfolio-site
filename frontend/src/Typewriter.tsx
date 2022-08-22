@@ -36,7 +36,7 @@ export const ThreeTextTypewriter = ({
 };
 
 export const Typewriter = ({
-  children, showCarat = true, timePerChar = 40, className = '',
+  children, showCarat = true, timePerChar = 20, className = '',
 }:{
   children: string;
   showCarat?: boolean;
@@ -62,6 +62,16 @@ export const Typewriter = ({
   }, 300);
 
   return (
-    <pre className={className}>{text + (showCarat && caratVisible ? '_' : '')}</pre>
+    <p className={`relative ${className}`}>
+      <div className="relative">
+        <div className="absolute top-0 left-0 w-full h-full">
+          <span className="relative">
+            {text}
+            <span className="absolute right-0 translate-x-full">{showCarat && caratVisible ? '_' : ''}</span>
+          </span>
+        </div>
+        <span className="opacity-25">{targetText}</span>
+      </div>
+    </p>
   );
 };
