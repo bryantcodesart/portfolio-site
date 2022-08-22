@@ -8,23 +8,30 @@ import { CoordArray } from './CoordArray';
 import { CustomCursorContext, CustomCursorHover, useCustomCursor } from './CustomCursor';
 import { SceneName, useSceneController } from './SceneController';
 import { Typewriter } from './Typewriter';
+import { useBreakpoints } from './useBreakpoints';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
 // import { fontUrls } from './typography';
 
 export const TerminalWindow = ({
-  children, title, className = '', delay = 300, color = 'cyan',
+  children, title, className = '', delay = 300, color = 'cyan', topColor = 'lime',
 }:{
-  children:ReactNode, title:string, className?:string, delay?:number, color?:string
+  children:ReactNode,
+  title:string,
+  className?:string,
+  delay?:number,
+  color?:string,
+  topColor?:string
 }) => {
   const showWindow = useTrueAfterDelay(delay);
   return (
     <div
-      className={` ${className}
+      className={` relative
         ${showWindow ? '' : 'scale-0'}
         transition-transform ease-[steps(8)]
         duration-500
         font-mono
         text-[max(16px,1em)]
+        ${className}
       `}
     >
       <div
@@ -33,16 +40,21 @@ export const TerminalWindow = ({
         `}
       />
       <div
-        className="border-[2px] border-black overflow-scroll text-black relative w-full h-full"
+        className="border-[2px] border-black overflow-hidden text-black relative w-full h-full"
         style={{
           backgroundColor: color,
         }}
       >
-        <div className="border-b-[2px] border-black grid place-items-center relative">
+        <div
+          className="border-b-[2px] border-black grid place-items-center relative"
+          style={{
+            backgroundColor: topColor,
+          }}
+        >
           {title}
           <div className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]" />
         </div>
-        <div className="relative h-full">
+        <div className="relative h-[calc(100%-0.75em)]">
           <div className="p-[1em] h-full">{showWindow && children}</div>
         </div>
       </div>
@@ -64,7 +76,7 @@ export const TerminalWindowButton = ({
   return (
     <div
       className={`relative
-        ${show ? '' : 'scale-0'}
+        ${show ? '' : 'scale-0 opacity-0'}
         transition-transform ease-[steps(5)] duration-300
       `}
     >
@@ -72,7 +84,7 @@ export const TerminalWindowButton = ({
       <button
         type="button"
         style={{
-        // @ts-ignore
+          // @ts-ignore
           '--color': color,
           '--bgColor': bgColor,
           backgroundColor: 'var(--bgColor)',
@@ -104,7 +116,6 @@ export const TerminalButton = ({
   return (
     <div
       className={`relative
-        text-[2em]
         ${show ? '' : 'scale-0'}
         transition-transform ease-[steps(5)] duration-400
       `}
@@ -136,51 +147,62 @@ export const Slides = ({
   setScene:(_scene:SceneName)=>void,
   setSlide:(_slide:SlideName)=>void
 }) => {
+  const breakpoints = useBreakpoints();
   if (slide === 'intro') {
     return (
-      <>
-        <Typewriter key={slide} className="p-[1em] font-mono text-white text-[2em]">
-          {`I'm Bryant! (he/him)
-  I build web experiences`}
+      <div className="p-[1em] font-mono text-white text-[2em]">
+        <Typewriter delay={1000} hideCaratAtEnd>
+          {'I\'m Bryant! (he/him)'}
         </Typewriter>
-        <div className="grid place-items-center absolute bottom-[15px] w-full font-mono">
+        <Typewriter delay={1500}>
+          I build web experiences
+        </Typewriter>
+        <div className="grid place-items-center mt-[2em]">
           <TerminalButton
             onClick={() => {
               setScene('about');
               setSlide('design');
             }}
-            delay={2000}
+            delay={2500}
           >
             ABOUT_BRYANT
           </TerminalButton>
         </div>
-      </>
+      </div>
     );
   }
 
   if (slide === 'design') {
     return (
-      <>
+      <div
+        className={`
+          grid h-full
+          ${breakpoints.about ? 'grid-cols-2 ' : ''}
+        `}
+      >
         <TerminalWindow
           title="ABOUT_BRYANT.exe"
-          className="m-[1em] relative max-w-[20em]"
+          className="relative max-w-[20em] self-baseline m-[1em]"
           delay={1000}
-          key="about-bryant"
+          topColor="violet"
         >
-          <Typewriter className="max-w-full">
-            {`I partner with awesome designers to build their wildest dreams.
-            And I'm happiest when the finished product makes people say, "woah."`}
+          <Typewriter className="" hideCaratAtEnd key="wildest-dreams">
+            I help awesome designers build their wildest dreams.
           </Typewriter>
-          <div className="grid w-full place-items-center mt-[1em]">
+
+          <Typewriter className="mt-[1em]" delay={2500} key="together">
+            {'Together, we\'ll make your client\'s project stand out from the crowd–and have users saying, "woah."'}
+          </Typewriter>
+          <div className="grid place-items-center mt-[2em]">
             <TerminalWindowButton
               onClick={() => {
                 setSlide('skills');
               }}
-              delay={6000}
+              delay={5500}
               color="black"
               bgColor="pink"
             >
-              MY_SKILLS
+              Tell me more!
             </TerminalWindowButton>
           </div>
         </TerminalWindow>
@@ -188,12 +210,30 @@ export const Slides = ({
           delay={200}
           title="SELF_CONCEPT.jpg"
           color="lime"
-          className="absolute bottom-[11px] right-[10px] w-[40px] h-[40px]"
-          key="self-portrait"
+          className={`
+            ${breakpoints.about ? 'w-[17em] h-[15em]' : 'w-[14em] h-[9em]'}
+            self-end justify-self-end
+          `}
         >
-          <Image src="/images/self-portrait.jpg" layout="fill" className="border-[0.5px] border-black" />
+          <Image
+            src="/images/self-portrait.jpg"
+            layout="fill"
+            objectFit="cover"
+            className="border-[0.5px] border-black"
+          />
         </TerminalWindow>
-      </>
+        <div className={`${breakpoints.about ? 'absolute top-0 right-0' : ''}`}>
+          <TerminalButton
+            onClick={() => {
+              setScene('menu');
+              setSlide('intro');
+            }}
+            className="font-mono text-[14px] m-[1em]"
+          >
+            BACK_TO_MENU
+          </TerminalButton>
+        </div>
+      </div>
     );
   }
 
@@ -323,16 +363,16 @@ export function ComputerTerminal() {
       position={position}
       rotation={[0, 0, Math.PI / 40]}
     >
-      <mesh renderOrder={2}>
+      {/* <mesh renderOrder={2}>
         <boxGeometry args={[...planeSizeInWorldUnits, 0.1] as CoordArray} />
         <meshStandardMaterial color="red" transparent opacity={0.5} depthTest={false} />
-      </mesh>
+      </mesh> */}
       <Html>
         <CustomCursorContext.Provider value={customCursor}>
           <CustomCursorHover cursor="terminal">
             <div
               className="
-                bg-[green] border-[red] border-2
+               border-[red] border-[1px]
                 overflow-hidden
                 rotate-[-5deg] -translate-x-1/2 -translate-y-1/2
                 w-[var(--terminal-width)] h-[var(--terminal-height)]
@@ -342,9 +382,7 @@ export function ComputerTerminal() {
               }}
               ref={terminalDivRef}
             >
-              <div className="">
-                <Slides slide={slide} setSlide={setSlide} setScene={setScene} />
-              </div>
+              <Slides slide={slide} setSlide={setSlide} setScene={setScene} key={slide} />
             </div>
           </CustomCursorHover>
         </CustomCursorContext.Provider>
