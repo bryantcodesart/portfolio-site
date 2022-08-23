@@ -1,28 +1,36 @@
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import Image from 'next/image';
-import React, { ReactNode, useRef, useState } from 'react';
+import React, {
+  ReactNode, useRef, useState,
+} from 'react';
 import { MathUtils, PerspectiveCamera } from 'three';
 import { useWindowSize } from 'usehooks-ts';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { CoordArray } from './CoordArray';
 import { CustomCursorContext, CustomCursorHover, useCustomCursor } from './CustomCursor';
+import { useRandomGif } from './useRandomGif';
 import { SceneName, useSceneController } from './SceneController';
-import { Typewriter } from './Typewriter';
+import { Typewriter, TIME_PER_CHAR } from './Typewriter';
 import { useBreakpoints } from './useBreakpoints';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
+import { queryClient } from './queryClient';
 // import { fontUrls } from './typography';
 
 export const TerminalWindow = ({
   children, title, className = '', delay = 300, color = 'cyan', topColor = 'lime',
+  wrapperClassName = '',
 }:{
   children:ReactNode,
-  title:string,
+  title:string|null,
   className?:string,
   delay?:number,
   color?:string,
   topColor?:string
+  wrapperClassName?:string
 }) => {
   const showWindow = useTrueAfterDelay(delay);
+  const breakpoints = useBreakpoints();
   return (
     <div
       className={` relative
@@ -30,77 +38,86 @@ export const TerminalWindow = ({
         transition-transform ease-[steps(8)]
         duration-500
         font-mono
-        text-[max(16px,1em)]
+
+        border-[2px] border-black overflow-hidden text-black relative
+        flex flex-col
+        ${breakpoints.about ? 'text-[1em]' : 'text-[max(1em,16px)]'}
         ${className}
       `}
+      style={{
+        boxShadow: '-0.2em -0.2em black',
+      }}
     >
+      {title && (
       <div
-        className={`absolute top-0 left-0 right-0 bottom-0
-          bg-black translate-x-[-0.2em] translate-y-[-0.2em]
-        `}
-      />
+        className="border-b-[2px] border-black grid place-items-center relative"
+        style={{
+          backgroundColor: topColor,
+        }}
+      >
+        {title}
+        <div className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]" />
+      </div>
+      )}
       <div
-        className="border-[2px] border-black overflow-hidden text-black relative w-full h-full"
+        className={`flex-grow relative ${wrapperClassName}`}
         style={{
           backgroundColor: color,
         }}
       >
-        <div
-          className="border-b-[2px] border-black grid place-items-center relative"
-          style={{
-            backgroundColor: topColor,
-          }}
-        >
-          {title}
-          <div className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]" />
-        </div>
-        <div className="relative h-[calc(100%-0.75em)]">
-          <div className="p-[1em] h-full">{showWindow && children}</div>
-        </div>
+        {showWindow && children}
       </div>
     </div>
   );
 };
+
 export const TerminalWindowButton = ({
-  onClick, children, className = '', delay = 300, color, bgColor, shadow = true,
+  onClick, children, className = '', delay = 300, color, bgColor,
 }:{
   onClick: ()=>void,
   children: ReactNode,
   className?: string,
   delay?:number,
   color:string,
-  bgColor:string,
-  shadow?:boolean
+  bgColor:string
 }) => {
   const show = useTrueAfterDelay(delay);
   return (
-    <div
-      className={`relative
+    <button
+      type="button"
+      style={{
+        // @ts-ignore
+        '--color': color,
+        '--bgColor': bgColor,
+        color: 'var(--color)',
+      }}
+      className={`
+        relative
         ${show ? '' : 'scale-0 opacity-0'}
         transition-transform ease-[steps(5)] duration-300
+        group
+        ${className}
       `}
+      onClick={onClick}
     >
-      {shadow && <div className="absolute top-0 left-0 right-0 bottom-0 bg-black translate-x-[-0.15em] translate-y-[-0.15em]" />}
-      <button
-        type="button"
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-black group-active:scale-75"
+      />
+      <div
+        className="border-[2px] border-[var(--color)]
+        py-[0.5em] px-[1em] pointer-events-none
+        translate-x-[0.15em] translate-y-[0.15em]
+        group-hover:translate-x-0
+        group-hover:translate-y-0
+        group-active:scale-75
+        "
         style={{
-          // @ts-ignore
-          '--color': color,
-          '--bgColor': bgColor,
           backgroundColor: 'var(--bgColor)',
-          color: 'var(--color)',
         }}
-        className={`
-          border-[2px] border-[var(--color)] py-[0.5em] px-[1em]
-          relative
-          ${className}
-        `}
-        onClick={onClick}
       >
         {children}
-      </button>
-
-    </div>
+      </div>
+    </button>
   );
 };
 
@@ -138,7 +155,129 @@ export const TerminalButton = ({
   );
 };
 
-type SlideName = 'intro' | 'design' | 'skills'
+type TerminalWindowProps = React.ComponentProps<typeof TerminalWindow>
+const TextWindow = ({
+  texts, buttonColor = 'cyan',
+  buttonText = 'button!', onClick = () => {},
+  textMargin = '1em', noButton = false,
+  ...terminalWindowProps
+}: {
+  texts: string[],
+  buttonColor?: string,
+  buttonText?: string|null,
+  textMargin?: string,
+  noButton?: boolean,
+  onClick?: ()=>void
+} & Omit<TerminalWindowProps, 'children'>) => {
+  const pauseBetween = 500;
+  const startDelay = 500;
+  const delays = [startDelay, ...texts.map((text, i, array) => {
+    const charCountSoFar = array.slice(0, i + 1).reduce((acc, cur) => acc + cur.length, 0);
+    return startDelay + charCountSoFar * TIME_PER_CHAR + pauseBetween * (i + 1);
+  })];
+  return (
+    <TerminalWindow {...terminalWindowProps}>
+      {texts.map((text, i, array) => (
+        <div
+          style={{ marginTop: i !== 0 ? textMargin : 0 }}
+        >
+          <Typewriter
+            key={text}
+            delay={delays[i]}
+            hideCaratAtEnd={i !== array.length - 1}
+          >
+            {text}
+          </Typewriter>
+        </div>
+      ))}
+      {!noButton && (
+      <div className="grid place-items-center mt-[2em]">
+        <TerminalWindowButton
+          onClick={onClick}
+          delay={delays[delays.length - 1]}
+          color="black"
+          bgColor={buttonColor}
+        >
+          {buttonText}
+        </TerminalWindowButton>
+      </div>
+      )}
+    </TerminalWindow>
+  );
+};
+
+const SkillSlideshowWindow = ({
+  texts,
+  buttonColor = 'cyan',
+  ...terminalWindowProps
+}: {
+  texts: string[],
+  buttonColor: string,
+  onClick?: ()=>void
+} & Omit<TerminalWindowProps, 'children'>) => {
+  const [textIndex, setTextIndex] = useState(0);
+
+  const { gif, newGif } = useRandomGif();
+  const nextText = () => {
+    newGif();
+    setTextIndex((index) => (index + 1) % texts.length);
+  };
+  const prevText = () => {
+    newGif();
+    setTextIndex((index) => (index - 1 + texts.length) % texts.length);
+  };
+
+  const text = texts[textIndex];
+
+  return (
+    <TerminalWindow {...terminalWindowProps}>
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-center bg-cover"
+        style={{
+          backgroundImage: `url(${gif?.images.downsized_large.url})`,
+        }}
+      />
+      <Typewriter
+        delay={500}
+        className="min-h-[5em] bg-white bg-opacity-90"
+        timePerChar={10}
+      >
+        {text}
+      </Typewriter>
+      <div className="flex justify-between mt-[2em]">
+        <TerminalWindowButton
+          onClick={prevText}
+          delay={500}
+          color="black"
+          bgColor={buttonColor}
+        >
+          &lt; PREV
+        </TerminalWindowButton>
+        <TerminalWindowButton
+          onClick={nextText}
+          delay={500}
+          color="black"
+          bgColor={buttonColor}
+        >
+          NEXT SKILL &gt;
+        </TerminalWindowButton>
+      </div>
+    </TerminalWindow>
+  );
+};
+
+export const ImageWindow = ({ srcs, alts, ...terminalWindowProps }: {
+  srcs: string[],
+  alts: string[],
+} & Omit<TerminalWindowProps, 'children'>) => (
+  <TerminalWindow
+    {...terminalWindowProps}
+  >
+    <Image src={srcs[0]} layout="fill" objectFit="cover" alt={alts[0]} />
+  </TerminalWindow>
+);
+
+type SlideName = 'intro' | 'mission' | 'process' | 'skills'
 
 export const Slides = ({
   slide, setScene, setSlide,
@@ -149,21 +288,24 @@ export const Slides = ({
 }) => {
   const breakpoints = useBreakpoints();
   if (slide === 'intro') {
+    const text1Delay = 1000;
+    const text2Delay = text1Delay + 22 * TIME_PER_CHAR + 300;
+    const buttonDelay = text2Delay + 23 * TIME_PER_CHAR + 300;
     return (
       <div className="p-[1em] font-mono text-white text-[2em]">
-        <Typewriter delay={1000} hideCaratAtEnd>
+        <Typewriter delay={text1Delay} hideCaratAtEnd>
           {'I\'m Bryant! (he/him)'}
         </Typewriter>
-        <Typewriter delay={1500}>
+        <Typewriter delay={text2Delay}>
           I build web experiences
         </Typewriter>
         <div className="grid place-items-center mt-[2em]">
           <TerminalButton
             onClick={() => {
               setScene('about');
-              setSlide('design');
+              setSlide('mission');
             }}
-            delay={2500}
+            delay={buttonDelay}
           >
             ABOUT_BRYANT
           </TerminalButton>
@@ -172,132 +314,172 @@ export const Slides = ({
     );
   }
 
-  if (slide === 'design') {
+  if (slide === 'mission') {
     return (
       <div
         className={`
           grid h-full
-          ${breakpoints.about ? 'grid-cols-2 ' : ''}
+          ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[max-content_1fr]'}
         `}
       >
-        <TerminalWindow
-          title="ABOUT_BRYANT.exe"
-          className="relative max-w-[20em] self-baseline m-[1em]"
+        <TextWindow
+          title="BRYANT_SMITH.exe"
+          className={`
+            relative self-baseline
+            ${breakpoints.about ? '' : `
+              w-[90%] max-w-[30em] justify-self-start
+            `}
+          `}
           delay={1000}
           topColor="violet"
-        >
-          <Typewriter className="" hideCaratAtEnd key="wildest-dreams">
-            I help awesome designers build their wildest dreams.
-          </Typewriter>
-
-          <Typewriter className="mt-[1em]" delay={2500} key="together">
-            {'Together, we\'ll make your client\'s project stand out from the crowd–and have users saying, "woah."'}
-          </Typewriter>
-          <div className="grid place-items-center mt-[2em]">
-            <TerminalWindowButton
-              onClick={() => {
-                setSlide('skills');
-              }}
-              delay={5500}
-              color="black"
-              bgColor="pink"
-            >
-              Tell me more!
-            </TerminalWindowButton>
-          </div>
-        </TerminalWindow>
-        <TerminalWindow
-          delay={200}
+          wrapperClassName="p-[1em] pb-[3em]"
+          texts={[
+            'I help awesome designers (like you) build their wildest dreams.',
+            'Together, let\'s make something that stands out from the crowd––',
+            'and have users saying, "woah."',
+          ]}
+          buttonColor="pink"
+          buttonText="tell me more!"
+          onClick={() => {
+            setSlide('process');
+          }}
+        />
+        <ImageWindow
+          delay={300}
           title="SELF_CONCEPT.jpg"
           color="lime"
           className={`
-            ${breakpoints.about ? 'w-[17em] h-[15em]' : 'w-[14em] h-[9em]'}
-            self-end justify-self-end
+            ${breakpoints.about ? `
+              self-end min-h-[12em] ml-[-1em]
+            ` : `
+              w-[90%] max-w-[30em]
+              justify-self-end  mt-[-1.5em]
+            `}
           `}
-        >
-          <Image
-            src="/images/self-portrait.jpg"
-            layout="fill"
-            objectFit="cover"
-            className="border-[0.5px] border-black"
-          />
-        </TerminalWindow>
-        <div className={`${breakpoints.about ? 'absolute top-0 right-0' : ''}`}>
-          <TerminalButton
-            onClick={() => {
-              setScene('menu');
-              setSlide('intro');
-            }}
-            className="font-mono text-[14px] m-[1em]"
-          >
-            BACK_TO_MENU
-          </TerminalButton>
-        </div>
+          srcs={['/images/self-portrait.jpg']}
+          alts={['Crayon illustration of Bryant from decades ago.']}
+        />
+      </div>
+    );
+  }
+
+  if (slide === 'process') {
+    return (
+      <div
+        className={`
+          grid h-full
+          ${breakpoints.about ? 'grid-cols-[1fr_65%]' : 'grid-rows-[1fr_max-content]'}
+        `}
+      >
+        <ImageWindow
+          delay={8000}
+          title="MY_DOG_HAILEY.jpg"
+          topColor="cyan"
+          className={`
+            ${breakpoints.about ? `
+              self-end min-h-[18em] mr-[-2em]
+            ` : `
+              w-[90%] max-w-[20em]
+              justify-self-end mb-[-2em]
+            `}
+          `}
+          srcs={['/images/hailey.jpg']}
+          alts={['My dog Hailey smiling her crazy smile.']}
+        />
+
+        <TextWindow
+          title="MY_PROCESS.exe"
+          className={`
+            relative self-baseline
+            ${breakpoints.about ? '' : `
+              w-[90%] max-w-[30em] justify-self-start
+            `}
+          `}
+          delay={100}
+          topColor="yellow"
+          color="lime"
+          wrapperClassName="p-[1em]"
+          texts={[
+            'I am a full stack web developer––and a trusted creative collaborator.',
+            'I\'ll help you brainstorm, map the technical landscape, and solution to protect your budget & timeline.',
+            'I want to realize your vision down to the pixel.',
+          ]}
+          buttonColor="violet"
+          buttonText="skills tho?"
+          onClick={() => {
+            setSlide('skills');
+          }}
+        />
       </div>
     );
   }
 
   if (slide === 'skills') {
     return (
-      <>
-        <TerminalWindow
-          title="BRYANT_SKILLS.exe"
-          color="lime"
-          className="absolute top-[4px] left-[4px] w-[85%] h-[65%] "
-          delay={500}
-          key="skills"
-        >
-          <Typewriter>
-            {`I am a full stack developer who
- specializes in high-concept creative
-    front-ends.
-  But most of all I LOVE a challenge.`}
-          </Typewriter>
-          <div className="absolute bottom-[10px] grid place-items-center w-full">
-            <TerminalWindowButton
-              onClick={() => {
-                setScene('menu');
-                setSlide('intro');
-              }}
-              delay={5000}
-              color="black"
-              bgColor="yellow"
-            >
-              HOME
-            </TerminalWindowButton>
-          </div>
-        </TerminalWindow>
-        <TerminalWindow
-          delay={800}
-          title="MY_PUPPY_HAILEY.jpg"
-          color="cyan"
-          className="absolute bottom-[2px] left-[2px] w-[40px] h-[40px]"
-          key="puppy"
-        >
-          <Image src="/images/hailey.jpg" layout="fill" className="border-[0.5px] border-black" />
-        </TerminalWindow>
-        <TerminalWindow
-          delay={6100}
-          title="TECH_I_LOVE.exe"
-          color="pink"
-          className="absolute top-[0px] right-[2px] w-[42px] h-[77px]"
-          key="list-of-tech"
-        >
-          <Typewriter className="" showCarat={false}>
-            {`• React
-• NextJS
-• CSS
-• Tailwind
-• WebGL
-• Three.js/R3F
-• GLSL
-• Node
-• Sanity
-• webRTC
-• socketIO`}
-          </Typewriter>
-        </TerminalWindow>
-      </>
+      <div
+        className={`
+          grid h-full relative
+          ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[1fr_max-content]'}
+        `}
+      >
+        {/* <ImageWindow
+          delay={7000}
+          title="MY_DOG_HAILEY.jpg"
+          topColor="cyan"
+          className={`
+            ${breakpoints.about ? `
+              self-end min-h-[18em] mr-[-2em]
+            ` : `
+              w-[90%] max-w-[20em]
+              justify-self-end mb-[-2em]
+            `}
+          `}
+          srcs={['/images/hailey.jpg']}
+          alts={['My dog Hailey smiling her crazy smile.']}
+        /> */}
+
+        <SkillSlideshowWindow
+          title="SKILLS.exe"
+          className={`
+            relative self-stretch
+            min-h-[20em]
+            ${breakpoints.about ? '' : `
+              w-full justify-self-start
+            `}
+          `}
+          delay={100}
+          topColor="yellow"
+          color="white"
+          buttonColor="cyan"
+          wrapperClassName="p-[1em]"
+          texts={[
+            '+ 7 years w/ best-in-class designers building award-winning projects.',
+            '+ command of design systems',
+            '+ communication/project management--leading up, down, and laterally',
+            '+ multimedia, animation, & interactive',
+            '+ 20% mad scientist, 20% challenge addict, 60% UX advocate',
+          ]}
+        />
+        <TextWindow
+          title={null}
+          className={`
+            relative self-end
+            text-white
+            ${breakpoints.about ? 'mb-[1em]' : `
+              w-full justify-self-start
+            `}
+          `}
+          delay={100}
+          color="#222"
+          wrapperClassName="p-[0.5em]"
+          textMargin="0"
+          texts={[
+            '> FAVORITE_TECH:',
+            'React, NextJS, Typescript, Tailwind, CSS/PostCSS, Three.js/R3f, WebGL, GLSL/Shaders, Sanity, Node, Figma, Adobe Suite',
+          ]}
+          noButton
+        />
+      </div>
     );
   }
 
@@ -322,6 +504,8 @@ export function ComputerTerminal() {
 
   // Canvas is full window
   const windowSize = useWindowSize();
+
+  const breakpoints = useBreakpoints();
 
   // The div we will style
   const terminalDivRef = useRef<HTMLDivElement>(null);
@@ -368,24 +552,25 @@ export function ComputerTerminal() {
         <meshStandardMaterial color="red" transparent opacity={0.5} depthTest={false} />
       </mesh> */}
       <Html>
-        <CustomCursorContext.Provider value={customCursor}>
-          <CustomCursorHover cursor="terminal">
-            <div
-              className="
-               border-[red] border-[1px]
-                overflow-hidden
-                rotate-[-5deg] -translate-x-1/2 -translate-y-1/2
+        <QueryClientProvider client={queryClient}>
+          <CustomCursorContext.Provider value={customCursor}>
+            <CustomCursorHover cursor="terminal">
+              <div
+                className={`
+                ${breakpoints.about ? 'rotate-[-5deg]' : 'rotate-[-3deg]'}
+                 -translate-x-1/2 -translate-y-1/2
                 w-[var(--terminal-width)] h-[var(--terminal-height)]
-                "
-              style={{
-                fontSize: 'calc(var(--terminal-width)/40)',
-              }}
-              ref={terminalDivRef}
-            >
-              <Slides slide={slide} setSlide={setSlide} setScene={setScene} key={slide} />
-            </div>
-          </CustomCursorHover>
-        </CustomCursorContext.Provider>
+              `}
+                style={{
+                  fontSize: 'calc(var(--terminal-width)/40)',
+                }}
+                ref={terminalDivRef}
+              >
+                <Slides slide={slide} setSlide={setSlide} setScene={setScene} key={slide} />
+              </div>
+            </CustomCursorHover>
+          </CustomCursorContext.Provider>
+        </QueryClientProvider>
       </Html>
     </group>
   );

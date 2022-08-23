@@ -5,6 +5,8 @@ import { useTrueAfterDelay } from './useTrueAfterDelay';
 
 type TextProps = React.ComponentProps<typeof Text>;
 
+export const TIME_PER_CHAR = 25;
+
 export const ThreeTextTypewriter = ({
   children, showCarat = true, timePerChar = 20, delay = 100, ...textProps
 }:
@@ -40,7 +42,7 @@ export const ThreeTextTypewriter = ({
 
 export const Typewriter = ({
   children, showCarat = true,
-  timePerChar = 30, className = '', delay = 100,
+  timePerChar = TIME_PER_CHAR, className = '', delay = 100,
   hideCaratAtEnd = false,
 }:{
   children: string;
@@ -80,15 +82,15 @@ export const Typewriter = ({
 
   return (
     <p className={`relative ${className}`}>
-      <div className="relative">
-        <div className="absolute top-0 left-0 w-full h-full">
+      <span className="relative block">
+        <span className="absolute top-0 left-0 block w-full h-full">
           <span className="relative">
             {text}
             <span className="absolute right-0 translate-x-full">{caratVisible ? '_' : ''}</span>
           </span>
-        </div>
+        </span>
         <span className="opacity-0">{targetText}</span>
-      </div>
+      </span>
     </p>
   );
 };

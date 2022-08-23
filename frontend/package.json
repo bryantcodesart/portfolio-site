@@ -10,6 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@giphy/js-fetch-api": "^4.4.0",
+    "@giphy/js-types": "^4.2.1",
+    "@giphy/react-components": "^6.1.1",
     "@mantine/hooks": "^4.2.12",
     "@portabletext/react": "^1.0.6",
     "@quatrefoil/meshline": "^1.3.0-a1",
@@ -22,6 +25,7 @@
     "@react-three/postprocessing": "^2.6.0",
     "@sanity/client": "^3.3.2",
     "@sanity/image-url": "^1.0.1",
+    "@tanstack/react-query": "^4.2.1",
     "@u-wave/react-vimeo": "^0.9.8",
     "babel-plugin-glsl": "^1.0.0",
     "babel-plugin-macros": "^3.1.0",
@@ -33,6 +37,7 @@
     "node-fetch": "^3.2.9",
     "postprocessing": "^6.28.5",
     "react": "^18.2.0",
+    "react-async-hook": "^4.0.0",
     "react-dom": "^18.2.0",
     "react-merge-refs": "^2.0.1",
     "react-spinners": "^0.13.4",
