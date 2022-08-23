@@ -7,9 +7,10 @@ import React, {
 import { MathUtils, PerspectiveCamera } from 'three';
 import { useWindowSize } from 'usehooks-ts';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { CoordArray } from './CoordArray';
 import { CustomCursorContext, CustomCursorHover, useCustomCursor } from './CustomCursor';
-import { useRandomGif } from './useRandomGif';
+// import { useRandomGif } from './useRandomGif';
 import { SceneName, useSceneController } from './SceneController';
 import { Typewriter, TIME_PER_CHAR } from './Typewriter';
 import { useBreakpoints } from './useBreakpoints';
@@ -31,43 +32,67 @@ export const TerminalWindow = ({
 }) => {
   const showWindow = useTrueAfterDelay(delay);
   const breakpoints = useBreakpoints();
+  const [flipped, setFlipped] = useState(false);
   return (
-    <div
-      className={` relative
+    <motion.div
+      drag
+      // whileTap={{ scale: 0.9 }}
+      // dragSnapToOrigin
+      dragMomentum={false}
+      className={`relative  text-black ${className}`}
+    >
+      {/* eslint-disable jsx-a11y/click-events-have-key-events  */}
+      {/* eslint-disable jsx-a11y/no-static-element-interactions */}
+      <div
+        className={`
         ${showWindow ? '' : 'scale-0'}
         transition-transform ease-[steps(8)]
         duration-500
         font-mono
+        min-h-full
 
-        border-[2px] border-black overflow-hidden text-black relative
+        border-[2px] border-black overflow-hidden relative
         flex flex-col
         ${breakpoints.about ? 'text-[1em]' : 'text-[max(1em,16px)]'}
-        ${className}
+        ${flipped ? 'rotate-180' : ''}
       `}
-      style={{
-        boxShadow: '-0.2em -0.2em black',
-      }}
-    >
-      {title && (
-      <div
-        className="border-b-[2px] border-black grid place-items-center relative"
         style={{
-          backgroundColor: topColor,
+          boxShadow: '-0.2em -0.2em black',
+        }}
+        onClick={() => {
+          if (flipped) setFlipped(false);
         }}
       >
-        {title}
-        <div className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]" />
+        {/* eslint-enable jsx-a11y/click-events-have-key-events  */}
+        {/* eslint-enable jsx-a11y/no-static-element-interactions */}
+        {title && (
+        <div
+          className="border-b-[2px] border-black grid place-items-center relative"
+          style={{
+            backgroundColor: topColor,
+          }}
+        >
+          {title}
+          <button
+            className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]"
+            aria-label="silly"
+            type="button"
+            onClick={() => {
+              setFlipped(!flipped);
+            }}
+          />
+        </div>
+        )}
+        <div
+          className={`flex-grow relative ${wrapperClassName}`}
+          style={{
+            backgroundColor: color,
+          }}
+        >
+          {children}
+        </div>
       </div>
-      )}
-      <div
-        className={`flex-grow relative ${wrapperClassName}`}
-        style={{
-          backgroundColor: color,
-        }}
-      >
-        {showWindow && children}
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -217,13 +242,13 @@ const SkillSlideshowWindow = ({
 } & Omit<TerminalWindowProps, 'children'>) => {
   const [textIndex, setTextIndex] = useState(0);
 
-  const { gif, newGif } = useRandomGif();
+  // const { gif, newGif } = useRandomGif();
   const nextText = () => {
-    newGif();
+    // newGif();
     setTextIndex((index) => (index + 1) % texts.length);
   };
   const prevText = () => {
-    newGif();
+    // newGif();
     setTextIndex((index) => (index - 1 + texts.length) % texts.length);
   };
 
@@ -231,15 +256,15 @@ const SkillSlideshowWindow = ({
 
   return (
     <TerminalWindow {...terminalWindowProps}>
-      <div
+      {/* <div
         className="absolute top-0 left-0 w-full h-full bg-center bg-cover"
         style={{
           backgroundImage: `url(${gif?.images.downsized_large.url})`,
         }}
-      />
+      /> */}
       <Typewriter
         delay={500}
-        className="min-h-[5em] bg-white bg-opacity-90"
+        className="bg-white bg-opacity-90" // min-h-[7em]
         timePerChar={10}
       >
         {text}
@@ -266,14 +291,17 @@ const SkillSlideshowWindow = ({
   );
 };
 
-export const ImageWindow = ({ srcs, alts, ...terminalWindowProps }: {
+export const ImageWindow = ({
+  srcs, alts, positions, ...terminalWindowProps
+}: {
   srcs: string[],
   alts: string[],
+  positions: (string | number)[]
 } & Omit<TerminalWindowProps, 'children'>) => (
   <TerminalWindow
     {...terminalWindowProps}
   >
-    <Image src={srcs[0]} layout="fill" objectFit="cover" alt={alts[0]} />
+    <Image src={srcs[0]} layout="fill" objectFit="cover" objectPosition={positions[0]} alt={alts[0]} className="pointer-events-none" />
   </TerminalWindow>
 );
 
@@ -347,10 +375,11 @@ export const Slides = ({
         <ImageWindow
           delay={300}
           title="SELF_CONCEPT.jpg"
+          positions={['center']}
           color="lime"
           className={`
             ${breakpoints.about ? `
-              self-end min-h-[12em] ml-[-1em]
+              self-end min-h-[12em] h-[13em] ml-[-1em]
             ` : `
               w-[90%] max-w-[30em]
               justify-self-end  mt-[-1.5em]
@@ -372,18 +401,19 @@ export const Slides = ({
         `}
       >
         <ImageWindow
-          delay={8000}
+          delay={100}
           title="MY_DOG_HAILEY.jpg"
           topColor="cyan"
+          positions={['60% 15%']}
           className={`
             ${breakpoints.about ? `
-              self-end min-h-[18em] mr-[-2em]
+              self-end h-[18em] mr-[-2em] min-w-[12em] mb-[1em]
             ` : `
-              w-[90%] max-w-[20em]
+              w-[90%] max-w-[25em]
               justify-self-end mb-[-2em]
             `}
           `}
-          srcs={['/images/hailey.jpg']}
+          srcs={['/images/hailey2.jpg']}
           alts={['My dog Hailey smiling her crazy smile.']}
         />
 
@@ -392,17 +422,17 @@ export const Slides = ({
           className={`
             relative self-baseline
             ${breakpoints.about ? '' : `
-              w-[90%] max-w-[30em] justify-self-start
+              w-[90%] min-w-[300px] max-w-[30em] justify-self-start
             `}
           `}
-          delay={100}
+          delay={500}
           topColor="yellow"
           color="lime"
           wrapperClassName="p-[1em]"
           texts={[
-            'I am a full stack web developer––and a trusted creative collaborator.',
-            'I\'ll help you brainstorm, map the technical landscape, and solution to protect your budget & timeline.',
-            'I want to realize your vision down to the pixel.',
+            'I\'m a full stack web developer––and a creative collaborator. Consider me a force multiplier for your talents.',
+            'I help brainstorm, map tech options, maximize awesomeness, & minimize budget.',
+            'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s find it together.',
           ]}
           buttonColor="violet"
           buttonText="skills tho?"
@@ -422,27 +452,11 @@ export const Slides = ({
           ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[1fr_max-content]'}
         `}
       >
-        {/* <ImageWindow
-          delay={7000}
-          title="MY_DOG_HAILEY.jpg"
-          topColor="cyan"
-          className={`
-            ${breakpoints.about ? `
-              self-end min-h-[18em] mr-[-2em]
-            ` : `
-              w-[90%] max-w-[20em]
-              justify-self-end mb-[-2em]
-            `}
-          `}
-          srcs={['/images/hailey.jpg']}
-          alts={['My dog Hailey smiling her crazy smile.']}
-        /> */}
 
         <SkillSlideshowWindow
           title="SKILLS.exe"
           className={`
-            relative self-stretch
-            min-h-[20em]
+            relative self-start
             ${breakpoints.about ? '' : `
               w-full justify-self-start
             `}
@@ -453,11 +467,15 @@ export const Slides = ({
           buttonColor="cyan"
           wrapperClassName="p-[1em]"
           texts={[
-            '+ 7 years w/ best-in-class designers building award-winning projects.',
-            '+ command of design systems',
-            '+ communication/project management--leading up, down, and laterally',
-            '+ multimedia, animation, & interactive',
-            '+ 20% mad scientist, 20% challenge addict, 60% UX advocate',
+            '7 years working w/ best-in-class designers building award-winning projects',
+            'exceptional at visual styling and attention to detail.  whatever tool it takes: CSS, SCSS, PostCSS, Tailwind, canvas, Three.js, Lottie, WebGL, etc.––even working with video/image assets directly in Adobe',
+            'strong command of design systems––excellent at interpreting mockups in any form (adobe, figma, back of coffee shop napkin) and working with minimal OR maximal direction',
+            'expert communication & project management––leading up, down, and laterally––transforming chaos into launches',
+            // 'specializes in creative, multimedia, & interactive experiences',
+            'capable of owning tech decisions from the ground up, but also onboards lightning fast to be a chameleon on any team',
+            'mad scientist at heart who is happiest building something new and challenging––but never at the cost of first-class UX',
+            'table stakes: always accessible, functional, responsive, compatible, performant and search engine optimized',
+            'if you made it this far, reach out. even if you don\'t have a project in mind, I\'d love to geek out with you.',
           ]}
         />
         <TextWindow
@@ -474,8 +492,8 @@ export const Slides = ({
           wrapperClassName="p-[0.5em]"
           textMargin="0"
           texts={[
-            '> FAVORITE_TECH:',
-            'React, NextJS, Typescript, Tailwind, CSS/PostCSS, Three.js/R3f, WebGL, GLSL/Shaders, Sanity, Node, Figma, Adobe Suite',
+            '> CURRENT_FAVE_TECH:',
+            'React, NextJS, Typescript, Tailwind, CSS/PostCSS, Three.js/R3f, WebGL, GLSL/Shaders, Sanity, Node, Figma, Adobe AE/PS/AI/ID',
           ]}
           noButton
         />

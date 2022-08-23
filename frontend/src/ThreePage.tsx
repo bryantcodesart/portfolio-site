@@ -9,6 +9,8 @@ const DynamicThreeCanvas = dynamic(() => import('./ThreeCanvas'), {
   ssr: false,
 });
 
+export const contactHref = `mailto:hello@bryantcodes.art?subject=${encodeURIComponent('Hello, Bryant!')}&body=${encodeURIComponent("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`;
+
 export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
   <>
     <Head>
@@ -18,7 +20,7 @@ export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
     </Head>
     <main className="w-screen h-screen bg-white">
       <div
-        className="fixed top-0 left-0 text-[1rem] px-[1rem] py-[1rem] font-mono text-white bg-blue tracking-wide z-[88888888] sm:px-[2rem]"
+        className="fixed top-0 left-0 text-[1rem] px-[1rem] py-[1rem] font-mono text-white bg-[red] tracking-wide z-[88888888] sm:px-[2rem]"
         style={{
           filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
         }}
@@ -27,7 +29,7 @@ export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
         {' '}
         <CustomCursorHover cursor="contact">
           <a
-            href={`mailto:hello@bryantcodes.art?subject=${encodeURIComponent('Hello, Bryant!')}&body=${encodeURIComponent("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`}
+            href={contactHref}
             className="underline"
             target="_blank"
             rel="noreferrer"
@@ -36,6 +38,15 @@ export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
             hello@bryantcodes.art
           </a>
         </CustomCursorHover>
+      </div>
+
+      <div
+        className="fixed bottom-0 right-0 text-[1rem] px-[1rem] py-[1rem] font-mono text-white bg-blue tracking-wide z-[88888888] sm:px-[2rem]"
+        style={{
+          filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
+        }}
+      >
+        AVAILABILITY: STARTING MID-OCTOBER
       </div>
       <Suspense
         fallback={(
