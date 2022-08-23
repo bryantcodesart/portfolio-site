@@ -50,6 +50,7 @@ export const TerminalWindow = ({
         duration-500
         font-mono
         min-h-full
+        pointer-events-auto
 
         border-[2px] border-black overflow-hidden relative
         flex flex-col
@@ -60,7 +61,9 @@ export const TerminalWindow = ({
           boxShadow: '-0.2em -0.2em black',
         }}
         onClick={() => {
-          if (flipped) setFlipped(false);
+          if (flipped) {
+            setFlipped(false);
+          }
         }}
       >
         {/* eslint-enable jsx-a11y/click-events-have-key-events  */}
@@ -160,6 +163,7 @@ export const TerminalButton = ({
       className={`relative
         ${show ? '' : 'scale-0'}
         transition-transform ease-[steps(5)] duration-400
+        pointer-events-auto
       `}
     >
       <button
@@ -264,7 +268,7 @@ const SkillSlideshowWindow = ({
       /> */}
       <Typewriter
         delay={500}
-        className="bg-white bg-opacity-90" // min-h-[7em]
+        className="" // min-h-[7em]
         timePerChar={10}
       >
         {text}
@@ -316,8 +320,8 @@ export const Slides = ({
 }) => {
   const breakpoints = useBreakpoints();
   if (slide === 'intro') {
-    const text1Delay = 1000;
-    const text2Delay = text1Delay + 22 * TIME_PER_CHAR + 300;
+    const text1Delay = 800;
+    const text2Delay = text1Delay + 22 * TIME_PER_CHAR + 100;
     const buttonDelay = text2Delay + 23 * TIME_PER_CHAR + 300;
     return (
       <div className="p-[1em] font-mono text-white text-[2em]">
@@ -334,6 +338,7 @@ export const Slides = ({
               setSlide('mission');
             }}
             delay={buttonDelay}
+            className="text-[max(1.5em,16px)]"
           >
             ABOUT_BRYANT
           </TerminalButton>
@@ -347,6 +352,7 @@ export const Slides = ({
       <div
         className={`
           grid h-full
+          pointer-events-none
           ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[max-content_1fr]'}
         `}
       >
@@ -397,6 +403,7 @@ export const Slides = ({
       <div
         className={`
           grid h-full
+          pointer-events-none
           ${breakpoints.about ? 'grid-cols-[1fr_65%]' : 'grid-rows-[1fr_max-content]'}
         `}
       >
@@ -409,8 +416,8 @@ export const Slides = ({
             ${breakpoints.about ? `
               self-end h-[18em] mr-[-2em] min-w-[12em] mb-[1em]
             ` : `
-              w-[90%] max-w-[25em]
-              justify-self-end mb-[-2em]
+              w-[90%] max-w-[28em]
+              justify-self-end mb-[-12em]
             `}
           `}
           srcs={['/images/hailey2.jpg']}
@@ -449,10 +456,10 @@ export const Slides = ({
       <div
         className={`
           grid h-full relative
+          pointer-events-none
           ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[1fr_max-content]'}
         `}
       >
-
         <SkillSlideshowWindow
           title="SKILLS.exe"
           className={`
@@ -461,10 +468,10 @@ export const Slides = ({
               w-full justify-self-start
             `}
           `}
-          delay={100}
-          topColor="yellow"
-          color="white"
-          buttonColor="cyan"
+          delay={500}
+          topColor="lime"
+          color="cyan"
+          buttonColor="violet"
           wrapperClassName="p-[1em]"
           texts={[
             '7 years working w/ best-in-class designers building award-winning projects',
@@ -575,7 +582,7 @@ export function ComputerTerminal() {
             <CustomCursorHover cursor="terminal">
               <div
                 className={`
-                ${breakpoints.about ? 'rotate-[-5deg]' : 'rotate-[-3deg]'}
+                ${breakpoints.about ? 'rotate-[-5deg]' : 'rotate-[-4deg]'}
                  -translate-x-1/2 -translate-y-1/2
                 w-[var(--terminal-width)] h-[var(--terminal-height)]
               `}
@@ -585,6 +592,33 @@ export function ComputerTerminal() {
                 ref={terminalDivRef}
               >
                 <Slides slide={slide} setSlide={setSlide} setScene={setScene} key={slide} />
+
+                {slide !== 'intro' && (
+                  <div
+                    className={`absolute
+
+                      text-[max(0.7em,16px)]
+
+                    ${slide === 'process' ? `
+                      left-0
+                    ` : `
+                      right-0
+                    `}
+                    absolute top-0
+                    z-[-1]
+                  `}
+                  >
+                    <TerminalButton
+                      onClick={() => {
+                        setScene('menu');
+                        setSlide('intro');
+                      }}
+                      delay={500}
+                    >
+                      {breakpoints.about ? 'BACK_TO_MENU' : 'BACK'}
+                    </TerminalButton>
+                  </div>
+                )}
               </div>
             </CustomCursorHover>
           </CustomCursorContext.Provider>
