@@ -46,7 +46,7 @@ export const ThreePage = ({ siteData }:{siteData:SiteData}) => (
           filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
         }}
       >
-        AVAILABILE MID-OCTOBER
+        AVAILABLE: OCTOBER+
       </div>
       <Suspense
         fallback={(

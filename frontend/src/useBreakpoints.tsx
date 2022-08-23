@@ -14,5 +14,6 @@ export const useBreakpoints = () => {
     projectOpen: aspectRatio >= 1,
     menu: aspectRatio >= 1,
     about: aspectRatio >= 1,
+    square: aspectRatio >= 1,
   };
 };
