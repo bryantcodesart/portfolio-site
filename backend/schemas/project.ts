@@ -71,17 +71,5 @@ export default {
         }
       ]
     },
-    // {
-    //   name: "tech",
-    //   title: "Tech",
-    //   type: "array",
-    //   of: [
-    //     {
-    //       name: "name",
-    //       type: "string",
-    //       title: "Name",
-    //     }
-    //   ]
-    // },
   ],
 };
