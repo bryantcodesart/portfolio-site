@@ -7,7 +7,6 @@ import React, {
 import { MathUtils, PerspectiveCamera } from 'three';
 import { useWindowSize } from 'usehooks-ts';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
 import { CoordArray } from './CoordArray';
 import { CustomCursorContext, CustomCursorHover, useCustomCursor } from './CustomCursor';
 // import { useRandomGif } from './useRandomGif';
@@ -16,91 +15,12 @@ import { Typewriter, TIME_PER_CHAR } from './Typewriter';
 import { useBreakpoints } from './useBreakpoints';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
 import { queryClient } from './queryClient';
-// import { fontUrls } from './typography';
-
-export const TerminalWindow = ({
-  children, title, className = '', delay = 300, color = 'cyan', topColor = 'lime',
-  wrapperClassName = '',
-}:{
-  children:ReactNode,
-  title:string|null,
-  className?:string,
-  delay?:number,
-  color?:string,
-  topColor?:string
-  wrapperClassName?:string
-}) => {
-  const showWindow = useTrueAfterDelay(delay);
-  const breakpoints = useBreakpoints();
-  const [flipped, setFlipped] = useState(false);
-  return (
-    <motion.div
-      drag
-      // whileTap={{ scale: 0.9 }}
-      // dragSnapToOrigin
-      dragMomentum={false}
-      className={`relative  text-black ${className}`}
-    >
-      {/* eslint-disable jsx-a11y/click-events-have-key-events  */}
-      {/* eslint-disable jsx-a11y/no-static-element-interactions */}
-      <div
-        className={`
-        ${showWindow ? '' : 'scale-0'}
-        transition-transform ease-[steps(8)]
-        duration-500
-        font-mono
-        min-h-full
-        pointer-events-auto
-
-        border-[2px] border-black overflow-hidden relative
-        flex flex-col
-        ${breakpoints.about ? 'text-[1em]' : 'text-[max(1em,16px)]'}
-        ${flipped ? 'rotate-180' : ''}
-      `}
-        style={{
-          boxShadow: '-0.2em -0.2em black',
-        }}
-        onClick={() => {
-          if (flipped) {
-            setFlipped(false);
-          }
-        }}
-      >
-        {/* eslint-enable jsx-a11y/click-events-have-key-events  */}
-        {/* eslint-enable jsx-a11y/no-static-element-interactions */}
-        {title && (
-        <div
-          className="border-b-[2px] border-black grid place-items-center relative"
-          style={{
-            backgroundColor: topColor,
-          }}
-        >
-          {title}
-          <button
-            className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]"
-            aria-label="silly"
-            type="button"
-            onClick={() => {
-              setFlipped(!flipped);
-            }}
-          />
-        </div>
-        )}
-        <div
-          className={`flex-grow relative ${wrapperClassName}`}
-          style={{
-            backgroundColor: color,
-          }}
-        >
-          {children}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+import { SkillArtWindow } from './SkillArtWindow';
+import { TerminalWindow } from './TerminalWindow';
+import { TerminalWindowProps } from './TerminalWindowProps';
 
 export const TerminalWindowButton = ({
-  onClick, children, className = '', delay = 300, color, bgColor,
+  onClick, children, className = '', delay = 300, color, bgColor, disabled = false,
 }:{
   onClick: ()=>void,
   children: ReactNode,
@@ -108,6 +28,7 @@ export const TerminalWindowButton = ({
   delay?:number,
   color:string,
   bgColor:string
+  disabled?:boolean
 }) => {
   const show = useTrueAfterDelay(delay);
   return (
@@ -115,8 +36,8 @@ export const TerminalWindowButton = ({
       type="button"
       style={{
         // @ts-ignore
-        '--color': color,
-        '--bgColor': bgColor,
+        '--color': disabled ? '#444' : color,
+        '--bgColor': disabled ? '#888' : bgColor,
         color: 'var(--color)',
       }}
       className={`
@@ -126,19 +47,23 @@ export const TerminalWindowButton = ({
         group
         ${className}
       `}
-      onClick={onClick}
+      onClick={disabled ? () => {} : onClick}
+      disabled={disabled}
     >
       <div
         className="absolute top-0 left-0 w-full h-full bg-black group-active:scale-75"
       />
       <div
-        className="border-[2px] border-[var(--color)]
-        py-[0.5em] px-[1em] pointer-events-none
-        translate-x-[0.15em] translate-y-[0.15em]
-        group-hover:translate-x-0
-        group-hover:translate-y-0
-        group-active:scale-75
-        "
+        className={`border-[2px] border-[var(--color)]
+          py-[0.5em] px-[1em] pointer-events-none
+          relative
+          ${disabled ? '' : `
+            translate-x-[0.15em] translate-y-[0.15em]
+            group-hover:translate-x-0
+            group-hover:translate-y-0
+            group-active:scale-75
+          `}
+        `}
         style={{
           backgroundColor: 'var(--bgColor)',
         }}
@@ -184,11 +109,10 @@ export const TerminalButton = ({
   );
 };
 
-type TerminalWindowProps = React.ComponentProps<typeof TerminalWindow>
 const TextWindow = ({
   texts, buttonColor = 'cyan',
   buttonText = 'button!', onClick = () => {},
-  textMargin = '1em', noButton = false,
+  textMargin = '1em', noButton = false, disabled = false,
   ...terminalWindowProps
 }: {
   texts: string[],
@@ -196,6 +120,7 @@ const TextWindow = ({
   buttonText?: string|null,
   textMargin?: string,
   noButton?: boolean,
+  disabled?: boolean,
   onClick?: ()=>void
 } & Omit<TerminalWindowProps, 'children'>) => {
   const pauseBetween = 500;
@@ -226,71 +151,12 @@ const TextWindow = ({
           delay={delays[delays.length - 1]}
           color="black"
           bgColor={buttonColor}
+          disabled={disabled}
         >
           {buttonText}
         </TerminalWindowButton>
       </div>
       )}
-    </TerminalWindow>
-  );
-};
-
-const SkillSlideshowWindow = ({
-  texts,
-  buttonColor = 'cyan',
-  ...terminalWindowProps
-}: {
-  texts: string[],
-  buttonColor: string,
-  onClick?: ()=>void
-} & Omit<TerminalWindowProps, 'children'>) => {
-  const [textIndex, setTextIndex] = useState(0);
-
-  // const { gif, newGif } = useRandomGif();
-  const nextText = () => {
-    // newGif();
-    setTextIndex((index) => (index + 1) % texts.length);
-  };
-  const prevText = () => {
-    // newGif();
-    setTextIndex((index) => (index - 1 + texts.length) % texts.length);
-  };
-
-  const text = texts[textIndex];
-
-  return (
-    <TerminalWindow {...terminalWindowProps}>
-      {/* <div
-        className="absolute top-0 left-0 w-full h-full bg-center bg-cover"
-        style={{
-          backgroundImage: `url(${gif?.images.downsized_large.url})`,
-        }}
-      /> */}
-      <Typewriter
-        delay={500}
-        className="" // min-h-[7em]
-        timePerChar={10}
-      >
-        {text}
-      </Typewriter>
-      <div className="flex justify-between mt-[2em]">
-        <TerminalWindowButton
-          onClick={prevText}
-          delay={500}
-          color="black"
-          bgColor={buttonColor}
-        >
-          &lt; PREV
-        </TerminalWindowButton>
-        <TerminalWindowButton
-          onClick={nextText}
-          delay={500}
-          color="black"
-          bgColor={buttonColor}
-        >
-          NEXT SKILL &gt;
-        </TerminalWindowButton>
-      </div>
     </TerminalWindow>
   );
 };
@@ -347,62 +213,68 @@ export const Slides = ({
     );
   }
 
-  if (slide === 'mission') {
-    return (
-      <div
-        className={`
+  return (
+    <>
+      {(slide === 'mission' || slide === 'process' || slide === 'skills') && (
+        <div
+          className={`
           grid h-full
           pointer-events-none
+          absolute top-0 left-0 w-full
           ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[max-content_1fr]'}
         `}
-      >
-        <TextWindow
-          title="BRYANT_SMITH.exe"
-          className={`
+        >
+          <TextWindow
+            title="BRYANT_SMITH.exe"
+            className={`
             relative self-baseline
             ${breakpoints.about ? '' : `
               w-[90%] max-w-[30em] justify-self-start
             `}
+            transition-transform duration-[1s]
+            ${slide === 'mission' ? '' : '-translate-x-1/2 -translate-y-1/2'}
           `}
-          delay={1000}
-          topColor="violet"
-          wrapperClassName="p-[1em] pb-[3em]"
-          texts={[
-            'I help awesome designers (like you) build their wildest dreams.',
-            'Together, let\'s make something that stands out from the crowd––',
-            'and have users saying, "woah."',
-          ]}
-          buttonColor="pink"
-          buttonText="tell me more!"
-          onClick={() => {
-            setSlide('process');
-          }}
-        />
-        <ImageWindow
-          delay={300}
-          title="SELF_CONCEPT.jpg"
-          positions={['center']}
-          color="lime"
-          className={`
+            delay={1000}
+            topColor="violet"
+            wrapperClassName="p-[1em] pb-[3em]"
+            texts={[
+              'I help awesome designers (like you) build their wildest dreams.',
+              'Together, let\'s make something that stands out from the crowd––',
+              'and have users saying, "woah."',
+            ]}
+            buttonColor="pink"
+            buttonText="tell me more!"
+            onClick={() => {
+              setSlide('process');
+            }}
+            disabled={slide !== 'mission'}
+          />
+          <ImageWindow
+            delay={300}
+            title="SELF_CONCEPT.jpg"
+            positions={['center']}
+            color="lime"
+            className={`
             ${breakpoints.about ? `
               self-end min-h-[12em] h-[13em] ml-[-1em]
             ` : `
               w-[90%] max-w-[30em]
               justify-self-end  mt-[-1.5em]
             `}
-          `}
-          srcs={['/images/self-portrait.jpg']}
-          alts={['Crayon illustration of Bryant from decades ago.']}
-        />
-      </div>
-    );
-  }
 
-  if (slide === 'process') {
-    return (
+            transition-transform duration-[1s]
+            ${slide === 'mission' ? '' : 'translate-x-1/2 translate-y-1/2'}
+          `}
+            srcs={['/images/self-portrait.jpg']}
+            alts={['Crayon illustration of Bryant from decades ago.']}
+          />
+        </div>
+      )}
+      {(slide === 'process' || slide === 'skills') && (
       <div
         className={`
-          grid h-full
+          absolute top-0 left-0 w-full h-full
+          grid
           pointer-events-none
           ${breakpoints.about ? 'grid-cols-[1fr_65%]' : 'grid-rows-[1fr_max-content]'}
         `}
@@ -419,6 +291,8 @@ export const Slides = ({
               w-[90%] max-w-[28em]
               justify-self-end mb-[-12em]
             `}
+            transition-transform duration-[1s]
+            ${slide === 'process' ? '' : '-translate-x-1/2 translate-y-1/2'}
           `}
           srcs={['/images/hailey2.jpg']}
           alts={['My dog Hailey smiling her crazy smile.']}
@@ -431,84 +305,46 @@ export const Slides = ({
             ${breakpoints.about ? '' : `
               w-[90%] min-w-[300px] max-w-[30em] justify-self-start
             `}
+            transition-transform duration-[1s]
+            ${slide === 'process' ? '' : 'translate-x-1/2 -translate-y-1/2'}
           `}
           delay={500}
           topColor="yellow"
           color="lime"
           wrapperClassName="p-[1em]"
           texts={[
-            'I\'m a full stack web developer––and a creative collaborator. Consider me a force multiplier for your talents.',
-            'I help brainstorm, map tech options, maximize awesomeness, & minimize budget.',
+            'I\'m a full stack web developer––and a creative collaborator. Consider me not just a builder, but a force multiplier for your talents.',
+            // 'I help brainstorm, map tech options, maximize awesomeness, & minimize budget.',
             'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s find it together.',
           ]}
           buttonColor="violet"
           buttonText="skills tho?"
+          disabled={slide !== 'process'}
           onClick={() => {
             setSlide('skills');
           }}
         />
       </div>
-    );
-  }
-
-  if (slide === 'skills') {
-    return (
-      <div
-        className={`
-          grid h-full relative
+      )}
+      {(slide === 'skills') && (
+        <div
+          className={`
+          absolute top-0 left-0 w-full h-full
+          grid
           pointer-events-none
-          ${breakpoints.about ? 'grid-cols-[65%_1fr]' : 'grid-rows-[1fr_max-content]'}
         `}
-      >
-        <SkillSlideshowWindow
-          title="SKILLS.exe"
-          className={`
-            relative self-start
-            ${breakpoints.about ? '' : `
-              w-full justify-self-start
-            `}
-          `}
-          delay={500}
-          topColor="lime"
-          color="cyan"
-          buttonColor="violet"
-          wrapperClassName="p-[1em]"
-          texts={[
-            '7 years working w/ best-in-class designers building award-winning projects',
-            'exceptional at visual styling and attention to detail.  whatever tool it takes: CSS, SCSS, PostCSS, Tailwind, canvas, Three.js, Lottie, WebGL, etc.––even working with video/image assets directly in Adobe',
-            'strong command of design systems––excellent at interpreting mockups in any form (adobe, figma, back of coffee shop napkin) and working with minimal OR maximal direction',
-            'expert communication & project management––leading up, down, and laterally––transforming chaos into launches',
-            // 'specializes in creative, multimedia, & interactive experiences',
-            'capable of owning tech decisions from the ground up, but also onboards lightning fast to be a chameleon on any team',
-            'mad scientist at heart who is happiest building something new and challenging––but never at the cost of first-class UX',
-            'table stakes: always accessible, functional, responsive, compatible, performant and search engine optimized',
-            'if you made it this far, reach out. even if you don\'t have a project in mind, I\'d love to geek out with you.',
-          ]}
-        />
-        <TextWindow
-          title={null}
-          className={`
-            relative self-end
-            text-white
-            ${breakpoints.about ? 'mb-[1em]' : `
-              w-full justify-self-start
-            `}
-          `}
-          delay={100}
-          color="#222"
-          wrapperClassName="p-[0.5em]"
-          textMargin="0"
-          texts={[
-            '> CURRENT_FAVE_TECH:',
-            'React, NextJS, Typescript, Tailwind, CSS/PostCSS, Three.js/R3f, WebGL, GLSL/Shaders, Sanity, Node, Figma, Adobe AE/PS/AI/ID',
-          ]}
-          noButton
-        />
-      </div>
-    );
-  }
-
-  return null;
+        >
+          <SkillArtWindow
+            className="w-full h-full"
+            title="PAINT_TO_REVEAL_MY_SKILLS"
+            color="white"
+            topColor="white"
+            draggable={false}
+          />
+        </div>
+      )}
+    </>
+  );
 };
 
 export function ComputerTerminal() {
@@ -591,7 +427,7 @@ export function ComputerTerminal() {
                 }}
                 ref={terminalDivRef}
               >
-                <Slides slide={slide} setSlide={setSlide} setScene={setScene} key={slide} />
+                <Slides slide={slide} setSlide={setSlide} setScene={setScene} />
 
                 {slide !== 'intro' && (
                   <div

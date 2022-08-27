@@ -14,8 +14,10 @@ import { useParamOnLoad } from './useParamOnLoad';
 const ThreeCanvas = ({ siteData }:{siteData:SiteData}) => {
   const ContextBridge = useContextBridge(CustomCursorContext);
   const showStats = useParamOnLoad('stats') === 'true';
+
   return (
     <>
+
       <Canvas
         // eslint-disable-next-line no-param-reassign
         onCreated={({ gl }) => { gl.toneMapping = LinearToneMapping; }}
@@ -24,7 +26,6 @@ const ThreeCanvas = ({ siteData }:{siteData:SiteData}) => {
           <SceneDirector siteData={siteData} />
         </ContextBridge>
         {showStats && <Stats />}
-        {/* <pointLight position={[0, 0, 5]} /> */}
         <ambientLight />
       </Canvas>
       <A11yAnnouncer />

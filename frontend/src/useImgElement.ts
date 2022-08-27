@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import * as THREE from 'three';
-import { Texture } from 'three';
 
 export const useImgElement = (
   url: string,
+  // onLoadCallback:(_img:HTMLImageElement)=>void = () => {},
 ) => {
   const [img] = useState<HTMLImageElement>(() => {
     const newImg = document.createElement('img');
@@ -25,15 +24,4 @@ export const useImgElement = (
   }, []);
 
   return { img, isLoaded };
-};
-
-export const useImgElementTexture = (url: string) => {
-  const { img, isLoaded } = useImgElement(url);
-  const [texture] = useState<Texture>(() => new THREE.Texture(img));
-
-  useEffect(() => {
-    if (isLoaded) texture.needsUpdate = true;
-  }, [texture, isLoaded]);
-
-  return texture;
 };

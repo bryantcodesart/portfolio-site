@@ -16,7 +16,7 @@ import { CoordArray } from './CoordArray';
 import colors from './colors';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
 import { fontUrls } from './typography';
-import { ComputerTerminal } from './ComputerTerminal';
+import { ComputerTerminal } from './About';
 import { useSceneController } from './SceneController';
 import { ThreeButton } from './ThreeButton';
 
