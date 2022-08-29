@@ -5,12 +5,11 @@ import { BeatLoader } from 'react-spinners';
 import { CustomCursorHover } from './CustomCursor';
 import { SiteData } from './SiteData';
 import { useParamOnLoad } from './useParamOnLoad';
+import { contactHref } from './contactHref';
 
 const DynamicThreeCanvas = dynamic(() => import('./ThreeCanvas'), {
   ssr: false,
 });
-
-export const contactHref = `mailto:hello@bryantcodes.art?subject=${encodeURIComponent('Hello, Bryant!')}&body=${encodeURIComponent("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`;
 
 export const ThreePage = ({ siteData }:{siteData:SiteData}) => {
   const showStats = useParamOnLoad('stats') === 'true';

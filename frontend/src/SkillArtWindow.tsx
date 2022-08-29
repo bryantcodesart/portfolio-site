@@ -5,6 +5,7 @@ import { TerminalWindowProps } from './TerminalWindowProps';
 import { DrawFill } from './DrawFill';
 import { TerminalWindow } from './TerminalWindow';
 import { useImgElement } from './useImgElement';
+import { CustomCursorHover } from './CustomCursor';
 // import { useImgElement } from './useImgElement';
 
 const resolutionMultiplier = 2.0;
@@ -36,8 +37,9 @@ const drawFatLinePath = (
   // Closing the path takes us back to our first point
 };
 
-export const DrawToRevealCanvas = ({ drawFill }:{
+export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
   drawFill:DrawFill;
+  onDraw:() => void;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement|null>(null);
 
@@ -58,6 +60,8 @@ export const DrawToRevealCanvas = ({ drawFill }:{
         ctx.clip();
         drawFill(ctx, width, height);
         ctx.restore();
+
+        onDraw();
       },
     },
     {
@@ -67,6 +71,7 @@ export const DrawToRevealCanvas = ({ drawFill }:{
         return [(x - boundingRect.left) * resolutionMultiplier,
           (y - boundingRect.top) * resolutionMultiplier];
       },
+      preventDefault: true,
     },
   );
 
@@ -81,11 +86,13 @@ export const DrawToRevealCanvas = ({ drawFill }:{
   }, 200);
 
   return (
-    <canvas
-      ref={canvasRef}
-      {...gestureProps()}
-      className="top-0 left-0 w-full h-full top left touch-none"
-    />
+    <CustomCursorHover cursor="paint" defaultCursor="terminal">
+      <canvas
+        ref={canvasRef}
+        {...gestureProps()}
+        className="top-0 left-0 w-full h-full top left touch-none"
+      />
+    </CustomCursorHover>
   );
 };
 
@@ -96,14 +103,18 @@ const useAddDrawFill = (drawFills:[DrawFill, string][], src:string, color:string
     const padding = w / 4;
     const aspectRatio = img.naturalWidth / img.naturalHeight;
     ctx.fillStyle = color;
-    const rotation = (rotationAmount * 2 - 1) * Math.PI / 8;
-    ctx.rotate(rotation);
+    ctx.fillRect(0, 0, w, h);
+
     const areaW = w - padding * 2;
     const areaH = h - padding * 2;
-    ctx.fillRect(0, 0, w, h);
 
     const scaledImageW = areaW;
     const scaledImageH = areaW / aspectRatio;
+
+    const rotation = ((rotationAmount * 2 - 1) * Math.PI) / 16;
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(rotation);
+    ctx.translate(-w / 2, -h / 2);
 
     ctx.drawImage(
       img,
@@ -112,7 +123,8 @@ const useAddDrawFill = (drawFills:[DrawFill, string][], src:string, color:string
       scaledImageW,
       scaledImageH,
     );
-    ctx.rotate(-rotation);
+
+    ctx.resetTransform();
   }, color]);
 };
 
@@ -128,19 +140,35 @@ export const SkillArtWindow = ({
   useAddDrawFill(drawFills, '/images/skills/table-stakes.svg', 'blue');
 
   const [currentFill, setCurrentFill] = useState(0);
+
+  const [showInstructions, setShowInstructions] = useState(true);
   return (
     <TerminalWindow
       {...terminalWindowProps}
+      draggableByTitleBarOnly
+      noCloseButton
     >
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+
+      <div
+        className="absolute top-0 left-0 grid w-full h-full overflow-hidden place-items-center"
+      >
         <div
           className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%]
 rotate-[5deg] touch-none"
         >
-          <DrawToRevealCanvas drawFill={drawFills[currentFill][0]} />
-
+          <DrawToRevealCanvas
+            drawFill={drawFills[currentFill][0]}
+            onDraw={() => { if (showInstructions) setShowInstructions(false); }}
+          />
         </div>
-        <div className="absolute bottom-0 left-0 flex">
+        {showInstructions && (
+        <div className="font-display text-center text-[4em] leading-[1] uppercase text-[#ccc] translate-y-[-10%] pointer-events-none">
+          Draw on me
+          <br />
+          in every color
+        </div>
+        )}
+        <div className="absolute top-0 left-0 flex">
           {drawFills.map(
             ([_drawFill, color], index) => (
               <button

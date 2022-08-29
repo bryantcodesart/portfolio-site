@@ -18,19 +18,22 @@ import { queryClient } from './queryClient';
 import { SkillArtWindow } from './SkillArtWindow';
 import { TerminalWindow } from './TerminalWindow';
 import { TerminalWindowProps } from './TerminalWindowProps';
+import { contactHref } from './contactHref';
 
 export const TerminalWindowButton = ({
-  onClick, children, className = '', delay = 300, color, bgColor, disabled = false,
+  onClick, children, className = '', delay = 300, color = 'black', bgColor = 'white', disabled = false,
 }:{
-  onClick: ()=>void,
+  onClick?: ()=>void,
   children: ReactNode,
   className?: string,
   delay?:number,
-  color:string,
-  bgColor:string
+  color?:string,
+  bgColor?:string
   disabled?:boolean
+
 }) => {
   const show = useTrueAfterDelay(delay);
+
   return (
     <button
       type="button"
@@ -113,6 +116,7 @@ const TextWindow = ({
   texts, buttonColor = 'cyan',
   buttonText = 'button!', onClick = () => {},
   textMargin = '1em', noButton = false, disabled = false,
+  icon = null,
   ...terminalWindowProps
 }: {
   texts: string[],
@@ -121,6 +125,7 @@ const TextWindow = ({
   textMargin?: string,
   noButton?: boolean,
   disabled?: boolean,
+  icon?:string|null
   onClick?: ()=>void
 } & Omit<TerminalWindowProps, 'children'>) => {
   const pauseBetween = 500;
@@ -131,6 +136,8 @@ const TextWindow = ({
   })];
   return (
     <TerminalWindow {...terminalWindowProps}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {icon && <img src={icon} alt="fake computer icon" className="w-[20%] h-auto m-auto mb-[1em] pointer-events-none" />}
       {texts.map((text, i, array) => (
         <div
           style={{ marginTop: i !== 0 ? textMargin : 0 }}
@@ -201,6 +208,7 @@ export const Slides = ({
           <TerminalButton
             onClick={() => {
               setScene('about');
+              // setSlide('skills');
               setSlide('mission');
             }}
             delay={buttonDelay}
@@ -232,16 +240,17 @@ export const Slides = ({
               w-[90%] max-w-[30em] justify-self-start
             `}
             transition-transform duration-[1s]
-            ${slide === 'mission' ? '' : '-translate-x-1/2 -translate-y-1/2'}
+            ${slide === 'mission' ? '' : 'translate-x-[-80%] translate-y-[-40%]'}
           `}
             delay={1000}
             topColor="violet"
-            wrapperClassName="p-[1em] pb-[3em]"
+            wrapperClassName="p-[1em]"
             texts={[
               'I help awesome designers (like you) build their wildest dreams.',
               'Together, let\'s make something that stands out from the crowd––',
               'and have users saying, "woah."',
             ]}
+            icon="/images/computer-icon.svg"
             buttonColor="pink"
             buttonText="tell me more!"
             onClick={() => {
@@ -263,7 +272,7 @@ export const Slides = ({
             `}
 
             transition-transform duration-[1s]
-            ${slide === 'mission' ? '' : 'translate-x-1/2 translate-y-1/2'}
+            ${slide === 'mission' ? '' : 'translate-x-[20%] translate-y-[70%]'}
           `}
             srcs={['/images/self-portrait.jpg']}
             alts={['Crayon illustration of Bryant from decades ago.']}
@@ -292,30 +301,31 @@ export const Slides = ({
               justify-self-end mb-[-12em]
             `}
             transition-transform duration-[1s]
-            ${slide === 'process' ? '' : '-translate-x-1/2 translate-y-1/2'}
+            ${slide === 'process' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
           `}
           srcs={['/images/hailey2.jpg']}
           alts={['My dog Hailey smiling her crazy smile.']}
         />
 
         <TextWindow
-          title="MY_PROCESS.exe"
+          title={null}
           className={`
             relative self-baseline
             ${breakpoints.about ? '' : `
               w-[90%] min-w-[300px] max-w-[30em] justify-self-start
             `}
             transition-transform duration-[1s]
-            ${slide === 'process' ? '' : 'translate-x-1/2 -translate-y-1/2'}
+            ${slide === 'process' ? '' : 'translate-x-[43%] translate-y-[-80%]'}
           `}
           delay={500}
+          icon="/images/alert-icon.svg"
           topColor="yellow"
           color="lime"
           wrapperClassName="p-[1em]"
           texts={[
-            'I\'m a full stack web developer––and a creative collaborator. Consider me not just a builder, but a force multiplier for your talents.',
+            'I\'m a fullstack web dev, but also a creative collaborator––a force multiplier for your talents.',
             // 'I help brainstorm, map tech options, maximize awesomeness, & minimize budget.',
-            'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s find it together.',
+            'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s work together to find it.',
           ]}
           buttonColor="violet"
           buttonText="skills tho?"
@@ -330,7 +340,7 @@ export const Slides = ({
         <div
           className={`
           absolute top-0 left-0 w-full h-full
-          grid
+          grid grid-rows-[1fr_1em]
           pointer-events-none
         `}
         >
@@ -339,8 +349,34 @@ export const Slides = ({
             title="PAINT_TO_REVEAL_MY_SKILLS"
             color="white"
             topColor="white"
-            draggable={false}
+            // draggable={false}
           />
+          <TerminalWindow
+            title={null}
+            className="justify-self-end  mt-[-3em]"
+
+          >
+            <nav className="p-[0.75em] flex gap-[0.75em] items-end h-full">
+              <TerminalWindowButton
+                color="black"
+                bgColor="yellow"
+                onClick={() => {
+                  setScene('menu');
+                  setSlide('intro');
+                }}
+              >
+                BACK_TO_MENU
+
+              </TerminalWindowButton>
+              <TerminalWindowButton
+                bgColor="yellow"
+                href={contactHref}
+              >
+                CONTACT_ME
+
+              </TerminalWindowButton>
+            </nav>
+          </TerminalWindow>
         </div>
       )}
     </>
@@ -435,12 +471,8 @@ export function ComputerTerminal() {
 
                       text-[max(0.7em,16px)]
 
-                    ${slide === 'process' ? `
-                      left-0
-                    ` : `
                       right-0
-                    `}
-                    absolute top-0
+                    top-0
                     z-[-1]
                   `}
                   >

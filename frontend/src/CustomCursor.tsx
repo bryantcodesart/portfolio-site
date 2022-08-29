@@ -14,6 +14,7 @@ export type CustomCursorState = 'none'
  | 'spill'
  | 'open-project'
  | 'unspill'
+ | 'paint'
 export type CustomCursorSetter = (_cursorState:CustomCursorState)=>void
 export type CustomCursorArray = [CustomCursorState, CustomCursorSetter]
 
@@ -39,6 +40,8 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
 
   const enabled = !hasNoMouse && !disabledByParam;
 
+  const textCusor = cursor !== 'terminal' && cursor !== 'paint';
+
   return (
     <>
       <style>
@@ -54,12 +57,13 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
           className="pointer-events-none fixed top-0 left-0 z-[99999999]"
           style={{
             transform: `translate(${mouse.clientX ?? 0}px,${mouse.clientY ?? 0}px)`,
-            filter: cursor !== 'terminal' ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : 'drop-shadow(0 0 0.1rem black) drop-shadow(0 0 0.1rem black)',
+            filter: textCusor ? 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)' : 'drop-shadow(0 0 0.1rem black) drop-shadow(0 0 0.1rem black)',
           }}
         >
-
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {cursor === 'terminal' && <img className="w-[15px]" src="/cursor/terminal.svg" alt="" />}
+          {cursor === 'terminal' && <img className="w-[30px]" src="/cursor/terminal.svg" alt="" />}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {cursor === 'paint' && <img className="w-[45px]" src="/cursor/paint.svg" alt="" />}
           <div
             className={`
               bg-contain bg-center
@@ -68,7 +72,7 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
               h-[75px] w-[75px]
               transition-all
               ${cursor === 'normal' ? 'scale-[0.25]' : ''}
-              ${cursor === 'terminal' ? 'opacity-0' : ''}
+              ${!textCusor ? 'opacity-0' : ''}
               grid place-items-center`}
             style={{ backgroundImage: 'url(/cursor/circle.svg)' }}
           >
@@ -104,8 +108,8 @@ export function CustomCursorProvider({ children }:{children:ReactNode}) {
   );
 }
 
-export function CustomCursorHover({ children, cursor: targetCursor }:
-  { children: ReactElement; cursor: CustomCursorState; }) {
+export function CustomCursorHover({ children, cursor: targetCursor, defaultCursor = 'normal' }:
+  { children: ReactElement; cursor: CustomCursorState; defaultCursor?:CustomCursorState }) {
   const setCursor = useCustomCursor()[1];
   const child = Children.only(children);
   const [hovering, setHovering] = useState(false);
@@ -121,7 +125,7 @@ export function CustomCursorHover({ children, cursor: targetCursor }:
       setHovering(true);
     },
     onMouseLeave: () => {
-      setCursor('normal');
+      setCursor(defaultCursor);
       setHovering(false);
     },
   });
