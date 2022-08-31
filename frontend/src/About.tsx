@@ -18,7 +18,7 @@ import { queryClient } from './queryClient';
 import { SkillArtWindow } from './SkillArtWindow';
 import { TerminalWindow } from './TerminalWindow';
 import { TerminalWindowProps } from './TerminalWindowProps';
-import { contactHref } from './contactHref';
+// import { contactHref } from './contactHref';
 
 export const TerminalWindowButton = ({
   onClick, children, className = '', delay = 300, color = 'black', bgColor = 'white', disabled = false,
