@@ -370,7 +370,7 @@ export const Slides = ({
               </TerminalWindowButton>
               <TerminalWindowButton
                 bgColor="yellow"
-                href={contactHref}
+                // href={contactHref}
               >
                 CONTACT_ME
 
