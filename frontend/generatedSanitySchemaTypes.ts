@@ -115,6 +115,13 @@ export interface Project extends SanityDocument {
   title?: string;
 
   /**
+   * Slug — `slug`
+   *
+   *
+   */
+  slug?: { _type: "slug"; current: string };
+
+  /**
    * Subtitle — `string`
    *
    *
@@ -127,27 +134,6 @@ export interface Project extends SanityDocument {
    *
    */
   client?: string;
-
-  /**
-   * Slug — `slug`
-   *
-   *
-   */
-  slug?: { _type: "slug"; current: string };
-
-  /**
-   * Thumbnail Video — `url`
-   *
-   *
-   */
-  video?: string;
-
-  /**
-   * Body — `blockContent`
-   *
-   *
-   */
-  body?: BlockContent;
 
   /**
    * Designers — `array`
@@ -172,6 +158,89 @@ export interface Project extends SanityDocument {
       url?: string;
     }>
   >;
+
+  /**
+   * Links — `array`
+   *
+   *
+   */
+  links?: Array<
+    SanityKeyed<{
+      _type: "link";
+      /**
+       * Text — `string`
+       *
+       *
+       */
+      text?: string;
+
+      /**
+       * URL — `url`
+       *
+       *
+       */
+      url?: string;
+    }>
+  >;
+
+  /**
+   * Awards — `array`
+   *
+   *
+   */
+  awards?: Array<
+    SanityKeyed<{
+      _type: "award";
+      /**
+       * Name — `string`
+       *
+       *
+       */
+      name?: string;
+
+      /**
+       * URL — `url`
+       *
+       *
+       */
+      url?: string;
+    }>
+  >;
+
+  /**
+   * Thumbnail Video — `url`
+   *
+   *
+   */
+  video?: string;
+
+  /**
+   * Body — `blockContent`
+   *
+   *
+   */
+  body?: BlockContent;
+
+  /**
+   * Text Color — `color`
+   *
+   *
+   */
+  textColor?: Color;
+
+  /**
+   * Color 1 — `color`
+   *
+   *
+   */
+  color1?: Color;
+
+  /**
+   * Color 2 — `color`
+   *
+   *
+   */
+  color2?: Color;
 }
 
 /**
@@ -375,6 +444,13 @@ export type Vimeo = {
 };
 
 export type Documents = Post | Project | Author | Category;
+
+/**
+ * This interface is a stub. It was referenced in your sanity schema but
+ * the definition was not actually found. Future versions of
+ * sanity-codegen will let you type this explicity.
+ */
+type Color = any;
 
 /**
  * This interface is a stub. It was referenced in your sanity schema but

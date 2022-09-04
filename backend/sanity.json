@@ -13,7 +13,8 @@
     "@sanity/default-login",
     "@sanity/desk-tool",
     "@sanity/code-input",
-    "tags"
+    "tags",
+    "@sanity/color-input"
   ],
   "env": {
     "development": {

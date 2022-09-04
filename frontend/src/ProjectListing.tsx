@@ -15,6 +15,11 @@ import { useBreakpoints } from './useBreakpoints';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useSceneController } from './SceneController';
 import { fontUrls } from './typography';
+import { BackgroundColorMaterial } from './BackgroundColorMaterial';
+
+const rgbToGlsl = (rgb: {r:number, g:number, b:number}) => ([
+  rgb.r / 255, rgb.g / 255, rgb.b / 255,
+]);
 
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
@@ -30,6 +35,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
 
   const [autoHover, setAutoHover] = useState(false);
   const hasNoMouse = useHasNoMouse();
+
   useInterval(() => {
     if (hasNoMouse && autoHover) setHoveredIndex(((hoveredIndex ?? 0) + 1) % nProjects);
   }, 2000);
@@ -47,14 +53,6 @@ export function ProjectListing({ active, projects, ...groupProps }:
   });
 
   const aProjectIsOpen = openIndex !== null;
-
-  const { backgroundOpacity } = useSpring({
-    backgroundOpacity: aProjectIsOpen ? 1 : 0,
-    delay: aProjectIsOpen ? 500 : 0,
-    config: aProjectIsOpen ? config.slow : {
-      duration: 150,
-    },
-  });
 
   useEffect(() => {
     if (active) {
@@ -77,6 +75,14 @@ export function ProjectListing({ active, projects, ...groupProps }:
   const radius = breakpoints.projects ? 2.7 : 2.4;
 
   const { setScene } = useSceneController();
+
+  const color1 = openIndex !== null
+    ? rgbToGlsl(projects?.[openIndex]?.color1?.rgb)
+    : null ?? { r: 1, g: 1, b: 1 };
+
+  const color2 = openIndex !== null
+    ? rgbToGlsl(projects?.[openIndex]?.color2?.rgb)
+    : null ?? { r: 0.0, g: 0.0, b: 0.0 };
 
   return (
     <group {...groupProps}>
@@ -111,32 +117,22 @@ export function ProjectListing({ active, projects, ...groupProps }:
           anchorX="center"
           anchorY="middle"
           textAlign="center"
-          fontSize={0.7}
+          fontSize={0.5}
           font={fontUrls.bryantBold}
         >
-          {'Some things\nI built!'}
+          {`${hasNoMouse ? 'Tap' : 'Click'} on \nice cubes.`}
         </Text>
       </animated.group>
       <mesh
         position={[0, 0, 3]}
-        // renderOrder={1}
       >
         <boxGeometry
           attach="geometry"
-          args={[20, 20, 0.01]}
+          args={[10, 10, 0.01]}
         />
-        {/* @ts-ignore */}
-        <animated.meshStandardMaterial
-          attach="material"
-          color="black"
-          transparent
-          opacity={backgroundOpacity}
-          roughness={0.7}
-          // depthTest={false}
-        />
+        <BackgroundColorMaterial opacity={aProjectIsOpen} color1={color1} color2={color2} />
       </mesh>
       {/* @ts-ignore */}
-      {/* <animated.pointLight position={[2, 0, 6]} intensity={backgroundOpacity * 1.5} /> */}
       <animated.group
         scale={blobScale}
         // @ts-ignore
@@ -151,6 +147,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
               Math.cos(index * arcPerProject) * radius,
               0,
             ]}
+            someProjectIsOpen={openIndex !== null}
             hovering={openIndex === null && hoveredIndex === index}
             setHovering={(isHovering:boolean) => {
               if (isHovering) setHoveredIndex(index);

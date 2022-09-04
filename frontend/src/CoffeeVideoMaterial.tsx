@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { shaderMaterial } from '@react-three/drei';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import {
-  Texture, ShaderMaterial, Clock,
+  Texture, ShaderMaterial, Clock, FrontSide,
 } from 'three';
 // @ts-ignore
 import glsl from 'glslify';
@@ -146,6 +146,7 @@ export const CoffeeVideoMaterial = ({ src, playing = true }:
       // transparent
       // depthTest={false}
       // side={DoubleSide}
+      side={FrontSide}
       key={CoffeeShaderMaterial.key}
       inColor={0}
       seed={randomSeed}

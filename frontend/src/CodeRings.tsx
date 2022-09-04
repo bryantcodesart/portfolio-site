@@ -17,6 +17,7 @@ import {
   config,
 } from '@react-spring/three';
 import colors from './colors';
+import { useSceneController } from './SceneController';
 
 /** Number of rings to be drawn */
 const N_RINGS = 16;
@@ -49,6 +50,7 @@ const TEXT_LINES = [
   'mintNft("vintage-3d-aardvark-meme1.gif"); profit(); mintNft("vintage-3d-aardvark-meme2.gif"); profit(); mintNft("vintage-3d-aardvark-meme3.gif"); profit();',
   // eslint-disable-next-line no-template-curly-in-string
   'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json(); return isEven; }',
+  // '// es-lint-disable // ts-ignore // whatever it works',
 ].map((line) => line + ((new Array(TEXT_LINE_LENGTH - line.length)).fill('.').join('')));
 
 /**
@@ -110,6 +112,7 @@ function createTextCanvas(): HTMLCanvasElement | null {
   setInterval(() => {
     redrawCanvas();
   }, UPDATE_INTERVAL);
+
   return canvas;
 }
 
@@ -146,6 +149,8 @@ function CodeRing({
   const texture = useRef<Texture>(null);
   const materialRef = useRef<MeshStandardMaterial>(null);
 
+  const { scene } = useSceneController();
+
   useFrame(({
     clock,
     // camera
@@ -153,31 +158,18 @@ function CodeRing({
     if (!cylinder.current || !texture.current || !materialRef.current) return;
 
     // Rotate the texture slightly--must be done by the texture and not rotating the mesh itself
-    // because of the irregular shape
+    // because of the irregular elliptical shape (the axis of the ellipses would turn!)
     texture.current.offset.x = startingOffset * CANVAS_WIDTH
      + (clock.getElapsedTime() / 60) * -speed;
 
     if (visible && materialRef.current.opacity < 1) {
       materialRef.current.opacity += 0.1;
     }
-
-    // texture.current.needsUpdate = true;
-
-    // if (!cylinder.current) { }
-    // cylinder.current.rotation.y = startingOffset * Math.PI * 2
-    // + (clock.getElapsedTime() / 30) * -speed;
-
-    // cylinder.current.getWorldPosition(worldPosition);
-    // const scale = (Math.max(10 - camera.position.distanceTo(worldPosition), 0)) ** 0.1;
-    // cylinder.current.scale.set(scale, scale, scale);
-
-    // const scale = (Math.cos(clock.getElapsedTime()) + 1 / 2) * 0.2 + 0.8;
-    // cylinder.current.scale.set(scale, scale, scale);
   });
 
   useInterval(() => {
     if (!texture.current) return;
-    texture.current.needsUpdate = true;
+    if (scene === 'menu') { texture.current.needsUpdate = true; }
   }, UPDATE_INTERVAL);
 
   const { scale } = useSpring({ scale: visible ? 1 : 0, config: config.wobbly });

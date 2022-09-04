@@ -6,19 +6,15 @@ import React, {
 } from 'react';
 import { MathUtils, PerspectiveCamera } from 'three';
 import { useWindowSize } from 'usehooks-ts';
-import { QueryClientProvider } from '@tanstack/react-query';
 import { CoordArray } from './CoordArray';
-import { CustomCursorContext, CustomCursorHover, useCustomCursor } from './CustomCursor';
-// import { useRandomGif } from './useRandomGif';
+import { CustomCursorHover } from './CustomCursor';
 import { SceneName, useSceneController } from './SceneController';
 import { Typewriter, TIME_PER_CHAR } from './Typewriter';
 import { useBreakpoints } from './useBreakpoints';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
-import { queryClient } from './queryClient';
 import { SkillArtWindow } from './SkillArtWindow';
 import { TerminalWindow } from './TerminalWindow';
 import { TerminalWindowProps } from './TerminalWindowProps';
-// import { contactHref } from './contactHref';
 
 export const TerminalWindowButton = ({
   onClick, children, className = '', delay = 300, color = 'black', bgColor = 'white', disabled = false,
@@ -247,8 +243,7 @@ export const Slides = ({
             wrapperClassName="p-[1em]"
             texts={[
               'I help awesome designers (like you) build their wildest dreams.',
-              'Together, let\'s make something that stands out from the crowd––',
-              'and have users saying, "woah."',
+              'Together, let\'s create something that stands out––and has users saying, "woah."',
             ]}
             icon="/images/computer-icon.svg"
             buttonColor="pink"
@@ -323,9 +318,8 @@ export const Slides = ({
           color="lime"
           wrapperClassName="p-[1em]"
           texts={[
-            'I\'m a fullstack web dev, but also a creative collaborator––a force multiplier for your talents.',
-            // 'I help brainstorm, map tech options, maximize awesomeness, & minimize budget.',
-            'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s work together to find it.',
+            'I\'m a fullstack web dev, a creative, and a partner you can trust with your project.',
+            'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s find it together.',
           ]}
           buttonColor="violet"
           buttonText="skills tho?"
@@ -384,7 +378,6 @@ export const Slides = ({
 };
 
 export function ComputerTerminal() {
-  const customCursor = useCustomCursor();
   const { setScene } = useSceneController();
 
   const [slide, setSlide] = useState<SlideName>('intro');
@@ -449,25 +442,23 @@ export function ComputerTerminal() {
         <meshStandardMaterial color="red" transparent opacity={0.5} depthTest={false} />
       </mesh> */}
       <Html>
-        <QueryClientProvider client={queryClient}>
-          <CustomCursorContext.Provider value={customCursor}>
-            <CustomCursorHover cursor="terminal">
-              <div
-                className={`
+        <CustomCursorHover cursor="terminal">
+          <div
+            className={`
                 ${breakpoints.about ? 'rotate-[-5deg]' : 'rotate-[-4deg]'}
                  -translate-x-1/2 -translate-y-1/2
                 w-[var(--terminal-width)] h-[var(--terminal-height)]
               `}
-                style={{
-                  fontSize: 'calc(var(--terminal-width)/40)',
-                }}
-                ref={terminalDivRef}
-              >
-                <Slides slide={slide} setSlide={setSlide} setScene={setScene} />
+            style={{
+              fontSize: 'calc(var(--terminal-width)/40)',
+            }}
+            ref={terminalDivRef}
+          >
+            <Slides slide={slide} setSlide={setSlide} setScene={setScene} />
 
-                {slide !== 'intro' && (
-                  <div
-                    className={`absolute
+            {slide !== 'intro' && (
+            <div
+              className={`absolute
 
                       text-[max(0.7em,16px)]
 
@@ -475,22 +466,20 @@ export function ComputerTerminal() {
                     top-0
                     z-[-1]
                   `}
-                  >
-                    <TerminalButton
-                      onClick={() => {
-                        setScene('menu');
-                        setSlide('intro');
-                      }}
-                      delay={500}
-                    >
-                      {breakpoints.about ? 'BACK_TO_MENU' : 'BACK'}
-                    </TerminalButton>
-                  </div>
-                )}
-              </div>
-            </CustomCursorHover>
-          </CustomCursorContext.Provider>
-        </QueryClientProvider>
+            >
+              <TerminalButton
+                onClick={() => {
+                  setScene('menu');
+                  setSlide('intro');
+                }}
+                delay={500}
+              >
+                {breakpoints.about ? 'BACK_TO_MENU' : 'BACK'}
+              </TerminalButton>
+            </div>
+            )}
+          </div>
+        </CustomCursorHover>
       </Html>
     </group>
   );

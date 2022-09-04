@@ -5,7 +5,7 @@ import {
 import { Color } from 'three';
 import { useUnmountEffect } from '@react-hookz/web';
 import { useA11y } from '@react-three/a11y';
-import { CustomCursorState, useCustomCursor } from './CustomCursor';
+import { CustomCursorState, useCursorSetter } from './CustomCursor';
 import circlePoints from './lines/circle';
 import { Scribble } from './Scribble';
 import { CoordArray } from './CoordArray';
@@ -32,7 +32,7 @@ export const InvisibleInteractiveMesh = ({
   onBlur?: () => void;
   onClick?: () => void;
 } & GroupProps) => {
-  const setCursor = useCustomCursor()[1];
+  const setCursor = useCursorSetter();
 
   const [hovering, setHovering] = useState(false);
 

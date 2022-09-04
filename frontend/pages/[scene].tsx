@@ -2,7 +2,7 @@ import type {
   GetStaticPaths, GetStaticProps, NextPage,
 } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import { sanityExperimentalTypesafeClient } from '../src/sanity/sanityClient';
+import { authorizedSanityExperimentalTypesafeClient } from '../src/sanity/sanityClient';
 import { SceneName, sceneNames } from '../src/SceneController';
 
 interface Params extends ParsedUrlQuery {
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const getStaticProps:GetStaticProps<Props, Params> = async (context) => {
-  const projects = await sanityExperimentalTypesafeClient.getAll('project');
+  const projects = await authorizedSanityExperimentalTypesafeClient.getAll('project');
   const { scene } = context.params ?? { scene: 'error' };
 
   return {

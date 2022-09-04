@@ -48,12 +48,14 @@ export const ProjectEntry = ({
   open,
   setOpen,
   hovering,
+  someProjectIsOpen,
   setHovering,
 }:{
   project: Project;
   basePosition: CoordArray;
   open: boolean;
   setOpen: (_open: boolean) => void;
+  someProjectIsOpen: boolean;
   hovering: boolean;
   setHovering: (_hovering: boolean) => void;
 }) => {
@@ -131,7 +133,7 @@ export const ProjectEntry = ({
   });
 
   const { spotlightIntensity } = useSpring({
-    spotlightIntensity: open ? 1.5 : 0,
+    spotlightIntensity: open ? 0.5 : 0,
     delay: open ? 500 : 0,
     config: {
       duration: open ? 1000 : 0,
@@ -142,6 +144,8 @@ export const ProjectEntry = ({
     animatedCubeScale: cubeScale,
     config: config.wobbly,
   });
+
+  const anotherProjectIsOpen = someProjectIsOpen && !open;
 
   return (
     <>
@@ -186,13 +190,14 @@ export const ProjectEntry = ({
             />
             <CoffeeVideoMaterial src={`/videos/${project?.video}`} playing={hovering || open} />
           </mesh>
+          {!anotherProjectIsOpen && (
           <ThreeButton
             position={[0, 0, 0.5]}
             width={1.1}
             height={1.1}
             description=""
             activationMsg=""
-            cursor="open-project"
+            cursor={open ? 'close-project' : 'open-project'}
             // debug
             onClick={() => {
               setOpen(!open);
@@ -204,6 +209,7 @@ export const ProjectEntry = ({
               setHovering(false);
             }}
           />
+          )}
           {/* @ts-ignore */}
           <animated.pointLight
             position={[2, 0, 4]}
@@ -216,6 +222,7 @@ export const ProjectEntry = ({
         <ProjectHtml
           project={project}
           position={breakpoints.projectOpen ? [-1.6, 0, 4.5] : [0, -0.6, 4.5]}
+          setOpen={setOpen}
         />
       )}
       {/* <group

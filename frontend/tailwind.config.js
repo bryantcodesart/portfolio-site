@@ -9,6 +9,10 @@ module.exports = {
       screens: {
         landscape: { raw: '(min-aspect-ratio: 1 / 1)' },
       },
+      // https://github.com/tailwindlabs/tailwindcss/discussions/2599#discussioncomment-2965375
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
     },
     colors: {
       transparent: 'transparent',
@@ -17,13 +21,14 @@ module.exports = {
       white: '#ffffff',
     },
     fontFamily: {
-      mono: '"Roboto Mono", monospace',
+      mono: '"Roboto Mono", Comic Sans MS',
+      sans: '"Roboto", Comic Sans MS',
       display: '"Bryant", Comic Sans MS',
     },
   },
 
   plugins: [
-    plugin(({ addUtilities }) => {
+    plugin(({ addUtilities, matchUtilities, theme }) => {
       // Add your custom styles here
       addUtilities({
         '.no-scrollbar': {
@@ -34,6 +39,17 @@ module.exports = {
           },
         },
       });
+
+      matchUtilities(
+        {
+          glow: (value) => ({
+            filter: `drop-shadow(0 0 ${value} currentColor)`,
+          }),
+        },
+        {
+          values: theme('spacing'),
+        }
+      );
     }),
   ],
 };
