@@ -108,7 +108,7 @@ const isIframe = (el:HTMLElement|null) => el?.tagName?.toLowerCase() === 'iframe
 
 // Determine if mouse is in document (and hasnt exited the window or entered an iframe)
 const useMouseIsInDocument = () => {
-  const [inDocument, setInDocument] = useState(false);
+  const [inDocument, setInDocument] = useState(true);
 
   useEffect(() => {
     // Detect exiting window
