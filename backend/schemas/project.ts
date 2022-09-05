@@ -144,6 +144,11 @@ export default {
       title: "Color 2",
       type: "color",
     },
-
+    {
+      name: "colorNudge",
+      title: "Color Nudge",
+      description: "a float multiplier for the shader that will brighten or darken the colors. 1.0 is same, less is darker, more is brighter.",
+      type: "number",
+    },
   ],
 };

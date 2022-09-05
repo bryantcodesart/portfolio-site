@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 @font-face {
   font-family: 'Bryant';
-  src: url('../fonts/bryant/bryantBold.woff2') format('woff2');
+  src: url('/fonts/bryant/bryantBold.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -23,4 +23,7 @@
 
 body {
   @apply no-scrollbar;
+
+  height: 100vh;
+  max-height: 100vh;
 }

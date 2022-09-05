@@ -241,6 +241,13 @@ export interface Project extends SanityDocument {
    *
    */
   color2?: Color;
+
+  /**
+   * Color Nudge — `number`
+   *
+   * a float multiplier for the shader that will brighten or darken the colors. 1.0 is same, less is darker, more is brighter.
+   */
+  colorNudge?: number;
 }
 
 /**

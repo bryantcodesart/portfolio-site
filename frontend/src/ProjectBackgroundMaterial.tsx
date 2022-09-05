@@ -7,6 +7,7 @@ import {
 } from 'three';
 // @ts-ignore
 import glsl from 'glslify';
+import { Project } from '../generatedSanitySchemaTypes';
 
 const BackgroundColorShaderMaterial = shaderMaterial(
   {
@@ -17,6 +18,7 @@ const BackgroundColorShaderMaterial = shaderMaterial(
     // mouseY: 0.0,
     color1: [1, 1, 1],
     color2: [1, 1, 1],
+    colorNudge: 1.0,
   },
   glsl`
     varying vec2 vUv;
@@ -35,7 +37,7 @@ const BackgroundColorShaderMaterial = shaderMaterial(
     uniform float mouseY;
     uniform vec3 color1;
     uniform vec3 color2;
-
+    uniform float colorNudge;
 
     // 2D Random
     // from https://thebookofshaders.com/11/
@@ -50,7 +52,6 @@ const BackgroundColorShaderMaterial = shaderMaterial(
         vec2(12.9898+seed,78.233+seed)))
         * 43758.5453123);
     }
-
 
     // 2D Noise based on Morgan McGuire @morgan3d
     // https://www.shadertoy.com/view/4dS3Wd
@@ -83,80 +84,39 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       return vec3((color.r + color.g + color.b) / 3.);
     }
 
-    // #pragma glslify: blur = require('glsl-fast-gaussian-blur')
-
     float distance(float x1, float y1, float x2, float y2) {
       return sqrt(pow(x2-x1,2.) + pow(y2-y1,2.));
     }
 
-    vec3 tritone(vec3 color, vec3 light, vec3 mid, vec3 dark) {
-      float gray = grayscaleValue(color);
-      return (1.-step(0.5, gray)) * mix(dark,mid,gray*2.)
-        + step(0.5, gray) * mix(mid,light,gray*2.-1.);
-    }
-
-    // vec3 color1 = vec3(0.945,0.729,0.902); // pink
-    // vec3 color2 = vec3(0.733,0.945,0.976); // blue
-    // vec3 color3 = vec3(0.973,0.231,0.133);
-
-    mat4 bayerIndex = mat4(
-      vec4(00.0/16.0, 12.0/16.0, 03.0/16.0, 15.0/16.0),
-      vec4(08.0/16.0, 04.0/16.0, 11.0/16.0, 07.0/16.0),
-      vec4(02.0/16.0, 14.0/16.0, 01.0/16.0, 13.0/16.0),
-      vec4(10.0/16.0, 06.0/16.0, 09.0/16.0, 05.0/16.0));
-
-    vec3 dither(vec2 coord, vec3 color) {
-      // coord *= 1.5;
-
-      // gamma correction
-      color = smoothstep(0.1,1.,color);
-      color = vec3(pow(color.rgb,vec3(2.1)) - 0.004);
-
-      // find bayer matrix entry based on fragment position
-      float bayerValue = bayerIndex[int(coord.x) % 4][int(coord.y) % 4];
-
-      // output
-      return vec3(
-          step(bayerValue,color.r),
-          step(bayerValue,color.g),
-          step(bayerValue,color.b));
-
-      // return vec3(step(bayerValue,grayscale(color)));
-    }
-
-
     void main() {
-      float distanceFromMouse = clamp(distance(vUv.x,vUv.y,mouseX,mouseY)*5.,0.,1.);
+      // float distanceFromMouse = clamp(distance(vUv.x,vUv.y,mouseX,mouseY)*5.,0.,1.);
 
-      float noiseValue = 0.;
-      noiseValue += noise(vUv*3.+time/5.,seed)*(1.+cos(time)/4.)/5.0;
-      noiseValue += noise(vUv*3.-time/5.,seed)*(1.+cos(time+3.14/2.)/4.)/5.0;
-      noiseValue += noise(vUv*6.+time/5.,seed)*(1.+cos(time+3.14)/4.)/5.0;
-      noiseValue += noise(vUv*10.-time/5.,seed)*(1.+cos(time+3.14*3./2.)/4.)/5.0;
-      noiseValue += noise(vUv*2.,seed)*(1.+cos(time+3.14*3./2.)/2.)/5.0;
+      // A convenience time adjustment
+      float adjustedTime = time * 0.2;
 
-      noiseValue = smoothstep(0.4,0.6,noiseValue);
+      // A noise that will make blobs
+      float blobNoise = 0.;
+      blobNoise += noise(vUv*3.+adjustedTime/5.,seed)*(1.+cos(adjustedTime)/4.)/5.0;
+      blobNoise += noise(vUv*3.-adjustedTime/5.,seed)*(1.+cos(adjustedTime+3.14/2.)/4.)/5.0;
+      blobNoise += noise(vUv*6.+adjustedTime/5.,seed)*(1.+cos(adjustedTime+3.14)/4.)/5.0;
+      blobNoise += noise(vUv*10.-adjustedTime/5.,seed)*(1.+cos(adjustedTime+3.14*3./2.)/4.)/5.0;
+      blobNoise += noise(vUv*2.,seed)*(1.+cos(adjustedTime+3.14*3./2.)/2.)/5.0;
+      blobNoise = smoothstep(0.4,0.6,blobNoise);
 
-      float noiseTiny = 0.;
-      noiseTiny += noise(vUv*700.,0.)*(1.+cos(time+3.14*3./2.)/2.)/2.0;
-      // noiseTiny += noise(vUv*500.,seed)*(1.+cos(time+3.14*3./2.)/2.);
-      // noiseTiny = step(0.1,noiseTiny);
+      // A noise that will make a grainy pseudo-pixelation effect
+      float pixelNoise = 0.;
+      pixelNoise += noise(vUv*700.,0.)*(1.+cos(adjustedTime+3.14*3./2.)/2.)/2.0;
 
-      noiseValue = min(noiseValue + noiseTiny,1.0);
-      noiseValue = step(0.5,noiseValue);
+      // Combine and Harden the edges to make our final composite noise
+      float compositeNoise = pixelNoise + blobNoise;
 
+      // Sample color based on noise
+      vec3 color = mix(color1,color2,vec3(step(0.5,compositeNoise)));
 
-      // noiseValue += noise(vUv*900.,0.)*(1.+cos(time+3.14*3./2.)/2.)/6.0;
-      // noiseValue += noise(vUv*900.,seed)*(1.+cos(time+3.14*3./2.)/2.)/6.0;
+      // Nudge the color based on a value provided by the CMS (to make text more readable)
+      color = color + colorNudge;
 
-
-
-      vec3 color = mix(color1,color2,vec3(noiseValue));
-
-      // color = dither(gl_FragCoord.xy,color);
-
-      // vec3 color = vec3(noiseValue);
-
+      // Out
       gl_FragColor.rgba = vec4(color, opacity);
     }
   `,
@@ -174,6 +134,7 @@ type BackgroundColorShaderMaterial = ShaderMaterial &
   // mouseY:number
   color1:[number, number, number],
   color2:[number, number, number],
+  colorNudge: number,
 };
 
 /* eslint-disable no-unused-vars */
@@ -187,10 +148,26 @@ declare global {
 }
 /* eslint-enable no-unused-vars */
 
-export const BackgroundColorMaterial = ({ opacity = true, color1, color2 }:
-  { opacity: boolean; color1: [number, number, number]; color2: [number, number, number]}) => {
+const rgbToGlsl = (rgb: {r:number, g:number, b:number}):[number, number, number] => ([
+  rgb.r / 255, rgb.g / 255, rgb.b / 255,
+]);
+
+export const BackgroundColorMaterial = ({ opacity = true, project = null }:
+  { opacity: boolean; project:Project|null}) => {
   // const { videoElement } = useVideoElement(src, playing, { debug: false });
   const materialRef = React.useRef<BackgroundColorShaderMaterial>(null);
+
+  const color1:[number, number, number] = project !== null
+    ? rgbToGlsl(project?.color1?.rgb)
+    : null ?? ([1, 1, 1]);
+
+  const color2:[number, number, number] = project !== null
+    ? rgbToGlsl(project?.color2?.rgb)
+    : null ?? [0, 0, 0];
+
+  const colorNudge = project !== null
+    ? project.colorNudge
+    : null ?? 1.0;
 
   const opacityClock = useMemo(() => {
     const clock = new Clock();
@@ -243,6 +220,7 @@ export const BackgroundColorMaterial = ({ opacity = true, color1, color2 }:
       time={0} // Animated with useFrame above
       color1={color1}
       color2={color2}
+      colorNudge={colorNudge}
     >
 
       {/* {videoElement && (

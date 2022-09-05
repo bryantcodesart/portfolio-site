@@ -15,11 +15,7 @@ import { useBreakpoints } from './useBreakpoints';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useSceneController } from './SceneController';
 import { fontUrls } from './typography';
-import { BackgroundColorMaterial } from './BackgroundColorMaterial';
-
-const rgbToGlsl = (rgb: {r:number, g:number, b:number}):[number, number, number] => ([
-  rgb.r / 255, rgb.g / 255, rgb.b / 255,
-]);
+import { BackgroundColorMaterial } from './ProjectBackgroundMaterial';
 
 export function ProjectListing({ active, projects, ...groupProps }:
   { active:boolean, projects: Project[] | null; } & GroupProps) {
@@ -76,13 +72,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
 
   const { setScene } = useSceneController();
 
-  const color1:[number, number, number] = openIndex !== null
-    ? rgbToGlsl(projects?.[openIndex]?.color1?.rgb)
-    : null ?? ([1, 1, 1]);
-
-  const color2:[number, number, number] = openIndex !== null
-    ? rgbToGlsl(projects?.[openIndex]?.color2?.rgb)
-    : null ?? [0, 0, 0];
+  const currentProject = (openIndex !== null ? projects?.[openIndex] ?? null : null);
 
   return (
     <group {...groupProps}>
@@ -130,7 +120,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           attach="geometry"
           args={[10, 10, 0.01]}
         />
-        <BackgroundColorMaterial opacity={aProjectIsOpen} color1={color1} color2={color2} />
+        <BackgroundColorMaterial opacity={aProjectIsOpen} project={currentProject} />
       </mesh>
       {/* @ts-ignore */}
       <animated.group
