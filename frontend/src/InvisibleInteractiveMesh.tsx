@@ -5,7 +5,7 @@ import {
 import { Color } from 'three';
 import { useUnmountEffect } from '@react-hookz/web';
 import { useA11y } from '@react-three/a11y';
-import { CustomCursorState, useCursorSetter } from './CustomCursor';
+import { CustomCursorState, useCursorSetters } from './CustomCursor';
 import circlePoints from './lines/circle';
 import { Scribble } from './Scribble';
 import { CoordArray } from './CoordArray';
@@ -14,7 +14,7 @@ export const InvisibleInteractiveMesh = ({
   width = 1,
   height = 1,
   debug = false,
-  cursor = 'normal',
+  cursor = 'default',
   /** Must be idemponent */
   onFocus = () => {},
   /** Must be idemponent */
@@ -32,7 +32,7 @@ export const InvisibleInteractiveMesh = ({
   onBlur?: () => void;
   onClick?: () => void;
 } & GroupProps) => {
-  const setCursor = useCursorSetter();
+  const { startHover, stopHover } = useCursorSetters();
 
   const [hovering, setHovering] = useState(false);
 
@@ -40,13 +40,13 @@ export const InvisibleInteractiveMesh = ({
 
   // If hovering and the target cursor changes, call setCursor to change the cursor
   useEffect(() => {
-    if (hovering) setCursor(cursor);
+    if (hovering) startHover(cursor);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor]);
 
   // If the component unmounts, reset cursor and blue
   useUnmountEffect(() => {
-    if (hovering) setCursor('normal');
+    if (hovering) stopHover();
     if (focus || hovering) onBlur();
   });
 
@@ -65,17 +65,17 @@ export const InvisibleInteractiveMesh = ({
       <mesh
         // renderOrder={1000}
         onPointerEnter={() => {
-          setCursor(cursor);
+          startHover(cursor);
           setHovering(true);
         }}
         onPointerLeave={() => {
-          setCursor('normal');
+          stopHover();
           setHovering(false);
         }}
-        onPointerOver={() => {
-          setCursor(cursor);
-          setHovering(true);
-        }}
+        // onPointerOver={() => {
+        //   setCursor(cursor);
+        //   setHovering(true);
+        // }}
         onPointerDown={() => { onClick(); }}
         position={[0, 0, 0]}
       >

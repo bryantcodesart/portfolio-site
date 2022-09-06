@@ -92,7 +92,7 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       // float distanceFromMouse = clamp(distance(vUv.x,vUv.y,mouseX,mouseY)*5.,0.,1.);
 
       // A convenience time adjustment
-      float adjustedTime = time * 0.2;
+      float adjustedTime = time * 0.5;
 
       // A noise that will make blobs
       float blobNoise = 0.;

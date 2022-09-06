@@ -1,184 +1,20 @@
-import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import Image from 'next/image';
 import React, {
-  ReactNode, useRef, useState,
+  useRef, useState,
 } from 'react';
 import { MathUtils, PerspectiveCamera } from 'three';
 import { useWindowSize } from 'usehooks-ts';
+import { Html } from '@react-three/drei';
 import { CoordArray } from './CoordArray';
 import { CustomCursorHover } from './CustomCursor';
 import { SceneName, useSceneController } from './SceneController';
 import { Typewriter, TIME_PER_CHAR } from './Typewriter';
 import { useBreakpoints } from './useBreakpoints';
-import { useTrueAfterDelay } from './useTrueAfterDelay';
 import { SkillArtWindow } from './SkillArtWindow';
-import { TerminalWindow } from './TerminalWindow';
-import { TerminalWindowProps } from './TerminalWindowProps';
-
-export const TerminalWindowButton = ({
-  onClick, children, className = '', delay = 300, color = 'black', bgColor = 'white', disabled = false,
-}:{
-  onClick?: ()=>void,
-  children: ReactNode,
-  className?: string,
-  delay?:number,
-  color?:string,
-  bgColor?:string
-  disabled?:boolean
-
-}) => {
-  const show = useTrueAfterDelay(delay);
-
-  return (
-    <button
-      type="button"
-      style={{
-        // @ts-ignore
-        '--color': disabled ? '#444' : color,
-        '--bgColor': disabled ? '#888' : bgColor,
-        color: 'var(--color)',
-      }}
-      className={`
-        relative
-        ${show ? '' : 'scale-0 opacity-0'}
-        transition-transform ease-[steps(5)] duration-300
-        group
-        ${className}
-      `}
-      onClick={disabled ? () => {} : onClick}
-      disabled={disabled}
-    >
-      <div
-        className="absolute top-0 left-0 w-full h-full bg-black group-active:scale-75"
-      />
-      <div
-        className={`border-[2px] border-[var(--color)]
-          py-[0.5em] px-[1em] pointer-events-none
-          relative
-          ${disabled ? '' : `
-            translate-x-[0.15em] translate-y-[0.15em]
-            group-hover:translate-x-0
-            group-hover:translate-y-0
-            group-active:scale-75
-          `}
-        `}
-        style={{
-          backgroundColor: 'var(--bgColor)',
-        }}
-      >
-        {children}
-      </div>
-    </button>
-  );
-};
-
-export const TerminalButton = ({
-  onClick, children, className = '', delay = 300,
-}:{
-  onClick: ()=>void,
-  children: ReactNode,
-  className?: string,
-  delay?:number,
-}) => {
-  const show = useTrueAfterDelay(delay);
-  return (
-    <div
-      className={`relative
-        ${show ? '' : 'scale-0'}
-        transition-transform ease-[steps(5)] duration-400
-        pointer-events-auto
-      `}
-    >
-      <button
-        type="button"
-        className={`
-          border-[2px] border-white py-[0.5em] px-[0.5em] text-white
-          hover:bg-white
-          hover:text-blue
-          relative
-          ${className}
-        `}
-        onClick={onClick}
-      >
-        {children}
-      </button>
-
-    </div>
-  );
-};
-
-const TextWindow = ({
-  texts, buttonColor = 'cyan',
-  buttonText = 'button!', onClick = () => {},
-  textMargin = '1em', noButton = false, disabled = false,
-  icon = null,
-  ...terminalWindowProps
-}: {
-  texts: string[],
-  buttonColor?: string,
-  buttonText?: string|null,
-  textMargin?: string,
-  noButton?: boolean,
-  disabled?: boolean,
-  icon?:string|null
-  onClick?: ()=>void
-} & Omit<TerminalWindowProps, 'children'>) => {
-  const pauseBetween = 500;
-  const startDelay = 500;
-  const delays = [startDelay, ...texts.map((text, i, array) => {
-    const charCountSoFar = array.slice(0, i + 1).reduce((acc, cur) => acc + cur.length, 0);
-    return startDelay + charCountSoFar * TIME_PER_CHAR + pauseBetween * (i + 1);
-  })];
-  return (
-    <TerminalWindow {...terminalWindowProps}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      {icon && <img src={icon} alt="fake computer icon" className="w-[20%] h-auto m-auto mb-[1em] pointer-events-none" />}
-      {texts.map((text, i, array) => (
-        <div
-          style={{ marginTop: i !== 0 ? textMargin : 0 }}
-        >
-          <Typewriter
-            key={text}
-            delay={delays[i]}
-            hideCaratAtEnd={i !== array.length - 1}
-          >
-            {text}
-          </Typewriter>
-        </div>
-      ))}
-      {!noButton && (
-      <div className="grid place-items-center mt-[2em]">
-        <TerminalWindowButton
-          onClick={onClick}
-          delay={delays[delays.length - 1]}
-          color="black"
-          bgColor={buttonColor}
-          disabled={disabled}
-        >
-          {buttonText}
-        </TerminalWindowButton>
-      </div>
-      )}
-    </TerminalWindow>
-  );
-};
-
-export const ImageWindow = ({
-  srcs, alts, positions, ...terminalWindowProps
-}: {
-  srcs: string[],
-  alts: string[],
-  positions: (string | number)[]
-} & Omit<TerminalWindowProps, 'children'>) => (
-  <TerminalWindow
-    {...terminalWindowProps}
-  >
-    <Image src={srcs[0]} layout="fill" objectFit="cover" objectPosition={positions[0]} alt={alts[0]} className="pointer-events-none" />
-  </TerminalWindow>
-);
-
-type SlideName = 'intro' | 'mission' | 'process' | 'skills'
+import { SlideName } from './SlideName';
+import { ImageWindow } from './ImageWindow';
+import { TextWindow } from './TextWindow';
+import { TerminalButton } from './TerminalButton';
 
 export const Slides = ({
   slide, setScene, setSlide,
@@ -343,34 +179,10 @@ export const Slides = ({
             title="PAINT_TO_REVEAL_MY_SKILLS"
             color="white"
             topColor="white"
+            setScene={setScene}
+            setSlide={setSlide}
             // draggable={false}
           />
-          <TerminalWindow
-            title={null}
-            className="justify-self-end  mt-[-3em]"
-
-          >
-            <nav className="p-[0.75em] flex gap-[0.75em] items-end h-full">
-              <TerminalWindowButton
-                color="black"
-                bgColor="yellow"
-                onClick={() => {
-                  setScene('menu');
-                  setSlide('intro');
-                }}
-              >
-                BACK_TO_MENU
-
-              </TerminalWindowButton>
-              <TerminalWindowButton
-                bgColor="yellow"
-                // href={contactHref}
-              >
-                CONTACT_ME
-
-              </TerminalWindowButton>
-            </nav>
-          </TerminalWindow>
         </div>
       )}
     </>
@@ -459,13 +271,11 @@ export function ComputerTerminal() {
             {slide !== 'intro' && (
             <div
               className={`absolute
-
-                      text-[max(0.7em,16px)]
-
-                      right-0
-                    top-0
-                    z-[-1]
-                  `}
+                text-[max(0.7em,16px)]
+                right-0
+                top-0
+                z-[-1]
+              `}
             >
               <TerminalButton
                 onClick={() => {

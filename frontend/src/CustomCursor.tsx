@@ -1,18 +1,21 @@
 import React, {
   Children,
   ReactElement,
+  // ReactNode,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import { useEventListener } from 'usehooks-ts';
 import create from 'zustand';
+// import { Html } from '@react-three/drei';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useParamOnLoad } from './useParamOnLoad';
 
 /** Allowed cursor state names (project specific) */
 export type CustomCursorState = null
- | 'normal'
+ | 'default'
  | 'contact'
  | 'computer-on'
  | 'terminal'
@@ -39,11 +42,11 @@ export const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
       <div
         className={`
           bg-contain bg-center
-          font-mono text-white text-center leading-[0.8] text-[12px]
+          font-mono text-white text-center leading-[1] text-[12px]
           -translate-x-1/2 -translate-y-1/2
           h-[75px] w-[75px]
           transition-all
-          ${cursor === 'normal' ? 'scale-[0.25]' : ''}
+          ${cursor === 'default' ? 'scale-[0.25]' : ''}
           ${!textCursor ? 'opacity-0' : ''}
           grid place-items-center
         `}
@@ -62,6 +65,8 @@ export const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
         {cursor === 'spill' && (
           <>
             spill
+            <br />
+            coffee
           </>
         )}
         {cursor === 'unspill' && (
@@ -92,16 +97,46 @@ export const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
 // Put the cursor state in a zustand store
 // We prefer this to a context because its faster and we can consume it across R3F render boundaries
 const useCustomCursorStore = create<{
-  cursor:CustomCursorState,
-  setCursor:(_cursorState:CustomCursorState)=>void,
+  cursor: CustomCursorState,
+  currentlyHovering: Map<Symbol, CustomCursorState>
+  startHover:(_cursorState:CustomCursorState, _id:Symbol)=>void,
+  stopHover:(_id:Symbol)=>void,
+  clearAllHovers:()=>void,
     }>((set) => ({
-      cursor: 'normal',
-      setCursor: (cursorState:CustomCursorState) => set({ cursor: cursorState }),
+      cursor: 'default',
+      currentlyHovering: new Map(),
+      removeHoverById: (id:Symbol) => set((state) => {
+        const newMap = new Map(state.currentlyHovering);
+        newMap.delete(id);
+        return { currentlyHovering: newMap };
+      }),
+      startHover: (newCursor, id) => set((state) => {
+        const newMap = new Map(state.currentlyHovering);
+        newMap.delete(id);
+        newMap.set(id, newCursor);
+        return { currentlyHovering: newMap };
+      }),
+      stopHover: (id) => set((state) => {
+        const newMap = new Map(state.currentlyHovering);
+        newMap.delete(id);
+        return { currentlyHovering: newMap };
+      }),
+      clearAllHovers: () => set(() => ({ currentlyHovering: new Map() })),
     }));
 
-// Hooks to use cursor state in components
-export const useCursorSetter = () => useCustomCursorStore((state) => state.setCursor);
-export const useCursor = () => useCustomCursorStore((state) => state.cursor);
+// Hooks to manage hover state in components
+export const useCursorSetters = () => {
+  const id = useMemo(() => Symbol('hoverable-thing'), []);
+  return useCustomCursorStore((state) => ({
+    startHover: (cursor:CustomCursorState) => state.startHover(cursor, id),
+    stopHover: () => state.stopHover(id),
+  }));
+};
+export const useClearHover = () => useCustomCursorStore((state) => state.clearAllHovers);
+export const useCursor = () => useCustomCursorStore((state) => {
+  const lastValueInCurrentlyHovering = [...state.currentlyHovering.values()].pop();
+  return lastValueInCurrentlyHovering ?? 'default';
+});
 
 // Is element an iframe?
 const isIframe = (el:HTMLElement|null) => el?.tagName?.toLowerCase() === 'iframe';
@@ -196,25 +231,45 @@ export function CustomCursor() {
 }
 
 /** A convenience component wrapper that gives its only child a specified cursor on hover */
-export function CustomCursorHover({ children, cursor: targetCursor, defaultCursor = 'normal' }:
-  { children: ReactElement; cursor: CustomCursorState; defaultCursor?:CustomCursorState }) {
-  const setCursor = useCursorSetter();
+export function CustomCursorHover({ children, cursor: targetCursor }:
+  { children: ReactElement; cursor: CustomCursorState; }) {
+  const { startHover, stopHover } = useCursorSetters();
   const child = Children.only(children);
   const [hovering, setHovering] = useState(false);
 
   // If hovering and the targetcursor changes, call setCursor to change the cursor
   useEffect(() => {
-    if (hovering) setCursor(targetCursor);
-  }, [hovering, setCursor, targetCursor]);
+    if (hovering) startHover(targetCursor);
+    // Very easy to make an infinite loop here, only dep is targetCursor
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetCursor]);
 
   return React.cloneElement(child, {
     onMouseEnter: () => {
-      setCursor(targetCursor);
+      startHover(targetCursor);
       setHovering(true);
     },
     onMouseLeave: () => {
-      setCursor(defaultCursor);
+      stopHover();
       setHovering(false);
     },
   });
 }
+
+// type HtmlProps = React.ComponentProps<typeof Html>
+// // eslint-disable-next-line no-shadow
+// export const DreiHtmlWithCursor = ({ children, ...HtmlProps }:
+//   { children: ReactNode } & HtmlProps) => {
+//   const clearHover = useClearHover();
+//   return (
+//     <Html
+//       {...HtmlProps}
+//       onPointerLeave={() => {
+//         console.log('clear!');
+//         clearHover();
+//       }}
+//     >
+//       {children}
+//     </Html>
+//   );
+// };

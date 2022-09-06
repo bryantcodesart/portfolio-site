@@ -6,6 +6,10 @@ import { DrawFill } from './DrawFill';
 import { TerminalWindow } from './TerminalWindow';
 import { useImgElement } from './useImgElement';
 import { CustomCursorHover } from './CustomCursor';
+import { TerminalWindowButton } from './TerminalWindowButton';
+import { SceneName } from './SceneController';
+import { SlideName } from './SlideName';
+import { contactHref } from './contactHref';
 // import { useImgElement } from './useImgElement';
 
 const resolutionMultiplier = 2.0;
@@ -45,6 +49,7 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
 
   const gestureProps = useGesture(
     {
+      // @ts-ignore
       onDrag: ({ xy, delta }) => {
         if (!canvasRef.current) return;
         const ctx = canvasRef.current.getContext('2d');
@@ -86,7 +91,7 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
   }, 200);
 
   return (
-    <CustomCursorHover cursor="paint" defaultCursor="terminal">
+    <CustomCursorHover cursor="paint">
       <canvas
         ref={canvasRef}
         {...gestureProps()}
@@ -129,9 +134,14 @@ const useAddDrawFill = (drawFills:[DrawFill, string][], src:string, color:string
 };
 
 export const SkillArtWindow = ({
+  setScene, setSlide,
   ...terminalWindowProps
-}: Omit<TerminalWindowProps, 'children'>) => {
+}: {
+  setScene:(_scene:SceneName) => void,
+  setSlide:(_slide:SlideName) => void,
+} & Omit<TerminalWindowProps, 'children'>) => {
   const drawFills:[DrawFill, string][] = [];
+  const [colorsUsed, setColorsUsed] = useState<Set<number>>(new Set());
   useAddDrawFill(drawFills, '/images/skills/career.svg', 'red');
   useAddDrawFill(drawFills, '/images/skills/visual-styling.svg', 'violet');
   useAddDrawFill(drawFills, '/images/skills/communication.svg', 'orange');
@@ -142,51 +152,89 @@ export const SkillArtWindow = ({
   const [currentFill, setCurrentFill] = useState(0);
 
   const [showInstructions, setShowInstructions] = useState(true);
+  const [showCta, setShowCta] = useState(false);
   return (
-    <TerminalWindow
-      {...terminalWindowProps}
-      draggableByTitleBarOnly
-      noCloseButton
-    >
-
-      <div
-        className="absolute top-0 left-0 grid w-full h-full overflow-hidden place-items-center"
+    <>
+      <TerminalWindow
+        {...terminalWindowProps}
+        draggableByTitleBarOnly
+        noCloseButton
       >
+
         <div
-          className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%]
-rotate-[5deg] touch-none"
+          className="absolute top-0 left-0 grid w-full h-full overflow-hidden place-items-center"
         >
-          <DrawToRevealCanvas
-            drawFill={drawFills[currentFill][0]}
-            onDraw={() => { if (showInstructions) setShowInstructions(false); }}
-          />
-        </div>
-        {showInstructions && (
-        <div className="font-display text-center text-[4em] leading-[1] uppercase text-[#ccc] translate-y-[-10%] pointer-events-none">
-          Draw on me
-          <br />
-          in every color
-        </div>
-        )}
-        <div className="absolute top-0 left-0 flex">
-          {drawFills.map(
-            ([_drawFill, color], index) => (
-              <button
-                onClick={() => setCurrentFill(index)}
-                type="button"
-                className={`grid place-items-center  border-black w-[3em] h-[3em]
+          <div
+            className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%]
+            rotate-[5deg] touch-none"
+          >
+            <DrawToRevealCanvas
+              drawFill={drawFills[currentFill][0]}
+              onDraw={() => {
+                if (showInstructions) setShowInstructions(false);
+                if (!colorsUsed.has(currentFill)) {
+                  setColorsUsed((currentSet) => new Set([...currentSet, currentFill]));
+                  if (colorsUsed.size > 0) {
+                    setShowCta(true);
+                  }
+                }
+              }}
+            />
+          </div>
+          {showInstructions && (
+          <div className="font-display text-center text-[4em] leading-[1] uppercase text-[#ccc] translate-y-[-10%] pointer-events-none">
+            Draw on me
+            <br />
+            in every color
+          </div>
+          )}
+          <div className="absolute top-0 left-0 flex">
+            {drawFills.map(
+              ([_drawFill, color], index) => (
+                <button
+                  onClick={() => setCurrentFill(index)}
+                  type="button"
+                  className={`grid place-items-center  border-black w-[3em] h-[3em]
                   ${currentFill === index ? 'border-[0.5em]' : 'border-2'}
                 `}
-                style={{
-                  backgroundColor: color,
-                }}
-                aria-label={color}
-              />
-            ),
-          )}
+                  style={{
+                    backgroundColor: color,
+                  }}
+                  aria-label={color}
+                />
+              ),
+            )}
 
+          </div>
         </div>
-      </div>
-    </TerminalWindow>
+      </TerminalWindow>
+      {showCta && (
+      <TerminalWindow
+        title={null}
+        className="justify-self-end  mt-[-1em] mr-[-1em]"
+      >
+        <nav className="p-[0.75em] flex gap-[0.75em] items-end h-full">
+          <TerminalWindowButton
+            key="art-board"
+            color="black"
+            bgColor="yellow"
+            onClick={() => {
+              setScene('menu');
+              setSlide('intro');
+            }}
+          >
+            BACK_TO_MENU
+          </TerminalWindowButton>
+          <TerminalWindowButton
+            key="back-to-menu-and-contact"
+            bgColor="yellow"
+            href={contactHref}
+          >
+            CONTACT_ME
+          </TerminalWindowButton>
+        </nav>
+      </TerminalWindow>
+      )}
+    </>
   );
 };

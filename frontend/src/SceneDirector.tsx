@@ -12,6 +12,7 @@ import { routerLog } from './loggers';
 import { SiteData } from './SiteData';
 import { ProjectListing } from './ProjectListing';
 import { useBreakpoints } from './useBreakpoints';
+import { useClearHover } from './CustomCursor';
 
 export function SceneDirector({
   siteData,
@@ -21,7 +22,9 @@ export function SceneDirector({
 }) {
   const { startingScene, projects } = siteData;
 
-  const [scene, setScene] = useState(startingScene);
+  const clearCursor = useClearHover();
+  const [scene, _setScene] = useState(startingScene);
+  const setScene = (newScene:SceneName) => { _setScene(newScene); clearCursor(); };
 
   const breakpoints = useBreakpoints();
 
