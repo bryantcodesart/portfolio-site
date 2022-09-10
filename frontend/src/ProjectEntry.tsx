@@ -193,8 +193,8 @@ export const ProjectEntry = ({
           {!anotherProjectIsOpen && (
           <ThreeButton
             position={[0, 0, 0.5]}
-            width={1.1}
-            height={1.1}
+            width={0.9}
+            height={0.9}
             description=""
             activationMsg=""
             cursor={open ? 'close-project' : 'open-project'}

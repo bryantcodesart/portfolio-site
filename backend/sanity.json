@@ -14,7 +14,8 @@
     "@sanity/desk-tool",
     "@sanity/code-input",
     "tags",
-    "@sanity/color-input"
+    "@sanity/color-input",
+    "seo-pane"
   ],
   "env": {
     "development": {
@@ -27,6 +28,10 @@
     {
       "name": "part:@sanity/base/schema",
       "path": "./schemas/schema"
+    },
+    {
+      "name": "part:@sanity/desk-tool/structure",
+      "path": "./deskStructure.ts"
     }
   ]
 }

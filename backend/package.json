@@ -34,6 +34,7 @@
     "react-dom": "^17.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-youtube": "^9.0.3",
+    "sanity-plugin-seo-pane": "^1.4.0",
     "sanity-plugin-tags": "^1.5.0",
     "styled-components": "^5.2.0"
   },

@@ -110,7 +110,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           fontSize={0.5}
           font={fontUrls.bryantBold}
         >
-          {`${hasNoMouse ? 'Tap' : 'Click'} on an \nice cube.`}
+          {`My coffee!\n${hasNoMouse ? 'Tap' : 'Click'} an \nice cube.`}
         </Text>
       </animated.group>
       <mesh

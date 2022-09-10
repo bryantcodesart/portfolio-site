@@ -17,7 +17,7 @@ const VimeoBlock = ({ value }:{ value: { id:string } }) => (
   <Vimeo
     video={value.id}
     responsive
-    className="my-8 border-2 border-[currentColor]"
+    className="my-8 border-[1px] border-[currentColor]"
   />
 );
 const PBlock:PortableTextBlockComponent = ({ children }) => (<p className="my-4">{children}</p>);
@@ -83,13 +83,13 @@ const ContentContainerWithScroll = ({ children }:{children:ReactNode}) => {
       >
         <div
           className={`
-          ${breakpoints.projectOpen
+            ${breakpoints.projectOpen
             ? `
-            max-w-[450px]
-            w-[45vw]
-          ` : `
+              max-w-[450px]
+              w-[45vw]
+            ` : `
+            `}
           `}
-        `}
         >
           {children}
         </div>
@@ -102,7 +102,7 @@ const CloseButton = ({ setOpen }:{setOpen: (_open:boolean)=>void}) => (
   <CustomCursorHover cursor="close-project">
     <button
       className="
-        fixed top-[-50vh] left-[40vw]
+        fixed top-[-50vh] left-[min(40vw,450px)]
         z-[100]
         font-mono text-[10vw] px-[0.5em] uppercase
         transition-transform
@@ -114,7 +114,7 @@ const CloseButton = ({ setOpen }:{setOpen: (_open:boolean)=>void}) => (
     >
       <span
         className="inline-block translate-y-[-3%]
-    group-hover:scale-[1.5] transition-transform"
+          group-hover:scale-[1.5] transition-transform"
       >
         ×
 
@@ -126,40 +126,22 @@ const CloseButton = ({ setOpen }:{setOpen: (_open:boolean)=>void}) => (
 const ProjectHeader = ({ project }:{project:Project}) => (
   <>
     <h1
-      className="text-[max(35px,6vw)] font-mono leading-[1] my-6 mix-blend-difference"
+      className="text-[max(35px,6vw)] font-mono leading-[1] my-6"
+      style={{
+        fontSize: (project?.title?.length ?? 0) > 15 ? 'max(20px,3.5vw)' : 'max(35px,6vw)',
+      }}
     >
       {project.title}
     </h1>
     <h2
-      className="font-mono text-2xl "
+      className="font-mono text-2xl"
     >
       {project.subTitle}
     </h2>
     {(
-      project.client || project.designers?.length || project.links?.length
+      project.designers?.length || project.client
     ) ? (
-      <div className="grid grid-cols-2">
-        {project.links?.length && (
-        <ul className="col-span-2 mt-8">
-          {project.links.map((link) => (
-            <li className="">
-              <CustomCursorHover cursor="external">
-                <a
-                  href={link?.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="
-                    relative block p-2 pr-8 font-mono text-center border-2 border-[currentColor] font-bold
-                  "
-                >
-                  {link.text ?? 'Vist the site'}
-                  <span className="absolute top-0 grid w-6 h-full right-2 place-items-center fill-[currentColor]"><ExternalLinkIconSvg /></span>
-                </a>
-              </CustomCursorHover>
-            </li>
-          ))}
-        </ul>
-        )}
+      <div className="grid grid-cols-2 gap-8">
         {project.client && (
         <dl className="mt-8 font-mono">
           <dt className="font-bold">Client</dt>
@@ -179,7 +161,7 @@ const ProjectHeader = ({ project }:{project:Project}) => (
                         href={designer.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="underline"
+                        className="inline-block border-b-[1px] p-0 border-white"
                       >
                         {designer.name}
                       </a>
@@ -193,11 +175,33 @@ const ProjectHeader = ({ project }:{project:Project}) => (
         )}
       </div>
       ) : null}
+    {project.links?.length && (
+    <ul className="col-span-2 mt-8">
+      {project.links.map((link) => (
+        <li className="mt-4 first:mt-0">
+          <CustomCursorHover cursor="external">
+            <a
+              href={link?.url}
+              target="_blank"
+              rel="noreferrer"
+              className="
+                    relative block p-2 pr-8 font-mono text-center border-[1px] border-[currentColor]
+                  "
+            >
+              {link.text ?? 'Vist the site'}
+              <span className="absolute top-0 grid w-6 h-full right-2 place-items-center fill-[currentColor]"><ExternalLinkIconSvg /></span>
+            </a>
+          </CustomCursorHover>
+        </li>
+      ))}
+    </ul>
+    )}
+
   </>
 );
 
 export const ProjectBody = ({ project }:{project:Project}) => useMemo(() => (
-  <div className="my-8">
+  <div className="my-8 tracking-wide">
     <PortableText
       value={((project?.body ?? {}) as TypedObject)}
       components={{
@@ -224,9 +228,9 @@ export const ProjectHtml = ({ project, position, setOpen }:
   return (
     <Html
       position={position}
-      className="w-[100vw] relative"
+      className="w-[100vw] relative font-thin"
       style={{
-        ['--textColor' as any]: textColor?.hex ?? '#000',
+        ['--textColor' as any]: 'white', // textColor?.hex ?? '#000',
         ['--color1' as any]: color1?.hex ?? '#fff',
         ['--color2' as any]: color2?.hex ?? '#fff',
         color: 'var(--textColor)',

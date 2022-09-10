@@ -88,33 +88,67 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       return sqrt(pow(x2-x1,2.) + pow(y2-y1,2.));
     }
 
-    void main() {
-      // float distanceFromMouse = clamp(distance(vUv.x,vUv.y,mouseX,mouseY)*5.,0.,1.);
+    // https://alaingalvan.tumblr.com/post/79864187609/glsl-color-correction-shaders
+    vec3 brightnessContrast(vec3 value, float brightness, float contrast){
+      return (value - 0.5) * contrast + 0.5 + brightness;
+    }
 
-      // A convenience time adjustment
-      float adjustedTime = time * 0.5;
-
-      // A noise that will make blobs
+    float blobNoise (float size, float seed, float time) {
       float blobNoise = 0.;
-      blobNoise += noise(vUv*3.+adjustedTime/5.,seed)*(1.+cos(adjustedTime)/4.)/5.0;
-      blobNoise += noise(vUv*3.-adjustedTime/5.,seed)*(1.+cos(adjustedTime+3.14/2.)/4.)/5.0;
-      blobNoise += noise(vUv*6.+adjustedTime/5.,seed)*(1.+cos(adjustedTime+3.14)/4.)/5.0;
-      blobNoise += noise(vUv*10.-adjustedTime/5.,seed)*(1.+cos(adjustedTime+3.14*3./2.)/4.)/5.0;
-      blobNoise += noise(vUv*2.,seed)*(1.+cos(adjustedTime+3.14*3./2.)/2.)/5.0;
-      blobNoise = smoothstep(0.4,0.6,blobNoise);
+      float correction = 1.0;
 
-      // A noise that will make a grainy pseudo-pixelation effect
-      float pixelNoise = 0.;
-      pixelNoise += noise(vUv*700.,0.)*(1.+cos(adjustedTime+3.14*3./2.)/2.)/2.0;
+      time = time * (0.75+0.5*randomWithSeed(vec2(seed),seed));
+      blobNoise += noise(vec2(vUv.x*size-time/2.,vUv.y*size-time/2.),seed*2.0)*(cos(time+3.14*0.0))*correction;
+      blobNoise += noise(vec2(vUv.x*size+time/2.,vUv.y*size+time/2.),seed*3.0)*(cos(time+3.14*0.5))*correction;
+      blobNoise += noise(vec2(vUv.x*size+time/2.,vUv.y*size-time/2.),seed*4.0)*(cos(time+3.14*1.0))*correction;
+      blobNoise += noise(vec2(vUv.x*size-time/2.,vUv.y*size+time/2.),seed*5.0)*(cos(time+3.14*1.5))*correction;
 
-      // Combine and Harden the edges to make our final composite noise
-      float compositeNoise = pixelNoise + blobNoise;
+      // time = time * (0.5+randomWithSeed(vec2(seed),seed));
+      // blobNoise += noise(vec2(vUv.x*size-time/3.,vUv.y*size-time/3.),seed*2.0)*(cos(time+3.14*0.0))*correction;
+      // blobNoise += noise(vec2(vUv.x*size+time/3.,vUv.y*size+time/3.),seed*3.0)*(cos(time+3.14*0.5))*correction;
+      // blobNoise += noise(vec2(vUv.x*size+time/3.,vUv.y*size-time/3.),seed*4.0)*(cos(time+3.14*1.0))*correction;
+      // blobNoise += noise(vec2(vUv.x*size-time/3.,vUv.y*size+time/3.),seed*5.0)*(cos(time+3.14*1.5))*correction;
+
+      return clamp(0.0,1.0,blobNoise);
+    }
+
+
+    float isNonZero(float test){
+      return 1.-step(1.0,1.-test);
+    }
+
+    float isZero(float test){
+      return step(1.0,1.-test);
+    }
+
+    void main() {
+
+      float blobs = 0.0;
+      // blobs += blobNoise(2.0, seed, time*0.2)/3.0;
+      // blobs += noise(vUv,seed);
+      // blobs += isZero(blobs)*blobs(8.0, 0.3, seed*10.0, time*0.3);
+      // A blobs that will make a grainy pseudo-pixelation effect
+      // float pixels = 0.0;
+      // // pixels += blobNoise(1000.0, seed*vUv.x+seed+vUv.y, time*3.);
+
+      // float compositeNoise = blobs - pixels;
+      blobs += smoothstep(0.3,0.8,1.0-distance(vUv.x,vUv.y,.75,.7)*1.0);
+      blobs += blobNoise(5.0, seed, time*0.1)/4.0;
+      blobs += blobNoise(2.0, seed, time*0.2)/4.0;
+      // blobs += blobNoise(10.0, seed, time*0.2)/2.0;
+      // blobs = step(0.5,blobs);
+      blobs = smoothstep(0.2,0.6,blobs);
+
 
       // Sample color based on noise
-      vec3 color = mix(color1,color2,vec3(step(0.5,compositeNoise)));
+      vec3 color = vec3(0.0);
+      // color = mix(color1,color2,clamp(0.0,1.0,blobs));
+      // color=vec3(blobs);
 
       // Nudge the color based on a value provided by the CMS (to make text more readable)
-      color = color + colorNudge;
+      // color = mix(color,vec3(0.0),-colorNudge);
+      // color = color + colorNudge;
+      // color = brightnessContrast(color, 0., 0.3);
 
       // Out
       gl_FragColor.rgba = vec4(color, opacity);
