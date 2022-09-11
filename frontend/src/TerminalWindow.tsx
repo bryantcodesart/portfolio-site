@@ -85,7 +85,12 @@ export const TerminalWindow = ({
               {title}
               {!noCloseButton && (
                 <button
-                  className="border-black border-[2px] h-[0.75em] w-[0.75em] absolute right-[0.5em]"
+                  className={`
+                    border-black border-[2px]
+                    h-[0.75em] w-[0.75em]
+                    absolute right-[0.5em]
+                    ${flipped ? 'bg-black' : ''}
+                  `}
                   aria-label="this looks like a close button, but actually turns the window upside down. lol."
                   type="button"
                   onClick={() => {

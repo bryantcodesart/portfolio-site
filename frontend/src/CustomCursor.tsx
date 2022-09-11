@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { useEventListener } from 'usehooks-ts';
 import create from 'zustand';
+import createVanilla from 'zustand/vanilla';
 // import { Html } from '@react-three/drei';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useParamOnLoad } from './useParamOnLoad';
@@ -96,7 +97,9 @@ export const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
 
 // Put the cursor state in a zustand store
 // We prefer this to a context because its faster and we can consume it across R3F render boundaries
-const useCustomCursorStore = create<{
+// Build a vanilla store so we can use it in our useSceneController store as well
+// We'll also convert it into a react store for consumption in components, below
+export const useCustomCursorVanillaStore = createVanilla<{
   cursor: CustomCursorState,
   currentlyHovering: Map<Symbol, CustomCursorState>
   startHover:(_cursorState:CustomCursorState, _id:Symbol)=>void,
@@ -121,8 +124,10 @@ const useCustomCursorStore = create<{
         newMap.delete(id);
         return { currentlyHovering: newMap };
       }),
-      clearAllHovers: () => set(() => ({ currentlyHovering: new Map() })),
+      clearAllHovers: () => { set(() => ({ currentlyHovering: new Map() })); },
     }));
+
+export const useCustomCursorStore = create(useCustomCursorVanillaStore);
 
 // Hooks to manage hover state in components
 export const useCursorSetters = () => {

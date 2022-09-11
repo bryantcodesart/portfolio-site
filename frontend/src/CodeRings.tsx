@@ -169,7 +169,7 @@ function CodeRing({
 
   useInterval(() => {
     if (!texture.current) return;
-    if (scene === 'menu') { texture.current.needsUpdate = true; }
+    if (scene === 'menu' || scene === 'about') { texture.current.needsUpdate = true; }
   }, UPDATE_INTERVAL);
 
   const { scale } = useSpring({ scale: visible ? 1 : 0, config: config.wobbly });

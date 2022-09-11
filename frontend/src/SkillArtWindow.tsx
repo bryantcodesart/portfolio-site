@@ -76,7 +76,6 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
         return [(x - boundingRect.left) * resolutionMultiplier,
           (y - boundingRect.top) * resolutionMultiplier];
       },
-      preventDefault: true,
     },
   );
 
@@ -116,7 +115,7 @@ const useAddDrawFill = (drawFills:[DrawFill, string][], src:string, color:string
     const scaledImageW = areaW;
     const scaledImageH = areaW / aspectRatio;
 
-    const rotation = ((rotationAmount * 2 - 1) * Math.PI) / 16;
+    const rotation = ((rotationAmount * -3 + 1) * Math.PI) / 50;
     ctx.translate(w / 2, h / 2);
     ctx.rotate(rotation);
     ctx.translate(-w / 2, -h / 2);

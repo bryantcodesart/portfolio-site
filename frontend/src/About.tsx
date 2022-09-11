@@ -15,6 +15,10 @@ import { SlideName } from './SlideName';
 import { ImageWindow } from './ImageWindow';
 import { TextWindow } from './TextWindow';
 import { TerminalButton } from './TerminalButton';
+import { TestimonialsWindow } from './TestimonialsWindow';
+import colors from './colors';
+// import { AwardsWindow } from './AwardsWindow';
+import { TerminalWindowButton } from './TerminalWindowButton';
 
 export const Slides = ({
   slide, setScene, setSlide,
@@ -55,7 +59,7 @@ export const Slides = ({
 
   return (
     <>
-      {(slide === 'mission' || slide === 'process' || slide === 'skills') && (
+      {(slide === 'mission' || slide === 'testimonials' || slide === 'skills') && (
         <div
           className={`
           grid h-full
@@ -78,14 +82,15 @@ export const Slides = ({
             topColor="violet"
             wrapperClassName="p-[1em]"
             texts={[
-              'I help awesome designers (like you) build their wildest dreams.',
+              'I am a fullstack dev who helps awesome designers (like you) build their wildest dreams.',
               'Together, let\'s create something that stands out––and has users saying, "woah."',
             ]}
-            icon="/images/computer-icon.svg"
+            // icon="/images/computer-icon.svg"
+            icon="/images/alert-icon.svg"
             buttonColor="pink"
             buttonText="tell me more!"
             onClick={() => {
-              setSlide('process');
+              setSlide('testimonials');
             }}
             disabled={slide !== 'mission'}
           />
@@ -93,10 +98,10 @@ export const Slides = ({
             delay={300}
             title="SELF_CONCEPT.jpg"
             positions={['center']}
-            color="lime"
+            topColor="yellow"
             className={`
             ${breakpoints.about ? `
-              self-end min-h-[12em] h-[13em] ml-[-1em]
+              self-end min-h-[12em] h-[13em] ml-[-1em] mb-[2em]
             ` : `
               w-[90%] max-w-[30em]
               justify-self-end  mt-[-1.5em]
@@ -110,35 +115,63 @@ export const Slides = ({
           />
         </div>
       )}
-      {(slide === 'process' || slide === 'skills') && (
+      {(slide === 'testimonials' || slide === 'skills') && (
       <div
         className={`
           absolute top-0 left-0 w-full h-full
           grid
           pointer-events-none
-          ${breakpoints.about ? 'grid-cols-[1fr_65%]' : 'grid-rows-[1fr_max-content]'}
+          ${breakpoints.about ? 'grid-cols-[1fr_80%]' : 'grid-rows-[1fr_max-content]'}
         `}
       >
         <ImageWindow
           delay={100}
-          title="MY_DOG_HAILEY.jpg"
-          topColor="cyan"
+          title="HAILEY.jpg"
+          topColor="violet"
           positions={['60% 15%']}
           className={`
             ${breakpoints.about ? `
-              self-end h-[18em] mr-[-2em] min-w-[12em] mb-[1em]
+              self-start h-[13em] mr-[-2em] w-[10em] mt-[6em]
             ` : `
               w-[90%] max-w-[28em]
               justify-self-end mb-[-12em]
             `}
             transition-transform duration-[1s]
-            ${slide === 'process' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
+            ${slide === 'testimonials' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
           `}
           srcs={['/images/hailey2.jpg']}
           alts={['My dog Hailey smiling her crazy smile.']}
         />
 
-        <TextWindow
+        <TestimonialsWindow
+          className={`
+          relative self-baseline
+
+
+            transition-transform duration-[1s]
+            ${slide === 'testimonials' ? '' : 'translate-x-[43%] translate-y-[-80%]'}
+          `}
+          delay={1000}
+          title="KIND_WORDS_FROM_OTHERS.exe"
+          color={colors.lime}
+          topColor={colors.cyan}
+        >
+          <div className="grid place-items-center mt-[2em] col-span-2">
+            <TerminalWindowButton
+              onClick={() => {
+                setSlide('skills');
+              }}
+              delay={1000}
+              color="black"
+              bgColor="violet"
+              disabled={slide !== 'testimonials'}
+            >
+              skills, tho?
+            </TerminalWindowButton>
+          </div>
+
+        </TestimonialsWindow>
+        {/* <TextWindow
           title={null}
           className={`
             relative self-baseline
@@ -155,7 +188,8 @@ export const Slides = ({
           wrapperClassName="p-[1em]"
           texts={[
             'I\'m a fullstack web dev, a creative, and a partner you can trust with your project.',
-            'Already have a vision? I\'ll realize it down to the pixel.  Searching? Let\'s find it together.',
+            'Already have a vision? I\'ll realize it down to the pixel.
+            Searching? Let\'s find it together.',
           ]}
           buttonColor="violet"
           buttonText="skills tho?"
@@ -163,7 +197,7 @@ export const Slides = ({
           onClick={() => {
             setSlide('skills');
           }}
-        />
+        /> */}
       </div>
       )}
       {(slide === 'skills') && (

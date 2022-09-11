@@ -8,6 +8,8 @@ import {
 // @ts-ignore
 import glsl from 'glslify';
 import { Project } from '../generatedSanitySchemaTypes';
+import { useBreakpoints } from './useBreakpoints';
+// import colors from './colors';
 
 const BackgroundColorShaderMaterial = shaderMaterial(
   {
@@ -16,9 +18,8 @@ const BackgroundColorShaderMaterial = shaderMaterial(
     seed: 0.0,
     // mouseX: 0.0,
     // mouseY: 0.0,
-    color1: [1, 1, 1],
-    color2: [1, 1, 1],
-    colorNudge: 1.0,
+    projectColor: [1, 1, 1],
+    breakpoint: false,
   },
   glsl`
     varying vec2 vUv;
@@ -33,11 +34,10 @@ const BackgroundColorShaderMaterial = shaderMaterial(
     uniform float opacity;
     uniform float time;
     uniform float seed;
-    uniform float mouseX;
-    uniform float mouseY;
-    uniform vec3 color1;
-    uniform vec3 color2;
-    uniform float colorNudge;
+    // uniform float mouseX;
+    // uniform float mouseY;
+    uniform vec3 projectColor;
+    uniform bool breakpoint;
 
     // 2D Random
     // from https://thebookofshaders.com/11/
@@ -93,21 +93,16 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       return (value - 0.5) * contrast + 0.5 + brightness;
     }
 
-    float blobNoise (float size, float seed, float time) {
+
+    float blobNoise (float size, float seed, float correctedTime) {
       float blobNoise = 0.;
       float correction = 1.0;
 
-      time = time * (0.75+0.5*randomWithSeed(vec2(seed),seed));
-      blobNoise += noise(vec2(vUv.x*size-time/2.,vUv.y*size-time/2.),seed*2.0)*(cos(time+3.14*0.0))*correction;
-      blobNoise += noise(vec2(vUv.x*size+time/2.,vUv.y*size+time/2.),seed*3.0)*(cos(time+3.14*0.5))*correction;
-      blobNoise += noise(vec2(vUv.x*size+time/2.,vUv.y*size-time/2.),seed*4.0)*(cos(time+3.14*1.0))*correction;
-      blobNoise += noise(vec2(vUv.x*size-time/2.,vUv.y*size+time/2.),seed*5.0)*(cos(time+3.14*1.5))*correction;
-
-      // time = time * (0.5+randomWithSeed(vec2(seed),seed));
-      // blobNoise += noise(vec2(vUv.x*size-time/3.,vUv.y*size-time/3.),seed*2.0)*(cos(time+3.14*0.0))*correction;
-      // blobNoise += noise(vec2(vUv.x*size+time/3.,vUv.y*size+time/3.),seed*3.0)*(cos(time+3.14*0.5))*correction;
-      // blobNoise += noise(vec2(vUv.x*size+time/3.,vUv.y*size-time/3.),seed*4.0)*(cos(time+3.14*1.0))*correction;
-      // blobNoise += noise(vec2(vUv.x*size-time/3.,vUv.y*size+time/3.),seed*5.0)*(cos(time+3.14*1.5))*correction;
+      correctedTime = correctedTime * (0.75+0.5*randomWithSeed(vec2(seed),seed));
+      blobNoise += noise(vec2(vUv.x*size-correctedTime/2.,vUv.y*size-correctedTime/2.),seed*2.0)*(cos(correctedTime+3.14*0.0))*correction;
+      blobNoise += noise(vec2(vUv.x*size+correctedTime/2.,vUv.y*size+correctedTime/2.),seed*3.0)*(cos(correctedTime+3.14*0.5))*correction;
+      blobNoise += noise(vec2(vUv.x*size+correctedTime/2.,vUv.y*size-correctedTime/2.),seed*4.0)*(cos(correctedTime+3.14*1.0))*correction;
+      blobNoise += noise(vec2(vUv.x*size-correctedTime/2.,vUv.y*size+correctedTime/2.),seed*5.0)*(cos(correctedTime+3.14*1.5))*correction;
 
       return clamp(0.0,1.0,blobNoise);
     }
@@ -121,37 +116,27 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       return step(1.0,1.-test);
     }
 
+    vec3 coffee = vec3(0.333,0.122,0.);
+    vec3 black = vec3(0.1);
+
     void main() {
-
-      float blobs = 0.0;
-      // blobs += blobNoise(2.0, seed, time*0.2)/3.0;
-      // blobs += noise(vUv,seed);
-      // blobs += isZero(blobs)*blobs(8.0, 0.3, seed*10.0, time*0.3);
-      // A blobs that will make a grainy pseudo-pixelation effect
-      // float pixels = 0.0;
-      // // pixels += blobNoise(1000.0, seed*vUv.x+seed+vUv.y, time*3.);
-
-      // float compositeNoise = blobs - pixels;
-      blobs += smoothstep(0.3,0.8,1.0-distance(vUv.x,vUv.y,.75,.7)*1.0);
-      blobs += blobNoise(5.0, seed, time*0.1)/4.0;
-      blobs += blobNoise(2.0, seed, time*0.2)/4.0;
-      // blobs += blobNoise(10.0, seed, time*0.2)/2.0;
-      // blobs = step(0.5,blobs);
-      blobs = smoothstep(0.2,0.6,blobs);
+      float transitionBlobs = 0.0;
+      transitionBlobs += noise(vUv*2.0+time,seed)/2.0;
+      transitionBlobs += noise(vUv*8.0+time,seed+1000.0)/2.0;
+      transitionBlobs = step(1.0-opacity,transitionBlobs);
 
 
-      // Sample color based on noise
-      vec3 color = vec3(0.0);
-      // color = mix(color1,color2,clamp(0.0,1.0,blobs));
-      // color=vec3(blobs);
+      float colorBlobs = 0.0;
+      if(breakpoint) {
+        colorBlobs += smoothstep(0.7,0.9,1.0-distance(vUv.x, vUv.y, .75, vUv.y)*1.0);
+      } else {
+        colorBlobs += smoothstep(0.7,0.9,1.0-distance(vUv.x, vUv.y, vUv.x, .65)*1.0);
+      }
+      colorBlobs += blobNoise(5.0, seed, time*0.1)/4.0;
+      colorBlobs += blobNoise(2.0, seed, time*0.2)/4.0;
+      vec3 color = mix(coffee,colorBlobs*projectColor,opacity);
 
-      // Nudge the color based on a value provided by the CMS (to make text more readable)
-      // color = mix(color,vec3(0.0),-colorNudge);
-      // color = color + colorNudge;
-      // color = brightnessContrast(color, 0., 0.3);
-
-      // Out
-      gl_FragColor.rgba = vec4(color, opacity);
+      gl_FragColor.rgba = vec4(color, transitionBlobs);
     }
   `,
 );
@@ -166,9 +151,10 @@ type BackgroundColorShaderMaterial = ShaderMaterial &
   time:number,
   // mouseX:number,
   // mouseY:number
-  color1:[number, number, number],
-  color2:[number, number, number],
-  colorNudge: number,
+  projectColor:[number, number, number],
+  // color2:[number, number, number],
+  // colorNudge: number,
+  breakpoint:boolean,
 };
 
 /* eslint-disable no-unused-vars */
@@ -191,17 +177,11 @@ export const BackgroundColorMaterial = ({ opacity = true, project = null }:
   // const { videoElement } = useVideoElement(src, playing, { debug: false });
   const materialRef = React.useRef<BackgroundColorShaderMaterial>(null);
 
-  const color1:[number, number, number] = project !== null
+  const breakpoints = useBreakpoints();
+
+  const projectColor:[number, number, number] = project !== null
     ? rgbToGlsl(project?.color1?.rgb)
-    : null ?? ([1, 1, 1]);
-
-  const color2:[number, number, number] = project !== null
-    ? rgbToGlsl(project?.color2?.rgb)
-    : null ?? [0, 0, 0];
-
-  const colorNudge = project !== null
-    ? project.colorNudge
-    : null ?? 1.0;
+    : null ?? ([0.333, 0.122, 0.0]);
 
   const opacityClock = useMemo(() => {
     const clock = new Clock();
@@ -212,7 +192,7 @@ export const BackgroundColorMaterial = ({ opacity = true, project = null }:
   useFrame(() => {
     if (!materialRef.current) return;
 
-    const transitionTime = opacity ? 1 : 0.2;
+    const transitionTime = 1; // opacity ? 1 : 0.5;
 
     const increment = opacityClock.getDelta() / transitionTime;
 
@@ -243,8 +223,6 @@ export const BackgroundColorMaterial = ({ opacity = true, project = null }:
 
   return (
     <backgroundColorShaderMaterial
-      // transparent
-      // depthTest={false}
       side={FrontSide}
       key={BackgroundColorShaderMaterial.key}
       opacity={0} // Animated with useFrame above
@@ -252,17 +230,8 @@ export const BackgroundColorMaterial = ({ opacity = true, project = null }:
       ref={materialRef}
       transparent
       time={0} // Animated with useFrame above
-      color1={color1}
-      color2={color2}
-      colorNudge={colorNudge}
-    >
-
-      {/* {videoElement && (
-        <videoTexture
-          args={[videoElement]}
-          attach="map"
-        />
-      )} */}
-    </backgroundColorShaderMaterial>
+      projectColor={projectColor}
+      breakpoint={breakpoints.projectOpen}
+    />
   );
 };

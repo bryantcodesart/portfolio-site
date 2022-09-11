@@ -14,7 +14,6 @@ const ThreeCanvas = ({ siteData }:{siteData:SiteData}) => {
 
   return (
     <>
-
       <Canvas
         // eslint-disable-next-line no-param-reassign
         onCreated={({ gl }) => { gl.toneMapping = LinearToneMapping; }}

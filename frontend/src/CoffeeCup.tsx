@@ -137,7 +137,7 @@ export function CoffeeCup() {
         width={2}
         height={2}
         description={'A coffee mug with the word "Projects" on it.'}
-        activationMsg="Mug tips, cofee spills everywhere, a project carousel animates into view from the 3d floating liquid."
+        activationMsg="Mug tips, coffee spills everywhere, a project carousel animates into view from the 3d floating liquid."
         onFocus={() => setHovering(true)}
         onBlur={() => setHovering(false)}
         cursor="spill"

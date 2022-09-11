@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Text } from '@react-three/drei';
 // import { useControls } from 'leva';
 import { CameraController } from './CameraController';
@@ -6,13 +6,13 @@ import { BackgroundScribbles } from './BackgroundScribbles';
 import { Computer } from './Computer';
 import { CoffeeCup } from './CoffeeCup';
 import { CoordArray } from './CoordArray';
-import { SceneName, SceneControllerProvider } from './SceneController';
+import { useSceneController } from './SceneController';
 import { Notebook } from './Notebook';
-import { routerLog } from './loggers';
+// import { routerLog } from './loggers';
 import { SiteData } from './SiteData';
 import { ProjectListing } from './ProjectListing';
 import { useBreakpoints } from './useBreakpoints';
-import { useClearHover } from './CustomCursor';
+// import { useClearHover } from './CustomCursor';
 
 export function SceneDirector({
   siteData,
@@ -22,9 +22,12 @@ export function SceneDirector({
 }) {
   const { startingScene, projects } = siteData;
 
-  const clearCursor = useClearHover();
-  const [scene, _setScene] = useState(startingScene);
-  const setScene = (newScene:SceneName) => { _setScene(newScene); clearCursor(); };
+  const { scene, setScene } = useSceneController();
+  useEffect(() => {
+    setScene(startingScene);
+  }, [setScene, startingScene]);
+  // const [scene, _setScene] = useState(startingScene);
+  // const setScene = (newScene:SceneName) => { _setScene(newScene); clearCursor(); };
 
   const breakpoints = useBreakpoints();
 
@@ -58,10 +61,10 @@ export function SceneDirector({
   if (scene === 'project-open') {
     stagePosition = [
       projectListingPosition[0],
-      projectListingPosition[1] - 0.9,
+      projectListingPosition[1] - 1.0,
       projectListingPosition[2] + 4.5,
     ];
-    stageSize = [0.1, 3];
+    stageSize = [0.1, 2.8];
     if (breakpoints.projectOpen) {
       stagePosition = [
         projectListingPosition[0] - 0.6,
@@ -94,16 +97,7 @@ export function SceneDirector({
   }
 
   return (
-    <SceneControllerProvider
-      value={{
-        scene,
-        setScene: (newScene:SceneName) => {
-          routerLog('changing scene to', newScene);
-          setScene(newScene);
-          // window.history.pushState({}, '', `/${newScene}${window.location.search}`);
-        },
-      }}
-    >
+    <>
       <CameraController
         stagePosition={stagePosition as CoordArray}
         stageSize={stageSize as [number, number]}
@@ -119,6 +113,6 @@ export function SceneDirector({
         position={projectListingPosition as CoordArray}
         active={scene === 'projects' || scene === 'project-open'}
       />
-    </SceneControllerProvider>
+    </>
   );
 }

@@ -22,7 +22,7 @@
 } */
 
 body {
-  @apply no-scrollbar;
+  @apply no-scrollbar select-none;
 
   height: 100vh;
   max-height: 100vh;

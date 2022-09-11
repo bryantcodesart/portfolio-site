@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { ReactNode, useMemo } from 'react';
+import React, {
+  ReactNode, useMemo,
+} from 'react';
 import { Html } from '@react-three/drei';
 import { PortableText, PortableTextBlockComponent } from '@portabletext/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -10,8 +12,10 @@ import { Project } from '../generatedSanitySchemaTypes';
 import { CoordArray } from './CoordArray';
 import { useBreakpoints } from './useBreakpoints';
 import { getSanityImageUrlFor } from './sanity/sanityImageBuilder';
-import { CustomCursorHover } from './CustomCursor';
+import { CustomCursorHover, CustomCursorState } from './CustomCursor';
 import ExternalLinkIconSvg from './svg/ExternalLinkIconSvg';
+import { contactHref } from './contactHref';
+import { useScrolledToBottom } from './useScrolledToBottom';
 
 const VimeoBlock = ({ value }:{ value: { id:string } }) => (
   <Vimeo
@@ -20,13 +24,21 @@ const VimeoBlock = ({ value }:{ value: { id:string } }) => (
     className="my-8 border-[1px] border-[currentColor]"
   />
 );
-const PBlock:PortableTextBlockComponent = ({ children }) => (<p className="my-4">{children}</p>);
-const H2Block:PortableTextBlockComponent = ({ children }) => (
+const P = ({ children, className = '' }:
+{children:ReactNode, className?:string}) => (<p className={`my-4 ${className}`}>{children}</p>);
+const PBlock:PortableTextBlockComponent = ({ children }) => (<P>{children}</P>);
+const H2 = ({ children }:{children:ReactNode}) => (
   <h2
     className="mt-16 font-mono text-2xl"
   >
     {children}
   </h2>
+);
+
+const H2Block:PortableTextBlockComponent = ({ children }) => (
+  <H2>
+    {children}
+  </H2>
 );
 const H3Block:PortableTextBlockComponent = ({ children }) => (<h3 className="my-4 font-mono">{children}</h3>);
 const LinkBlock = ({ value }:{
@@ -60,26 +72,33 @@ const QuoteBlock = ({ value }:{
   </figure>
 );
 
-const ContentContainerWithScroll = ({ children }:{children:ReactNode}) => {
+const ScollingContentContainer = ({ children }:{children:ReactNode}) => {
   const breakpoints = useBreakpoints();
+
+  const { scrollRef, scrolledToBottom } = useScrolledToBottom();
+
   return (
     <div
       className={`
         absolute overflow-hidden
         ${breakpoints.projectOpen
         ? `
-          top-[1.5rem] left-0
-          w-full h-[calc(100vh-4rem)] -translate-y-1/2
-          grid place-items-center
-          p-4 pr-8
+          top-0 left-0
+          w-full h-[100vh] -translate-y-1/2
+
+          px-4 pr-8
         ` : `
-          top-[3vh] w-[98vw] h-[56vh] -translate-x-1/2
-          p-4
+          top-[3vh] w-[98vw] h-[60vh] -translate-x-1/2
+          px-4
         `}
       `}
     >
       <div
-        className="w-full h-full overflow-y-scroll no-scrollbar"
+        className={`
+          w-full h-[calc(100%-3rem)] overflow-y-scroll no-scrollbar
+          ${breakpoints.projectOpen ? 'h-[calc(100%-3rem)]' : 'h-[calc(100%-1.5rem)]'}
+        `}
+        ref={scrollRef}
       >
         <div
           className={`
@@ -88,47 +107,102 @@ const ContentContainerWithScroll = ({ children }:{children:ReactNode}) => {
               max-w-[450px]
               w-[45vw]
             ` : `
+              w-[94%]
             `}
           `}
         >
           {children}
         </div>
       </div>
+      <div
+        className={`
+          absolute bottom-0 left-0
+          flex justify-center pointer-events-none
+            ${breakpoints.projectOpen
+          ? `
+              max-w-[450px]
+              w-[45vw]
+            ` : `
+              w-full
+            `}
+        `}
+      >
+        {!scrolledToBottom
+        && (
+        <span
+          className={`font-mono rotate-[90deg] inline-block
+            ${breakpoints.projectOpen
+            ? 'text-[3rem] translate-y-[20%]'
+            : 'text-[3rem] translate-y-[40%]'
+            }
+          `}
+        >
+          ›
+
+        </span>
+        )}
+      </div>
     </div>
   );
 };
 
-const CloseButton = ({ setOpen }:{setOpen: (_open:boolean)=>void}) => (
-  <CustomCursorHover cursor="close-project">
-    <button
-      className="
-        fixed top-[-50vh] left-[min(40vw,450px)]
-        z-[100]
-        font-mono text-[10vw] px-[0.5em] uppercase
-        transition-transform
-        group
-      "
-      onClick={() => setOpen(false)}
-      type="button"
-      aria-label="close project glow"
-    >
-      <span
-        className="inline-block translate-y-[-3%]
-          group-hover:scale-[1.5] transition-transform"
+const CloseButton = ({ setOpen }:{setOpen: (_open:boolean)=>void}) => {
+  const breakpoints = useBreakpoints();
+  return (
+    <CustomCursorHover cursor="close-project">
+      <button
+        className={`
+          fixed
+          z-[100]
+          font-mono text-[max(35px,6vw)] scale-[1.5] px-[0.5em] uppercase
+          transition-transform
+          group
+          ${breakpoints.projectOpen
+          ? 'top-[-50vh] left-[min(45vw,450px)]'
+          : 'left-[50vw] top-[1em] -translate-x-[85%]'}
+        `}
+        onClick={() => setOpen(false)}
+        type="button"
+        aria-label="close project"
       >
-        ×
+        <span
+          className="inline-block translate-y-[-3%]
+          group-hover:scale-[1.5] transition-transform
+          group-hover:text-projectColor
+        "
+        >
+          ×
 
-      </span>
-    </button>
+        </span>
+      </button>
+    </CustomCursorHover>
+  );
+};
+
+const ExternalLink = ({ href, cursor = 'external', children }:
+{href:string, children:ReactNode, cursor?:CustomCursorState}) => (
+  <CustomCursorHover cursor={cursor}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="
+          relative block p-2 pr-8 font-mono text-center border-[1px] border-[currentColor]
+          hover:text-projectColor hover:border-projectColor hover:fill-projectColor
+        "
+    >
+      {children}
+      <span className="absolute top-0 grid w-6 h-full right-2 place-items-center fill-[currentColor]"><ExternalLinkIconSvg /></span>
+    </a>
   </CustomCursorHover>
 );
 
 const ProjectHeader = ({ project }:{project:Project}) => (
   <>
     <h1
-      className="text-[max(35px,6vw)] font-mono leading-[1] my-6"
+      className="font-mono leading-[1] mb-6 mt-12"
       style={{
-        fontSize: (project?.title?.length ?? 0) > 15 ? 'max(20px,3.5vw)' : 'max(35px,6vw)',
+        fontSize: (project?.title?.length ?? 0) > 15 ? 'max(35px,3.5vw)' : 'max(35px,6vw)',
       }}
     >
       {project.title}
@@ -154,14 +228,14 @@ const ProjectHeader = ({ project }:{project:Project}) => (
           <dd>
             <ul>
               {project.designers.map((designer) => (
-                <li>
+                <li key={designer.name}>
                   {designer.url ? (
                     <CustomCursorHover cursor="external">
                       <a
                         href={designer.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-block border-b-[1px] p-0 border-white"
+                        className="inline-block border-b-[1px] p-0 border-white hover:text-projectColor hover:border-b-projectColor"
                       >
                         {designer.name}
                       </a>
@@ -178,20 +252,8 @@ const ProjectHeader = ({ project }:{project:Project}) => (
     {project.links?.length && (
     <ul className="col-span-2 mt-8">
       {project.links.map((link) => (
-        <li className="mt-4 first:mt-0">
-          <CustomCursorHover cursor="external">
-            <a
-              href={link?.url}
-              target="_blank"
-              rel="noreferrer"
-              className="
-                    relative block p-2 pr-8 font-mono text-center border-[1px] border-[currentColor]
-                  "
-            >
-              {link.text ?? 'Vist the site'}
-              <span className="absolute top-0 grid w-6 h-full right-2 place-items-center fill-[currentColor]"><ExternalLinkIconSvg /></span>
-            </a>
-          </CustomCursorHover>
+        <li className="mt-4 first:mt-0" key={link.url}>
+          <ExternalLink href={link.url ?? ''}>{link.text}</ExternalLink>
         </li>
       ))}
     </ul>
@@ -221,26 +283,42 @@ export const ProjectBody = ({ project }:{project:Project}) => useMemo(() => (
   </div>
 ), [project?.body]);
 
+const ProjectCTA = () => (
+  <div className="mb-[5em]">
+    <H2>Questions?</H2>
+    <P className="mb-8">
+      {`
+        Wanna nerd out and talk shop?
+        Have a project of your own you wanna discuss?
+        Just wanna say hi and introduce yourself?
+        I'd love to hear from you!
+      `}
+    </P>
+    <ExternalLink href={contactHref} cursor="contact">hello @ bryantcodes.art</ExternalLink>
+  </div>
+);
+
 export const ProjectHtml = ({ project, position, setOpen }:
   { project: Project; position: CoordArray, setOpen: (_open:boolean)=>void }) => {
-  const { textColor, color1, color2 } = project;
-  console.log(color1);
+  const { color1 } = project;
+  // console.log(color1);
   return (
     <Html
       position={position}
       className="w-[100vw] relative font-thin"
       style={{
         ['--textColor' as any]: 'white', // textColor?.hex ?? '#000',
-        ['--color1' as any]: color1?.hex ?? '#fff',
-        ['--color2' as any]: color2?.hex ?? '#fff',
+        ['--projectColor' as any]: color1?.hex ?? '#fff',
+        // ['--color2' as any]: color2?.hex ?? '#fff',
         color: 'var(--textColor)',
       }}
     >
       <CloseButton setOpen={setOpen} />
-      <ContentContainerWithScroll>
+      <ScollingContentContainer>
         <ProjectHeader project={project} />
         <ProjectBody project={project} />
-      </ContentContainerWithScroll>
+        <ProjectCTA />
+      </ScollingContentContainer>
     </Html>
   );
 };

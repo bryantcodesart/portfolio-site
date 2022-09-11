@@ -1,4 +1,6 @@
-import { createContext, useContext } from 'react';
+// import { createContext, useContext } from 'react';
+import create from 'zustand';
+import { useCustomCursorVanillaStore } from './CustomCursor';
 
 export const sceneNames = [
   'intro',
@@ -11,6 +13,7 @@ export const sceneNames = [
   'about',
 ] as const;
 
+// This helps us infer the type as the actual strings, not just a general string[]
 type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
   ? ElementType
   : never;
@@ -21,13 +24,21 @@ export type SceneController = {
   setScene: (_scene: SceneName) => void;
 }
 
-export const SceneControllerContext = createContext<SceneController>({
-  scene: 'error',
-  setScene: () => {
-    throw new Error('SceneController must be used within a <SceneControllerProvider>.');
+export const useSceneController = create<SceneController>((set) => ({
+  scene: 'intro',
+  setScene: (scene:SceneName) => {
+    set({ scene });
+    useCustomCursorVanillaStore.getState().clearAllHovers();
   },
-});
+}));
 
-export const SceneControllerProvider = SceneControllerContext.Provider;
+// export const SceneControllerContext = createContext<SceneController>({
+//   scene: 'error',
+//   setScene: () => {
+//     throw new Error('SceneController must be used within a <SceneControllerProvider>.');
+//   },
+// });
 
-export const useSceneController = ():SceneController => useContext(SceneControllerContext);
+// export const SceneControllerProvider = SceneControllerContext.Provider;
+
+// export const useSceneController = ():SceneController => useContext(SceneControllerContext);
