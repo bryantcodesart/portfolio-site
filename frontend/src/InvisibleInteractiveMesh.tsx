@@ -88,7 +88,7 @@ export const InvisibleInteractiveMesh = ({
           color={new Color(0xff0000)}
           opacity={debug ? 0.3 : 0}
           transparent
-          // depthTest={false}
+          depthTest={false}
         />
       </mesh>
 

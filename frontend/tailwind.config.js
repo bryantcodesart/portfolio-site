@@ -57,6 +57,7 @@ module.exports = {
         },
         {
           values: theme('spacing'),
+          // eslint-disable-next-line comma-dangle
         }
       );
     }),

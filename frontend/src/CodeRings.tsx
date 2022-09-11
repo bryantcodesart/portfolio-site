@@ -18,11 +18,14 @@ import {
 } from '@react-spring/three';
 import colors from './colors';
 import { useSceneController } from './SceneController';
+import { useBreakpoints } from './useBreakpoints';
 
 /** Number of rings to be drawn */
 const N_RINGS = 16;
 /* height of each ring in world coordinate */
-const RING_HEIGHT = 0.02;
+const RING_HEIGHT_LANDSCAPE = 0.02;
+/* height of each ring in world coordinate */
+const RING_HEIGHT_PORTRAIT = 0.06;
 /* each ring is slightly narrower on top compared to bottom, creating a taper.
 The difference in world coords */
 const RADIUS_TAPER = 0.05;
@@ -116,6 +119,12 @@ function createTextCanvas(): HTMLCanvasElement | null {
   return canvas;
 }
 
+const useRingHeight = () => {
+  const breakpoints = useBreakpoints();
+  const breakpoint = breakpoints.menu;
+  return breakpoint ? RING_HEIGHT_LANDSCAPE : RING_HEIGHT_PORTRAIT;
+};
+
 // Inspired by https://github.com/gsimone/gsim.one/blob/master/src/Scene.js
 /**
  * Draws a ring of animating text onto the scene.
@@ -174,10 +183,12 @@ function CodeRing({
 
   const { scale } = useSpring({ scale: visible ? 1 : 0, config: config.wobbly });
 
+  const ringHeight = useRingHeight();
+
   return (
     <animated.group scale={scale}>
       <Cylinder
-        args={[r, r - RADIUS_TAPER, RING_HEIGHT * 2, 64, 1, true]}
+        args={[r, r - RADIUS_TAPER, ringHeight * 2, 64, 1, true]}
         position={[0, y, 0]}
         scale={[2, 1, 1]}
         rotation={[0, 0, 0]}
@@ -235,6 +246,8 @@ export function CodeRings({ visible }: { visible: boolean }) {
     }
   }, 50);
 
+  const ringHeight = useRingHeight();
+
   return (
     // Don't even try to draw until we have the dont we need.
     isFontLoaded ? (
@@ -244,7 +257,7 @@ export function CodeRings({ visible }: { visible: boolean }) {
         <group rotation={[Math.PI / 2, 0, 0]} position={[-1, 1, 2]} scale={1.8}>
           {new Array(N_RINGS).fill(null).map((_, index) => (
             <CodeRing
-              y={index * (-4) * RING_HEIGHT}
+              y={index * (-4) * ringHeight}
               r={3 - index * 0.1}
               repeats={
                 Math.max(4 - (Math.floor(index / 5)), 1)

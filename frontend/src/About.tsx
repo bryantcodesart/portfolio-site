@@ -28,6 +28,8 @@ export const Slides = ({
   setSlide:(_slide:SlideName)=>void
 }) => {
   const breakpoints = useBreakpoints();
+  const breakpoint = breakpoints.about;
+
   if (slide === 'intro') {
     const text1Delay = 800;
     const text2Delay = text1Delay + 22 * TIME_PER_CHAR + 100;
@@ -86,7 +88,7 @@ export const Slides = ({
               'Together, let\'s create something that stands out––and has users saying, "woah."',
             ]}
             // icon="/images/computer-icon.svg"
-            icon="/images/alert-icon.svg"
+            // icon="/images/alert-icon.svg"
             buttonColor="pink"
             buttonText="tell me more!"
             onClick={() => {
@@ -103,8 +105,9 @@ export const Slides = ({
             ${breakpoints.about ? `
               self-end min-h-[12em] h-[13em] ml-[-1em] mb-[2em]
             ` : `
-              w-[90%] max-w-[30em]
-              justify-self-end  mt-[-1.5em]
+              ..w-[90%] ..max-w-[30em]
+              aspect-square
+              justify-self-end  mt-[2em]
             `}
 
             transition-transform duration-[1s]
@@ -134,7 +137,7 @@ export const Slides = ({
               self-start h-[13em] mr-[-2em] w-[10em] mt-[6em]
             ` : `
               w-[90%] max-w-[28em]
-              justify-self-end mb-[-12em]
+              justify-self-start mb-[-12em] ml-[2em]
             `}
             transition-transform duration-[1s]
             ${slide === 'testimonials' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
@@ -156,7 +159,7 @@ export const Slides = ({
           color={colors.lime}
           topColor={colors.cyan}
         >
-          <div className="grid place-items-center mt-[2em] col-span-2">
+          <div className={`grid place-items-center mt-[2em] ${breakpoint ? 'col-span-2' : ''}`}>
             <TerminalWindowButton
               onClick={() => {
                 setSlide('skills');

@@ -305,7 +305,7 @@ export const ProjectHtml = ({ project, position, setOpen }:
   return (
     <Html
       position={position}
-      className="w-[100vw] relative font-thin"
+      className="w-[100vw] relative font-thin touch-auto"
       style={{
         ['--textColor' as any]: 'white', // textColor?.hex ?? '#000',
         ['--projectColor' as any]: color1?.hex ?? '#fff',

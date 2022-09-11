@@ -2,13 +2,14 @@
 import React, { ReactNode, useState } from 'react';
 import { TerminalWindowProps } from './TerminalWindowProps';
 import { TerminalWindow } from './TerminalWindow';
+import { Typewriter } from './Typewriter';
+import { useBreakpoints } from './useBreakpoints';
 
 const testimonials = [{
   quote: 'Bryant\'s kickass work is complemented by his infectious energy and passion for creating original, exciting work. He is a true creative partner––always bringing new ideas to the table. ',
   // I have learned so much from my experience working with him.
   shortName: 'Stef',
   name: 'Stephanie Jung',
-  subject: '🙂',
   headshot: 'stef.jpg',
   title: [
     'Brand Design Lead, Employer Marketing at Handshake',
@@ -31,6 +32,31 @@ const testimonials = [{
   headshot: 'star-icon.svg',
 }];
 
+type Testimonial = typeof testimonials[number];
+
+// Manually decide which testimony should dictate window length
+const longestTestimonial = testimonials[0];
+
+const QuoteFigure = ({ testimonial, hidden = false }:
+  {testimonial:Testimonial, hidden?:boolean}) => (
+    <figure
+      className={`${hidden ? 'invisible' : ''} col-[1/-1] row-[1/-1]`}
+      aria-hidden={hidden}
+    >
+      <blockquote className="">
+        {hidden ? testimonial.quote : <Typewriter timePerChar={2}>{testimonial.quote}</Typewriter>}
+        {/* {testimonial.quote} */}
+      </blockquote>
+      <figcaption className="mt-[2em] text-[0.6em]">
+        <div>
+          –
+          {testimonial.name}
+        </div>
+        {testimonial?.title?.map((title) => (<div key={title}>{title}</div>))}
+      </figcaption>
+    </figure>
+);
+
 export const TestimonialsWindow = ({
   children,
   ...terminalWindowProps
@@ -38,6 +64,8 @@ export const TestimonialsWindow = ({
   children:ReactNode
 } & Omit<TerminalWindowProps, 'children'>) => {
   const [messageIndex, setMessageIndex] = useState(0);
+  const breakpoints = useBreakpoints();
+  const breakpoint = breakpoints.about;
 
   const testimonial = testimonials?.[messageIndex];
 
@@ -45,7 +73,7 @@ export const TestimonialsWindow = ({
     <TerminalWindow
       {...terminalWindowProps}
     >
-      <div className="grid grid-cols-[8em_1fr] p-[1em]">
+      <div className={`grid p-[1em] ${breakpoint ? 'grid-cols-[8em_1fr]' : ''}`}>
         {/* <div className="flex items-center justify-center col-span-2 mt-[-1em] gap-[0.5em]">
           <div className="relative inline-block">
             <span
@@ -66,9 +94,9 @@ export const TestimonialsWindow = ({
           </h2>
         </div> */}
         <div>
-          <ul>
+          <ul className={`${breakpoint ? '' : 'flex'}`}>
             {testimonials.map(({ shortName, headshot }, index) => (
-              <li key={shortName} className="">
+              <li key={shortName}>
                 <button
                   onClick={() => { setMessageIndex(index); }}
                   type="button"
@@ -99,17 +127,10 @@ export const TestimonialsWindow = ({
           </ul>
 
         </div>
-        <div className="bg-[#bdffbd] text-[1em] p-[1em]">
-          <figure className="">
-            <blockquote className="">{testimonial.quote}</blockquote>
-            <figcaption className="mt-[2em] text-[0.6em]">
-              <div>
-                –
-                {testimonial.name}
-              </div>
-              {testimonial?.title?.map((title) => (<div>{title}</div>))}
-            </figcaption>
-          </figure>
+        <div className="bg-[#bdffbd] text-[1em] p-[1em] grid">
+          {/* A hidden div with the longest testinmonial which will be used to size */}
+          <QuoteFigure testimonial={longestTestimonial} hidden />
+          <QuoteFigure testimonial={testimonial} />
         </div>
         {children}
       </div>

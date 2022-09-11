@@ -4200,6 +4200,11 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
   integrity sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==
 
+number-precision@^1.5.0:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/number-precision/-/number-precision-1.5.2.tgz#22abbde9e2402629199b511deafcdb614e125875"
+  integrity sha512-q7C1ZW3FyjsJ+IpGB6ykX8OWWa5+6M+hEY0zXBlzq1Sq1IPY9GeI3CQ9b2i6CMIYoeSuFhop2Av/OhCxClXqag==
+
 object-assign@^4.0.1, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
@@ -4483,6 +4488,13 @@ postcss-100vh-fix@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/postcss-100vh-fix/-/postcss-100vh-fix-1.0.2.tgz#d7931b1b9db90c1ea9cafefeb444ad5e534f7550"
   integrity sha512-t7vqk9AfjI4fXmWlQCEiMZFFhi1hro4WlECINI1TV6Qh1XapUJE++gCmNr95F5Hen/+bz1OmO+SiSB9TZmFmSg==
+
+postcss-aspect-ratio-polyfill@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/postcss-aspect-ratio-polyfill/-/postcss-aspect-ratio-polyfill-2.0.0.tgz#80083814fc9d1c9aff3d7150e6af26f3aa08475f"
+  integrity sha512-+C385VUUrF6cnopov6VfsaAYojN0HImyVwSpTQ1gGm1A0Y347sDFE6QQPcjbGyVP9M5dCSretPC5fv1jUjuDPQ==
+  dependencies:
+    number-precision "^1.5.0"
 
 postcss-import@^14.1.0:
   version "14.1.0"

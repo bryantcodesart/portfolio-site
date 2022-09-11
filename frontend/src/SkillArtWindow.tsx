@@ -10,6 +10,7 @@ import { TerminalWindowButton } from './TerminalWindowButton';
 import { SceneName } from './SceneController';
 import { SlideName } from './SlideName';
 import { contactHref } from './contactHref';
+import { useBreakpoints } from './useBreakpoints';
 // import { useImgElement } from './useImgElement';
 
 const resolutionMultiplier = 2.0;
@@ -152,6 +153,9 @@ export const SkillArtWindow = ({
 
   const [showInstructions, setShowInstructions] = useState(true);
   const [showCta, setShowCta] = useState(false);
+
+  const breakpoints = useBreakpoints();
+  const breakpoint = breakpoints.about;
   return (
     <>
       <TerminalWindow
@@ -181,9 +185,9 @@ export const SkillArtWindow = ({
             />
           </div>
           {showInstructions && (
-          <div className="font-display text-center text-[4em] leading-[1] uppercase text-[#ccc] translate-y-[-10%] pointer-events-none">
+          <div className="font-display text-center text-[4em] leading-[1] uppercase text-[#ccc] translate-y-[-10%] pointer-events-none p-[0.2em] max-w-[8em]">
             Draw on me
-            <br />
+            {breakpoint ? <br /> : ' '}
             in every color
           </div>
           )}
@@ -210,9 +214,19 @@ export const SkillArtWindow = ({
       {showCta && (
       <TerminalWindow
         title={null}
-        className="justify-self-end  mt-[-1em] mr-[-1em]"
+        className={`
+          justify-self-end
+          ${breakpoint
+          ? 'mt-[-1em] mr-[-1em]'
+          : 'mt-[-10em] mr-[4em] self-end'}
+        `}
       >
-        <nav className="p-[0.75em] flex gap-[0.75em] items-end h-full">
+        <nav
+          className={`
+            p-[0.75em] flex gap-[0.75em]
+            ${breakpoint ? 'items-end h-full' : 'flex-col items-center'}
+          `}
+        >
           <TerminalWindowButton
             key="art-board"
             color="black"

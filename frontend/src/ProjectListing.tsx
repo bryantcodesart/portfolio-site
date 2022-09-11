@@ -32,7 +32,10 @@ export function ProjectListing({ active, projects, ...groupProps }:
   const [autoHover, setAutoHover] = useState(false);
   const hasNoMouse = useHasNoMouse();
 
+  const aProjectIsOpen = openIndex !== null;
+
   useInterval(() => {
+    if (aProjectIsOpen) return;
     if (hasNoMouse && autoHover) setHoveredIndex(((hoveredIndex ?? 0) + 1) % nProjects);
   }, 2000);
 
@@ -47,8 +50,6 @@ export function ProjectListing({ active, projects, ...groupProps }:
     blobScale: blobIsBig ? 1 : 0,
     config: active ? config.gentle : config.stiff,
   });
-
-  const aProjectIsOpen = openIndex !== null;
 
   useEffect(() => {
     if (active) {

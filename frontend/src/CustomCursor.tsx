@@ -10,6 +10,7 @@ import React, {
 import { useEventListener } from 'usehooks-ts';
 import create from 'zustand';
 import createVanilla from 'zustand/vanilla';
+import { PreloadLocalSvg } from '../pages/PreloadLocalSvg';
 // import { Html } from '@react-three/drei';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useParamOnLoad } from './useParamOnLoad';
@@ -27,8 +28,22 @@ export type CustomCursorState = null
  | 'paint'
  | 'external'
 
+/** Cant use <Head> tag or SSR inside CustomCursorRenderer,
+  * since it conditionally runs based on user env
+  * and is designed not to render on the server.
+  * Instead add any preloads here.
+  * It is REALLY smart to preload custom cursor assets--
+  * you dont want an invisible cursor because an asset hasnt loaded!
+  *  */
+const CustomCursorPreloads = () => (
+  <>
+    <PreloadLocalSvg href="/cursor/terminal.svg" />
+    <PreloadLocalSvg href="/cursor/paint.svg" />
+  </>
+);
+
 /** How we render the cusror based on its state (project specific) */
-export const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
+const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
   const textCursor = cursor !== 'terminal' && cursor !== 'paint';
   return (
     <div
@@ -50,8 +65,8 @@ export const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
           ${cursor === 'default' ? 'scale-[0.25]' : ''}
           ${!textCursor ? 'opacity-0' : ''}
           grid place-items-center
+          bg-blue rounded-full border-[5px] border-white
         `}
-        style={{ backgroundImage: 'url(/cursor/circle.svg)' }}
       >
         {cursor === 'computer-on' && (
           <>
@@ -221,6 +236,7 @@ export function CustomCursor() {
       className="pointer-events-none fixed top-0 left-0 z-[99999999]"
       ref={mouseDivRef}
     >
+      <CustomCursorPreloads />
       {enabled ? (
         <>
           <style>

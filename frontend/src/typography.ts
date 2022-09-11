@@ -1,6 +1,6 @@
 export const fontUrls = {
   bryantBold: '/fonts/bryant/bryantBold.woff',
-  robotoMono: '',
+  // robotoMono: '',
 };
 
 export const computerTextConfig = (fontSize:number = 0.27) => ({

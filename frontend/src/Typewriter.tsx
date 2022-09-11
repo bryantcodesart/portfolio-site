@@ -8,7 +8,7 @@ type TextProps = React.ComponentProps<typeof Text>;
 export const TIME_PER_CHAR = 25;
 
 export const ThreeTextTypewriter = ({
-  children, showCarat = true, timePerChar = 20, delay = 100, ...textProps
+  children, showCarat = true, timePerChar = TIME_PER_CHAR, delay = 100, ...textProps
 }:
 { children: string; showCarat?: boolean; timePerChar?:number, delay?:number } & TextProps) => {
   const targetText = children;

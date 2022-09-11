@@ -145,7 +145,8 @@ export const ProjectEntry = ({
     config: config.wobbly,
   });
 
-  const anotherProjectIsOpen = someProjectIsOpen && !open;
+  // const anotherProjectIsOpen = someProjectIsOpen && !open;
+  // console.log(project.title, 'anotherProjectIsOpen', anotherProjectIsOpen);
 
   return (
     <>
@@ -190,17 +191,17 @@ export const ProjectEntry = ({
             />
             <CoffeeVideoMaterial src={`/videos/${project?.video}`} playing={hovering || open} />
           </mesh>
-          {!anotherProjectIsOpen && (
+          {!someProjectIsOpen && (
           <ThreeButton
-            position={[0, 0, 0.5]}
+            position={[0, 0, 0]}
             width={0.9}
             height={0.9}
             description=""
             activationMsg=""
-            cursor={open ? 'close-project' : 'open-project'}
+            cursor="open-project"
             // debug
             onClick={() => {
-              setOpen(!open);
+              setOpen(true);
             }}
             onFocus={() => {
               setHovering(true);
