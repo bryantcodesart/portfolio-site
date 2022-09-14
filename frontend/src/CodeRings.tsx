@@ -83,8 +83,11 @@ function createTextCanvas(): HTMLCanvasElement | null {
   /* the string to use to simulate the typer's carat */
   const caratString = '░▒▓██';
 
+  let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { dark = e.matches; });
+
   /* Draw the current state of the ascii animation onto our canvas */
-  function redrawCanvas() {
+  const redrawCanvas = () => {
     if (!context) return;
 
     // Determine the text to write and iterate our counters
@@ -101,12 +104,12 @@ function createTextCanvas(): HTMLCanvasElement | null {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     // Write the text (our component will have already double checked that the font is loaded)
-    context.font = `200 ${FONT_SIZE}px 'Roboto Mono'`;
+    context.font = `${dark ? 400 : 200} ${FONT_SIZE}px 'Roboto Mono'`;
     context.textAlign = 'left';
     context.textBaseline = 'middle';
     context.fillStyle = colors.blue;
     context.fillText(textToWrite, 0, canvas.height / 2);
-  }
+  };
 
   // Draw now to start
   redrawCanvas();

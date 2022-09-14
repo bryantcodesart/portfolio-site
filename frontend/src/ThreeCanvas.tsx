@@ -22,7 +22,7 @@ const ThreeCanvas = ({ siteData }:{siteData:SiteData}) => {
         {showStats && <Stats />}
         <ambientLight />
       </Canvas>
-      {/* <A11yAnnouncer /> */}
+      <A11yAnnouncer />
     </>
   );
 };

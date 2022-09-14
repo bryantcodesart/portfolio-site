@@ -1,17 +1,48 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import React from 'react';
+import { DefaultSeo } from 'next-seo';
 import { CustomCursor } from '../src/CustomCursor';
 import { ThreePage } from '../src/ThreePage';
 import { SiteData } from '../src/SiteData';
+import { MobileVhAsCssVar } from '../src/MobileVhAsCssVar';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const siteData:SiteData = {
     startingScene: pageProps.scene ?? 'error',
     projects: pageProps.projects ?? null,
   };
+
+  const title = 'bryantcodes.art';
+  const description = 'I am a dev who helps awesome designers (like you) build their wildest dreams.';
+  const url = 'https://bryantcodes.art';
   return (
     <>
+      <DefaultSeo
+        title={title}
+        description={description}
+        canonical="https://bryantcodes.art"
+        openGraph={{
+          url,
+          title,
+          description,
+          images: [
+            {
+              url: 'https://bryantcodes.art/images/social.png',
+              width: 2000,
+              height: 1125,
+              alt: 'Og Image Alt',
+              type: 'image/jpeg',
+            },
+          ],
+          site_name: 'bryantcodes.art',
+        }}
+        twitter={{
+          handle: '@bryantcodesart',
+          cardType: 'summary_large_image',
+        }}
+      />
+      <MobileVhAsCssVar />
       <ThreePage
         siteData={siteData}
       />

@@ -10,4 +10,5 @@ export default {
   orange: '#FFC700',
   yellow: '#ffff00',
   coffee: '#551F00',
+  coffeeLight: '#803003',
 };

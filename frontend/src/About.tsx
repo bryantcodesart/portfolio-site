@@ -207,7 +207,8 @@ export const Slides = ({
         <div
           className={`
           absolute top-0 left-0 w-full h-full
-          grid grid-rows-[1fr_1em]
+          grid
+          ${breakpoint ? ' grid-rows-[1fr_1em]' : ' grid-rows-[1fr_6em]'}
           pointer-events-none
         `}
         >

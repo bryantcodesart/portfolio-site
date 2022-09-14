@@ -7,10 +7,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useEventListener } from 'usehooks-ts';
+import {
+  useEventListener,
+  // useInterval
+} from 'usehooks-ts';
 import create from 'zustand';
 import createVanilla from 'zustand/vanilla';
-import { PreloadLocalSvg } from '../pages/PreloadLocalSvg';
+import { PreloadLocalSvg } from './PreloadLocalSvg';
 // import { Html } from '@react-three/drei';
 import { useHasNoMouse } from './useHasNoMouse';
 import { useParamOnLoad } from './useParamOnLoad';
@@ -232,22 +235,22 @@ export function CustomCursor() {
   });
 
   return (
-    <div
-      className="pointer-events-none fixed top-0 left-0 z-[99999999]"
-      ref={mouseDivRef}
-    >
+    <>
       <CustomCursorPreloads />
-      {enabled ? (
-        <>
-          <style>
-            {cursor && `* {
-              cursor: none !important;
-            }`}
-          </style>
+      <style>
+        {cursor && `* {
+        cursor: none !important;
+      }`}
+      </style>
+      <div
+        className="pointer-events-none fixed top-0 left-0 z-[99999999]"
+        ref={mouseDivRef}
+      >
+        {enabled ? (
           <CustomCursorRenderer cursor={cursor} />
-        </>
-      ) : null}
-    </div>
+        ) : null}
+      </div>
+    </>
   );
 }
 
@@ -264,6 +267,12 @@ export function CustomCursorHover({ children, cursor: targetCursor }:
     // Very easy to make an infinite loop here, only dep is targetCursor
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetCursor]);
+
+  // End hover if I get deleted
+  useEffect(() => () => {
+    stopHover();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return React.cloneElement(child, {
     onMouseEnter: () => {

@@ -132,8 +132,8 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       } else {
         colorBlobs += smoothstep(0.7,0.9,1.0-distance(vUv.x, vUv.y, vUv.x, .65)*1.0);
       }
-      colorBlobs += blobNoise(5.0, seed, time*0.1)/4.0;
-      colorBlobs += blobNoise(2.0, seed, time*0.2)/4.0;
+      colorBlobs += blobNoise(5.0, seed, time*0.3)/2.0;
+      colorBlobs += blobNoise(2.0, seed, time*0.6)/2.0;
       vec3 color = mix(coffee,colorBlobs*projectColor,opacity);
 
       gl_FragColor.rgba = vec4(color, transitionBlobs);
