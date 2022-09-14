@@ -13,7 +13,10 @@ import { SceneName } from './SceneController';
 import { SlideName } from './SlideName';
 import { contactHref } from './contactHref';
 import { useBreakpoints } from './useBreakpoints';
+import { aboutContent } from './aboutContent';
 // import { useImgElement } from './useImgElement';
+
+const { skills } = aboutContent;
 
 const resolutionMultiplier = 2.0;
 
@@ -355,66 +358,42 @@ export const SkillArtWindow = ({
 
   useAddDrawFill(
     drawFills,
-    `
-      strong command of design systems... excellent
-      at interpreting mockups in any form (adobe, figma,
-      whatev) and working with minimal OR maximal direction
-    `,
+    skills[0],
     'red',
     'white',
     breakpoint,
   );
   useAddDrawFill(
     drawFills,
-    `
-      7 years working with
-      best-in-class designers building award-winning projects
-    `,
+    skills[1],
     'violet',
     'black',
     breakpoint,
   );
   useAddDrawFill(
     drawFills,
-    `
-    exceptional at visual
-    styling and attention to
-    detail.  whatever tool it
-    takes: CSS, SCSS/PostCSS,
-    Tailwind, animation,
-    2D & 3D rendering...
-    `,
+    skills[2],
     'orange',
     'black',
     breakpoint,
   );
   useAddDrawFill(
     drawFills,
-    `
-      expert communication &
-      project management...
-      leading up, down, and laterally. transforming chaos into launches
-    `,
+    skills[3],
     'yellow',
     'black',
     breakpoint,
   );
   useAddDrawFill(
     drawFills,
-    `
-      full stack & at the cutting edge. this site is built with React/NextJS,
-      Typescript, Sanity, Three.js/R3F, GLSL, and a laundry list more
-    `,
+    skills[4],
     'lime',
     'black',
     breakpoint,
   );
   useAddDrawFill(
     drawFills,
-    `
-      always accessible, functional, responsive, compatible,
-      performant and search engine optimized
-    `,
+    skills[5],
     'blue',
     'white',
     breakpoint,

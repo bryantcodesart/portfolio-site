@@ -14,7 +14,7 @@ import { Project } from '../generatedSanitySchemaTypes';
 import { CoffeeVideoMaterial } from './CoffeeVideoMaterial';
 import { ThreeButton } from './ThreeButton';
 import colors from './colors';
-import { ProjectHtml } from './ProjectHtml';
+import { ProjectHtmlModal } from './ProjectHtmlModal';
 import { useBreakpoints } from './useBreakpoints';
 import { CoordArray } from './CoordArray';
 import { useHasNoMouse } from './useHasNoMouse';
@@ -220,7 +220,7 @@ export const ProjectEntry = ({
       </animated.group>
 
       {open && (
-        <ProjectHtml
+        <ProjectHtmlModal
           project={project}
           position={breakpoints.projectOpen ? [-1.6, 0, 4.5] : [0, -0.6, 4.5]}
           setOpen={setOpen}

@@ -4,40 +4,16 @@ import { TerminalWindowProps } from './TerminalWindowProps';
 import { TerminalWindow } from './TerminalWindow';
 import { Typewriter } from './Typewriter';
 import { useBreakpoints } from './useBreakpoints';
+import { aboutContent } from './aboutContent';
 
-const testimonials = [{
-  quote: 'Bryant\'s kickass work is complemented by his infectious energy and passion for creating original, exciting work. He is a true creative partner––always bringing new ideas to the table. ',
-  // I have learned so much from my experience working with him.
-  shortName: 'Stef',
-  name: 'Stephanie Jung',
-  headshot: 'stef.jpg',
-  title: [
-    'Brand Design Lead, Employer Marketing at Handshake',
-  ],
-}, {
-  quote: 'Bryant\'s collaborative mindset and aptitude to explore ideas well beyond the minimum viable product make him an invaluable partner.',
-  // OG: Bryant's collaborative mindset and aptitude to explore ideas well beyond the
-  // minimum viable product make him invaluable to any partner
-  // looking for uniquely functional development projects.
-  // (edited with permission)
-  name: 'JP Ramirez',
-  shortName: 'JP',
-  title: ['Design Manager, Brand Design Strategy at Intuit',
-    'Director, Studio Ramírez'],
-  headshot: 'jp.jpg',
-}, {
-  quote: 'Bryant\'s building enables award-winning projects––including 4x STA100\'s, a Type Director\'s Club award, and a Webby.',
-  name: 'The award people',
-  shortName: 'Awards',
-  headshot: 'star-icon.svg',
-}];
+const { testimonials } = aboutContent;
 
 type Testimonial = typeof testimonials[number];
 
 // Manually decide which testimony should dictate window length
 const longestTestimonial = testimonials[0];
 
-const QuoteFigure = ({ testimonial, hidden = false }:
+export const QuoteFigure = ({ testimonial, hidden = false }:
   {testimonial:Testimonial, hidden?:boolean}) => (
     <figure
       className={`${hidden ? 'invisible' : ''} col-[1/-1] row-[1/-1]`}

@@ -13,6 +13,15 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
+      keyframes: {
+        throb: {
+          '0%, 10%, 100%': { transform: 'scale(1)' },
+          '4%': { transform: 'scale(1.1)' },
+        },
+      },
+    },
+    animation: {
+      throb: 'throb 5s linear infinite',
     },
     colors: {
       transparent: 'transparent',

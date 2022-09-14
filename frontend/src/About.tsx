@@ -19,6 +19,7 @@ import { TestimonialsWindow } from './TestimonialsWindow';
 import colors from './colors';
 // import { AwardsWindow } from './AwardsWindow';
 import { TerminalWindowButton } from './TerminalWindowButton';
+import { aboutContent } from './aboutContent';
 
 export const Slides = ({
   slide, setScene, setSlide,
@@ -37,10 +38,10 @@ export const Slides = ({
     return (
       <div className="p-[1em] font-mono text-white text-[2em]">
         <Typewriter delay={text1Delay} hideCaratAtEnd>
-          {'I\'m Bryant! (he/him)'}
+          {aboutContent.intro[0]}
         </Typewriter>
         <Typewriter delay={text2Delay}>
-          I build web experiences
+          {aboutContent.intro[1]}
         </Typewriter>
         <div className="grid place-items-center mt-[2em]">
           <TerminalButton
@@ -83,10 +84,7 @@ export const Slides = ({
             delay={1000}
             topColor="violet"
             wrapperClassName="p-[1em]"
-            texts={[
-              'I am a fullstack dev who helps awesome designers (like you) build their wildest dreams.',
-              'Together, let\'s create something that stands out––and has users saying, "woah."',
-            ]}
+            texts={aboutContent.mission}
             // icon="/images/computer-icon.svg"
             // icon="/images/alert-icon.svg"
             buttonColor="pink"

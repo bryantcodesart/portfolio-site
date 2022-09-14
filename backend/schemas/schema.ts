@@ -14,7 +14,7 @@ import vimeo from './vimeo'
 import project from './project'
 import imageFigure from './imageFigure'
 import videoFigure from './videoFigure'
-import config from './config'
+// import config from './config'
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -24,7 +24,7 @@ export default createSchema({
     project,
     author,
     category,
-    config,
+    // config,
     imageFigure,
     videoFigure,
     blockContent,

@@ -67,7 +67,7 @@ export const CTA = () => {
   useInterval(() => {
     setColorIndex((index) => (index + 1) % colorPairs.length);
     // setCtaIndex((index) => (index + 1) % ctas.length);
-  }, 4000);
+  }, 5000);
 
   // useInterval;
   return (
@@ -76,6 +76,7 @@ export const CTA = () => {
       fixed top-0 left-0 text-[1rem] pl-[0.5em] pr-[1rem] py-[1rem] font-mono tracking-wide
       ${showStats ? '' : 'z-[88888888]'}
       ${showCTAs ? '' : '-translate-y-full'} transition-all
+      animate-throb
     `}
       style={{
         filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
@@ -84,6 +85,7 @@ export const CTA = () => {
         stroke: colorPairs[colorIndex][1],
       }}
     >
+      <h2 className="sr-only">Contact</h2>
       <CustomCursorHover cursor="contact">
         <a
           href={contactHref}

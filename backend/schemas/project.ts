@@ -87,35 +87,35 @@ export default {
         }
       ]
     },
-    {
-      name: "awards",
-      title: "Awards",
-      type: "array",
-      of: [
-        {
-          name: "award",
-          type: "object",
-          title: "Award",
-          fields: [
-            {
-              name: 'name',
-              title: 'Name',
-              type: 'string',
-            },
-            {
-              name: 'url',
-              title: 'URL',
-              type: 'url',
-            },
-          ],
-          preview: {
-            select: {
-              title: 'name',
-            }
-          }
-        }
-      ]
-    },
+    // {
+    //   name: "awards",
+    //   title: "Awards",
+    //   type: "array",
+    //   of: [
+    //     {
+    //       name: "award",
+    //       type: "object",
+    //       title: "Award",
+    //       fields: [
+    //         {
+    //           name: 'name',
+    //           title: 'Name',
+    //           type: 'string',
+    //         },
+    //         {
+    //           name: 'url',
+    //           title: 'URL',
+    //           type: 'url',
+    //         },
+    //       ],
+    //       preview: {
+    //         select: {
+    //           title: 'name',
+    //         }
+    //       }
+    //     }
+    //   ]
+    // },
     {
       name: "video",
       title: "Thumbnail Video",
@@ -130,25 +130,9 @@ export default {
       type: "blockContent",
     },
     {
-      name: "textColor",
-      title: "Text Color",
-      type: "color",
-    },
-    {
       name: "color1",
-      title: "Color 1",
+      title: "Highlight Color",
       type: "color",
-    },
-    {
-      name: "color2",
-      title: "Color 2",
-      type: "color",
-    },
-    {
-      name: "colorNudge",
-      title: "Color Nudge",
-      description: "a float multiplier for the shader that will brighten or darken the colors. 1.0 is same, less is darker, more is brighter.",
-      type: "number",
     },
   ],
 };

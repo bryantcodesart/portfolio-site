@@ -184,30 +184,6 @@ export interface Project extends SanityDocument {
   >;
 
   /**
-   * Awards — `array`
-   *
-   *
-   */
-  awards?: Array<
-    SanityKeyed<{
-      _type: "award";
-      /**
-       * Name — `string`
-       *
-       *
-       */
-      name?: string;
-
-      /**
-       * URL — `url`
-       *
-       *
-       */
-      url?: string;
-    }>
-  >;
-
-  /**
    * Thumbnail Video — `url`
    *
    *
@@ -222,32 +198,11 @@ export interface Project extends SanityDocument {
   body?: BlockContent;
 
   /**
-   * Text Color — `color`
-   *
-   *
-   */
-  textColor?: Color;
-
-  /**
-   * Color 1 — `color`
+   * Highlight Color — `color`
    *
    *
    */
   color1?: Color;
-
-  /**
-   * Color 2 — `color`
-   *
-   *
-   */
-  color2?: Color;
-
-  /**
-   * Color Nudge — `number`
-   *
-   * a float multiplier for the shader that will brighten or darken the colors. 1.0 is same, less is darker, more is brighter.
-   */
-  colorNudge?: number;
 }
 
 /**
@@ -368,12 +323,7 @@ export type VideoFigure = {
 
 export type BlockContent = Array<
   | SanityKeyed<SanityBlock>
-  | SanityKeyed<{
-      _type: "image";
-      asset: SanityReference<SanityImageAsset>;
-      crop?: SanityImageCrop;
-      hotspot?: SanityImageHotspot;
-    }>
+  | SanityKeyed<ImageFigure>
   | SanityKeyed<Youtube>
   | SanityKeyed<Vimeo>
   | SanityKeyed<Code>
