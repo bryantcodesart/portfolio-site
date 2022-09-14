@@ -83,8 +83,10 @@ function createTextCanvas(): HTMLCanvasElement | null {
   /* the string to use to simulate the typer's carat */
   const caratString = '░▒▓██';
 
-  let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { dark = e.matches; });
+  const dark = false;
+  // let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  // window.matchMedia('(prefers-color-scheme: dark)')
+  // .addEventListener('change', (e) => { dark = e.matches; });
 
   /* Draw the current state of the ascii animation onto our canvas */
   const redrawCanvas = () => {
