@@ -2,7 +2,7 @@ export const aboutContent = {
   intro: ['I\'m Bryant! (he/him)', 'I build web experiences'],
   mission: [
     'I am a fullstack dev who helps awesome designers (like you) build their wildest dreams.',
-    'Together, let\'s create something that stands out––and has users saying, "woah."',
+    'Together, let\'s create something that stands out––and has your users saying, "woah."',
   ],
   testimonials: [{
     quote: 'Bryant\'s kickass work is complemented by his infectious energy and passion for creating original, exciting work. He is a true creative partner––always bringing new ideas to the table.',
@@ -27,7 +27,7 @@ export const aboutContent = {
   }],
   skills: [
     `
-      strong command of design systems... excellent
+      strong command of design systems. excellent
       at interpreting mockups in any form (adobe, figma,
       whatev) and working with minimal OR maximal direction
     `,
@@ -45,7 +45,7 @@ export const aboutContent = {
     `,
     `
       expert communication &
-      project management...
+      project management.
       leading up, down, and laterally. transforming chaos into launches
     `,
     `

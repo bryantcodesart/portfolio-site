@@ -255,8 +255,15 @@ export function CustomCursor() {
 }
 
 /** A convenience component wrapper that gives its only child a specified cursor on hover */
-export function CustomCursorHover({ children, cursor: targetCursor }:
-  { children: ReactElement; cursor: CustomCursorState; }) {
+export function CustomCursorHover({
+  children, cursor: targetCursor,
+  onMouseEnter = () => {}, onMouseLeave = () => {},
+}:{
+  children: ReactElement;
+  cursor: CustomCursorState;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+}) {
   const { startHover, stopHover } = useCursorSetters();
   const child = Children.only(children);
   const [hovering, setHovering] = useState(false);
@@ -278,10 +285,12 @@ export function CustomCursorHover({ children, cursor: targetCursor }:
     onMouseEnter: () => {
       startHover(targetCursor);
       setHovering(true);
+      onMouseEnter();
     },
     onMouseLeave: () => {
       stopHover();
       setHovering(false);
+      onMouseLeave();
     },
   });
 }

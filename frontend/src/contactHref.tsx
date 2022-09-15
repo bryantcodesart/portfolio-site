@@ -1,2 +1,4 @@
+const subject = 'Hello, Bryant!';
+const body = '(Optional: If unsure how to start this email, please break the ice by describing your dream pizza.)';
 
-export const contactHref = `mailto:hello@bryantcodes.art?subject=${encodeURIComponent('Hello, Bryant!')}&body=${encodeURIComponent("(If you're unsure how to start this email, just tell me your favorite kind of pizza to break the ice.)")}`;
+export const contactHref = `mailto:hello@bryantcodes.art?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

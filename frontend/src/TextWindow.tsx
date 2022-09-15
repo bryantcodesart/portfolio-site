@@ -29,9 +29,9 @@ export const TextWindow = ({
       {texts.map((text, i, array) => (
         <div
           style={{ marginTop: i !== 0 ? textMargin : 0 }}
+          key={text}
         >
           <Typewriter
-            key={text}
             delay={delays[i]}
             hideCaratAtEnd={i !== array.length - 1}
           >

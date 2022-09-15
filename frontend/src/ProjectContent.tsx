@@ -47,7 +47,7 @@ const LinkMark:PortableTextMarkComponent = ({ value, children }) => {
   return (
     <a
       href={value?.href}
-      className="underline hover:text-projectColor"
+      className="underline decoration-1 underline-offset-4 hover:text-projectColor"
       target={target}
       rel={target === '_blank' ? 'noindex nofollow' : ''}
     >
@@ -152,7 +152,7 @@ export const ProjectHeader = ({ project }: { project: Project; }) => (
                           href={designer.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-block border-b-[1px] p-0 border-white hover:text-projectColor hover:border-b-projectColor"
+                          className="inline-block p-0 underline decoration-1 underline-offset-4 hover:text-projectColor hover:border-b-projectColor"
                         >
                           {designer.name}
                         </a>

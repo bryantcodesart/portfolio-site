@@ -3,7 +3,7 @@ import colors from './colors';
 
 export const CssSpinner = () => (
   <>
-    <style global>
+    <style>
       {`
       .lds-ring {
         display: inline-block;

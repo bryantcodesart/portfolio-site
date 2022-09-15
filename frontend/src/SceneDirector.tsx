@@ -44,7 +44,7 @@ export function SceneDirector({
   }
   if (scene === 'menu') {
     stagePosition = [-0.8, -0.2, 3];
-    stageSize = [4.3, 9];
+    stageSize = [4.3, 10];
     if (breakpoints.menu) {
       stagePosition = [1.25, 0, 3];
       stageSize = [8, 4.5];

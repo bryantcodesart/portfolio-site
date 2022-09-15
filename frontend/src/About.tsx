@@ -103,8 +103,8 @@ export const Slides = ({
             ${breakpoints.about ? `
               self-end min-h-[12em] h-[13em] ml-[-1em] mb-[2em]
             ` : `
-              ..w-[90%] ..max-w-[30em]
-              aspect-square
+              min-w-[220px]
+              aspect-[9/8]
               justify-self-end  mt-[2em]
             `}
 
@@ -120,9 +120,8 @@ export const Slides = ({
       <div
         className={`
           absolute top-0 left-0 w-full h-full
-          grid
           pointer-events-none
-          ${breakpoints.about ? 'grid-cols-[1fr_80%]' : 'grid-rows-[1fr_max-content]'}
+          ${breakpoints.about ? 'grid grid-cols-[1fr_80%]' : ''}
         `}
       >
         <ImageWindow
@@ -135,7 +134,11 @@ export const Slides = ({
               self-start h-[13em] mr-[-2em] w-[10em] mt-[6em]
             ` : `
               w-[90%] max-w-[28em]
+              aspect-[7/9]
               justify-self-start mb-[-12em] ml-[2em]
+              min-h-[300px]
+              h-[300px]
+              absolute top-0
             `}
             transition-transform duration-[1s]
             ${slide === 'testimonials' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
@@ -146,11 +149,10 @@ export const Slides = ({
 
         <TestimonialsWindow
           className={`
-          relative self-baseline
-
-
+            relative self-baseline
             transition-transform duration-[1s]
             ${slide === 'testimonials' ? '' : 'translate-x-[43%] translate-y-[-80%]'}
+            ${breakpoint ? '' : 'absolute bottom-0'}
           `}
           delay={1000}
           title="KIND_WORDS_FROM_OTHERS.exe"
@@ -272,12 +274,12 @@ export function ComputerTerminal() {
 
     // We can help out with responsive behavior here by limiting this
     // div to be always smaller than the screen
-    const width = Math.min(planeWidthInPixels, windowSize.width * 0.9);
-    const height = Math.min(planeHeightInPixels, windowSize.height * 0.8);
+    // const width = Math.min(planeWidthInPixels, windowSize.width * 0.9);
+    // const height = Math.min(planeHeightInPixels, windowSize.height * 0.8);
 
     // Apply sizing to our terminal div via CSS vars
-    terminalDivRef.current.style.setProperty('--terminal-width', `${width}px`);
-    terminalDivRef.current.style.setProperty('--terminal-height', `${height}px`);
+    terminalDivRef.current.style.setProperty('--terminal-width', `min(${windowSize.width * 0.9}px, ${planeWidthInPixels}px)`);
+    terminalDivRef.current.style.setProperty('--terminal-height', `min(80 * var(--vh), ${planeHeightInPixels}px)`);
   });
 
   return (

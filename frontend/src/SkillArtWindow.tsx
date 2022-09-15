@@ -443,6 +443,7 @@ export const SkillArtWindow = ({
             {drawFills.map(
               ([_drawFill, color], index) => (
                 <button
+                  key={color}
                   onClick={() => setCurrentFill(index)}
                   type="button"
                   className={`grid place-items-center  border-black w-[3em] h-[3em]
