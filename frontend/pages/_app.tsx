@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import React, { useEffect } from 'react';
+import React, from 'react';
 import { DefaultSeo } from 'next-seo';
 import { useTimeout } from 'usehooks-ts';
 import { CustomCursor } from '../src/CustomCursor';
