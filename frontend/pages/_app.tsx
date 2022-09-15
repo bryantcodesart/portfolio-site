@@ -6,7 +6,7 @@ import { CustomCursor } from '../src/CustomCursor';
 import { ThreePage } from '../src/ThreePage';
 import { SiteData } from '../src/SiteData';
 import { MobileVhAsCssVar } from '../src/MobileVhAsCssVar';
-import { useConsoleLogDevSignature } from './useConsoleLogDevSignature';
+import { useConsoleLogDevSignature } from '../src/useConsoleLogDevSignature';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const siteData:SiteData = {
