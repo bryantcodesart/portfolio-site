@@ -47,9 +47,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           images: [
             {
               url: 'https://bryantcodes.art/images/social.jpg',
-              width: 2000,
-              height: 1125,
-              alt: 'Og Image Alt',
+              width: 1920,
+              height: 1080,
+              alt: 'Bryantcodes.art wordmark over colorful, crudely scribbled illustration of laptop',
               type: 'image/jpeg',
             },
           ],
