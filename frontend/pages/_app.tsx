@@ -2,25 +2,11 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import React from 'react';
 import { DefaultSeo } from 'next-seo';
-import { useTimeout } from 'usehooks-ts';
 import { CustomCursor } from '../src/CustomCursor';
 import { ThreePage } from '../src/ThreePage';
 import { SiteData } from '../src/SiteData';
 import { MobileVhAsCssVar } from '../src/MobileVhAsCssVar';
-
-const useConsoleLogDevSignature = () => {
-  const style = 'color: white; background: blue; font-family:monospace; font-size: 20px; padding: 10px;';
-  const log = (text:string) => console.log(`%c${text.toUpperCase()}`, style);
-  useTimeout(() => {
-    console.clear();
-    log(`looking at my code, are you?
-awesome! dig around!
-Although you'll probably have more luck looking at the repo:`);
-    console.log('%chttps://github.com/bryantcodesart/bryantcodesart', 'font-size: 15px; padding: 10px;');
-    log(`hmu to nerd out about any of it!
-hello@bryantcodes.art`);
-  }, 1000);
-};
+import { useConsoleLogDevSignature } from './useConsoleLogDevSignature';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const siteData:SiteData = {
