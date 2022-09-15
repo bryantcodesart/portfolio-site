@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           description,
           images: [
             {
-              url: 'https://bryantcodes.art/images/social.png',
+              url: 'https://bryantcodes.art/images/social.jpg',
               width: 2000,
               height: 1125,
               alt: 'Og Image Alt',
