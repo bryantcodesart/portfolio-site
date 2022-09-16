@@ -14,8 +14,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     projects: pageProps.projects ?? null,
   };
 
-  const title = 'bryantcodes.art';
-  const description = 'I am a dev who helps awesome designers (like you) build their wildest dreams.';
+  const title = 'Bryant Smith, Creative Dev';
+  const description = 'I help awesome designers (like you) build their wildest dreams.';
   const url = 'https://bryantcodes.art';
 
   useConsoleLogDevSignature();
