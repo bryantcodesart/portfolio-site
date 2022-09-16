@@ -121,7 +121,7 @@ export const Slides = ({
         className={`
           absolute top-0 left-0 w-full h-full
           pointer-events-none
-          ${breakpoints.about ? 'grid grid-cols-[1fr_80%]' : ''}
+          ${breakpoints.about ? 'grid grid-cols-[1fr_80%]' : 'grid grid-cols-1'}
         `}
       >
         <ImageWindow
@@ -138,7 +138,7 @@ export const Slides = ({
               justify-self-start mb-[-12em] ml-[2em]
               min-h-[300px]
               h-[300px]
-              absolute top-0
+              col-[1/-1] row-[1/-1]
             `}
             transition-transform duration-[1s]
             ${slide === 'testimonials' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
@@ -149,10 +149,10 @@ export const Slides = ({
 
         <TestimonialsWindow
           className={`
-            relative self-baseline
+            relative
             transition-transform duration-[1s]
             ${slide === 'testimonials' ? '' : 'translate-x-[43%] translate-y-[-80%]'}
-            ${breakpoint ? '' : 'absolute bottom-0'}
+            ${breakpoint ? 'self-baseline' : 'col-[1/-1] row-[1/-1] self-end'}
           `}
           delay={1000}
           title="KIND_WORDS_FROM_OTHERS.exe"
@@ -321,6 +321,7 @@ export function ComputerTerminal() {
                   setSlide('intro');
                 }}
                 delay={500}
+                className="font-mono"
               >
                 {breakpoints.about ? 'BACK_TO_MENU' : 'BACK'}
               </TerminalButton>

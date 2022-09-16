@@ -32,11 +32,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           description,
           images: [
             {
-              url: 'https://bryantcodes.art/images/social.jpg',
+              url: 'https://bryantcodes.art/images/social.png',
               width: 1920,
               height: 1080,
               alt: 'Bryantcodes.art wordmark over colorful, crudely scribbled illustration of laptop',
-              type: 'image/jpeg',
+              type: 'image/png',
             },
           ],
           site_name: 'bryantcodes.art',

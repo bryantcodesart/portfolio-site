@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useTrueAfterDelay } from './useTrueAfterDelay';
 
-
 export const TerminalButton = ({
   onClick, children, className = '', delay = 300,
 }: {

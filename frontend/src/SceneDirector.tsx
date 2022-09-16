@@ -38,6 +38,9 @@ export function SceneDirector({
 
   let stagePosition = [-1, 0, 3];
   let stageSize = [15, 15];
+  // if (breakpoints.menu) {
+  //   stageSize = [15, 15];
+  // }
   if (scene === 'start') {
     stagePosition = [-1, 0, 3];
     stageSize = [5, 4];
@@ -55,7 +58,7 @@ export function SceneDirector({
     stageSize = [5, 10];
     if (breakpoints.projects) {
       stagePosition = [0.5, -12, 3];
-      stageSize = [8.5, 5.5];
+      stageSize = [8.5, 6.5];
     }
   }
   if (scene === 'project-open') {

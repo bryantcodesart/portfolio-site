@@ -3,13 +3,13 @@ import { useTrueAfterDelay } from './useTrueAfterDelay';
 
 const InnerButtonContent = ({ children, disabled }:{children:ReactNode, disabled:boolean}) => (
   <>
-    <div
-      className="absolute top-0 left-0 w-full h-full bg-black group-active:scale-75"
+    <span
+      className="absolute top-0 left-0 block w-full h-full bg-black group-active:scale-75"
     />
-    <div
+    <span
       className={`border-[2px] border-[var(--color)]
     py-[0.5em] px-[1em] pointer-events-none
-    relative
+    relative block
     ${disabled ? '' : `
       translate-x-[0.15em] translate-y-[0.15em]
       group-hover:translate-x-0
@@ -22,7 +22,7 @@ const InnerButtonContent = ({ children, disabled }:{children:ReactNode, disabled
       }}
     >
       {children}
-    </div>
+    </span>
   </>
 );
 
@@ -57,7 +57,7 @@ export const TerminalWindowButton = ({
       relative
       ${show ? '' : 'scale-0 opacity-0'}
       transition-transform ease-[steps(5)] duration-300
-      group
+      group block
       ${className}
     `,
     disabled,
@@ -66,13 +66,16 @@ export const TerminalWindowButton = ({
   if (href) {
     return (
       <a
-        type="button"
-        {...buttonProps}
         href={href}
         target="_blank"
         rel="noreferrer"
       >
-        <InnerButtonContent disabled={disabled}>{children}</InnerButtonContent>
+        <div
+          {...buttonProps}
+        >
+          <InnerButtonContent disabled={disabled}>{children}</InnerButtonContent>
+        </div>
+
       </a>
     );
   }
