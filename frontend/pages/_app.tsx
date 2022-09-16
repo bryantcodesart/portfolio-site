@@ -30,12 +30,13 @@ function MyApp({ Component, pageProps }: AppProps) {
           url,
           title,
           description,
+          type: 'website',
           images: [
             {
               url: 'https://bryantcodes.art/images/social.png',
-              width: 1920,
-              height: 1080,
-              alt: 'Bryantcodes.art wordmark over colorful, crudely scribbled illustration of laptop',
+              width: 2333,
+              height: 1313,
+              alt: 'Bryantcodes.art wordmark over colorful, crudely scribbled illustration of laptop displaying another crudely drawn illustration of a laptop.',
               type: 'image/png',
             },
           ],

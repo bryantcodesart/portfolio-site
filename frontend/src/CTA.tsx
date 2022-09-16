@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CustomCursorHover } from './CustomCursor';
 import { useParamOnLoad } from './useParamOnLoad';
 import { contactHref } from './contactHref';
 import { useSceneController } from './SceneController';
 import MailIconSvg from './svg/MailIconSvg';
 import { useChangingColorPalette } from './useChangingColorPalette';
+import { useDelayedBoolean } from './useDelayedBoolean';
 
 // const availablity = 'available Q4';
 
@@ -52,14 +53,15 @@ export const CTA = () => {
   // const [ctaIndex, setCtaIndex] = useState(0);
 
   const defaultSpeed = 5000;
-  const fastSpeed = 500;
+  const fastSpeed = 400;
   const [colorSpeed, setColorSpeed] = useState(defaultSpeed);
   const { bgColor, textColor } = useChangingColorPalette(colorSpeed);
 
   const [hover, setHover] = useState(false);
 
-  const [showBg, setShowBg] = useState(false);
-  useEffect(() => { setShowBg(true); }, []);
+  // const [showBg, setShowBg] = useState(false);
+  // useEffect(() => { setShowBg(true); }, []);
+  const showBg = useDelayedBoolean(hover, null, 1000);
 
   // useInterval;
   return (
@@ -80,35 +82,32 @@ export const CTA = () => {
           href={contactHref}
           target="_blank"
           rel="noreferrer"
-          className="block"
+          className={`
+            block fixed top-0 left-0 text-[min(4vw,1.3rem)]  pr-[1rem] py-[1rem] font-mono tracking-wide pl-[0.5em]
+            ${showStats ? '' : 'z-[88888888]'}
+            ${showCTAs ? '' : 'translate-y-[-200%]'} transition-all duration-300
+            hover:scale-[1.2] origin-top-left
+          `}
+          style={{
+            filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
+            background: bgColor,
+            color: textColor,
+            stroke: textColor,
+          }}
         >
-          <div
-            className={`
-          fixed top-0 left-0 text-[min(4vw,1.3rem)]  pr-[1rem] py-[1rem] font-mono tracking-wide pl-[0.5em]
-      ${showStats ? '' : 'z-[88888888]'}
-      ${showCTAs ? '' : 'translate-y-[-200%]'} transition-all
-    `}
-            style={{
-              filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
-              background: bgColor,
-              color: textColor,
-              stroke: textColor,
-            }}
+          <h2 className="sr-only">Contact</h2>
+          <span
+            className="tracking-[-0.01em] flex gap-[0.75em] underline decoration-2 underline-offset-[6px]"
           >
-            <h2 className="sr-only">Contact</h2>
-            <span
-              className="tracking-[-0.01em] flex gap-[0.75em] underline decoration-2 underline-offset-[6px]"
-            >
-              <MailIconSvg className="w-[2em] h-[1.625em]" />
-              <span>
-                hello
-                <span className="text-[0.7em]">&nbsp;</span>
-                <span>@</span>
-                <span className="text-[0.7em]">&nbsp;</span>
-                bryantcodes.art
-              </span>
+            <MailIconSvg className="w-[2em] h-[1.625em]" />
+            <span>
+              hello
+              <span className="text-[0.7em]">&nbsp;</span>
+              <span>@</span>
+              <span className="text-[0.7em]">&nbsp;</span>
+              bryantcodes.art
             </span>
-          </div>
+          </span>
         </a>
       </CustomCursorHover>
       {showBg && (
