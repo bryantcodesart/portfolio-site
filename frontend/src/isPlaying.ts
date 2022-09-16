@@ -1,4 +1,3 @@
-
 export function isPlaying(videoElement: HTMLVideoElement) {
   return !!(
     videoElement.currentTime > 0

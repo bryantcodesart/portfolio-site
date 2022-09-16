@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useInterval } from 'usehooks-ts';
 import { CustomCursorHover } from './CustomCursor';
 import { useParamOnLoad } from './useParamOnLoad';
 import { contactHref } from './contactHref';
 import { useSceneController } from './SceneController';
-import colors from './colors';
 import MailIconSvg from './svg/MailIconSvg';
-
-const {
-  blue, cyan, violet, yellow, lime, white, black,
-} = colors;
+import { useChangingColorPalette } from './useChangingColorPalette';
 
 // const availablity = 'available Q4';
 
-const colorPairs = [
-  [blue, white],
-  [yellow, black],
-  [cyan, black],
-  [violet, white],
-  [lime, black],
-];
 // const ctas = [
 //   'hello@bryantcodes.art',
 //   'hello@bryantcodes.art',
@@ -62,15 +50,11 @@ export const CTA = () => {
   const showCTAs = scene !== 'project-open' && scene !== 'intro' && scene !== 'start';
 
   // const [ctaIndex, setCtaIndex] = useState(0);
-  const [colorIndex, setColorIndex] = useState(0);
 
   const defaultSpeed = 5000;
   const fastSpeed = 500;
   const [colorSpeed, setColorSpeed] = useState(defaultSpeed);
-  useInterval(() => {
-    setColorIndex((index) => (index + 1) % colorPairs.length);
-    // setCtaIndex((index) => (index + 1) % ctas.length);
-  }, colorSpeed);
+  const { bgColor, textColor } = useChangingColorPalette(colorSpeed);
 
   const [hover, setHover] = useState(false);
 
@@ -96,10 +80,7 @@ export const CTA = () => {
           href={contactHref}
           target="_blank"
           rel="noreferrer"
-          className="block "
-          style={{
-            borderColor: colorPairs[colorIndex][1],
-          }}
+          className="block"
         >
           <div
             className={`
@@ -109,9 +90,9 @@ export const CTA = () => {
     `}
             style={{
               filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
-              background: colorPairs[colorIndex][0],
-              color: colorPairs[colorIndex][1],
-              stroke: colorPairs[colorIndex][1],
+              background: bgColor,
+              color: textColor,
+              stroke: textColor,
             }}
           >
             <h2 className="sr-only">Contact</h2>

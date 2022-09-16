@@ -58,8 +58,9 @@ export const Scribble = ({
     duration: 1000,
     easing: easings.easeInOutQuint,
   },
-  // renderOrder = 0,
+  renderOrder = undefined,
   scaleSpringConfig = config.wobbly,
+  depthTest = undefined,
 }: {
   points: CoordArray[];
   size: number;
@@ -73,8 +74,9 @@ export const Scribble = ({
   rotation?: CoordArray;
   scale?: number;
   drawSpringConfig?: SpringConfig;
-  // renderOrder?: number;
+  renderOrder?: number;
   scaleSpringConfig?: SpringConfig;
+  depthTest?: boolean;
 }) => {
   // Calculate our points, sized via the size prop
   // and possibly interpolated into a curve on nPointsInCurve if curved prop is true.
@@ -119,7 +121,7 @@ export const Scribble = ({
       rotation={rotation}
       scale={animatedScale}
       // raycast={MeshLineRaycast}
-      // renderOrder={renderOrder}
+      renderOrder={renderOrder}
     >
       <meshLine
         attach="geometry"
@@ -128,7 +130,7 @@ export const Scribble = ({
       <meshLineMaterial
         attach="material"
         transparent
-        // depthTest={false}
+        depthTest={depthTest}
         lineWidth={lineWidth}
         color={color}
         ref={materialRef as Ref<MeshLineMaterial>}

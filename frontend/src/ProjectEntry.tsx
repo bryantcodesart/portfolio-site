@@ -1,5 +1,6 @@
 import React, {
   Ref,
+  // useEffect,
   useMemo, useRef, useState,
 } from 'react';
 import {
@@ -18,6 +19,7 @@ import { ProjectHtmlModal } from './ProjectHtmlModal';
 import { useBreakpoints } from './useBreakpoints';
 import { CoordArray } from './CoordArray';
 import { useHasNoMouse } from './useHasNoMouse';
+import { ProjectTitlePreview } from './ProjectTitlePreview';
 
 const ROTATION_MAX_SPEED = 0.01;
 const MAX_WANDER_DISTANCE = 0.5;
@@ -40,7 +42,6 @@ declare global {
     }
   }
 }
-/* eslint-enable no-unused-vars */
 
 export const ProjectEntry = ({
   project,
@@ -132,14 +133,6 @@ export const ProjectEntry = ({
     config: config.stiff,
   });
 
-  const { spotlightIntensity } = useSpring({
-    spotlightIntensity: open ? 0.5 : 0,
-    delay: open ? 500 : 0,
-    config: {
-      duration: open ? 1000 : 0,
-    },
-  });
-
   const { animatedCubeScale } = useSpring({
     animatedCubeScale: cubeScale,
     config: config.wobbly,
@@ -148,16 +141,39 @@ export const ProjectEntry = ({
   // const anotherProjectIsOpen = someProjectIsOpen && !open;
   // console.log(project.title, 'anotherProjectIsOpen', anotherProjectIsOpen);
 
+  const active = hovering || open;
   return (
     <>
       <group
         position={basePosition}
       >
+        {!someProjectIsOpen && (
+        <ThreeButton
+          position={[0, 0, 0]}
+          width={2}
+          height={2}
+          description=""
+          activationMsg=""
+          cursor="open-project"
+          // debug
+          onClick={() => {
+            setOpen(true);
+          }}
+          onFocus={() => {
+            setHovering(true);
+          }}
+          onBlur={() => {
+            setHovering(false);
+          }}
+        />
+        )}
+
         <animated.group
           position={animatedCubeFloatingOffset}
         >
           <mesh
-            position={[0, 0, -0.1]}
+            position={[0, 0, -0.2]}
+            scale={[1, 1, 0.1]}
           >
             <sphereBufferGeometry
               args={[1, 20, 20]}
@@ -173,6 +189,24 @@ export const ProjectEntry = ({
               roughness={0}
             />
           </mesh>
+          {/* <mesh
+            position={[0, 0, -1.2]}
+            scale={[1, 1, 0.1]}
+          >
+            <sphereBufferGeometry
+              args={[1, 20, 20]}
+              attach="geometry"
+            />
+            <MeshDistortMaterial
+              color={colors.coffeeLight}
+              speed={6}
+              radius={2}
+              distort={0.5}
+              transparent
+              opacity={0.4}
+              roughness={0}
+            />
+          </mesh> */}
         </animated.group>
       </group>
       <animated.group
@@ -184,38 +218,18 @@ export const ProjectEntry = ({
         >
           <mesh
             ref={cubeRef as Ref<Mesh>}
+            renderOrder={active ? 1 : 0}
           >
             <roundedBoxGeometry
               args={[1, 1, 1, 4, 0.1]}
               attach="geometry"
             />
-            <CoffeeVideoMaterial src={`/videos/${project?.video}`} playing={hovering || open} />
+            <CoffeeVideoMaterial
+              videoSrc={`/videos/${project?.slug?.current}.mp4`}
+              thumbSrc={`/videos/${project?.slug?.current}-thumb.jpg`}
+              active={active}
+            />
           </mesh>
-          {!someProjectIsOpen && (
-          <ThreeButton
-            position={[0, 0, 0]}
-            width={0.9}
-            height={0.9}
-            description=""
-            activationMsg=""
-            cursor="open-project"
-            // debug
-            onClick={() => {
-              setOpen(true);
-            }}
-            onFocus={() => {
-              setHovering(true);
-            }}
-            onBlur={() => {
-              setHovering(false);
-            }}
-          />
-          )}
-          {/* @ts-ignore */}
-          <animated.pointLight
-            position={[2, 0, 4]}
-            intensity={spotlightIntensity}
-          />
         </animated.group>
       </animated.group>
 
@@ -226,35 +240,8 @@ export const ProjectEntry = ({
           setOpen={setOpen}
         />
       )}
-      {/* <group
-        position={[-1.4, 0.8, 3.2]}
-        rotation={[0, 0, Math.PI / 9]}
-      >
-        <Scribble
-          position={[0, 0, -0.1]}
-          points={(labelBackPoints as CoordArray[])}
-          size={2}
-          lineWidth={0.15}
-          color={new Color(TITLE_BACK_COLOR)}
-          rotation={[Math.PI, 0, 0]}
-          visible={showBack}
-          drawSpringConfig={active ? config.molasses : config.stiff}
-          scaleSpringConfig={config.wobbly}
-          curved
-          nPointsInCurve={1200}
-        />
-        <Text
-          position={[0, -0.0, -0.1]}
-          color={TITLE_TEXT_COLOR}
-          anchorX="center"
-          anchorY="middle"
-          fontSize={0.25}
-          font={fontUrls.bryantBold}
-          visible={showText}
-        >
-          {project.title}
-        </Text>
-      </group> */}
+
+      <ProjectTitlePreview project={project} basePosition={basePosition} visible={hovering} />
     </>
   );
 };

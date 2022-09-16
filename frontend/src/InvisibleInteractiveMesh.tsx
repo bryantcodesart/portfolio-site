@@ -72,10 +72,10 @@ export const InvisibleInteractiveMesh = ({
           stopHover();
           setHovering(false);
         }}
-        // onPointerOver={() => {
-        //   setCursor(cursor);
-        //   setHovering(true);
-        // }}
+        onPointerOver={() => {
+          startHover(cursor);
+          setHovering(true);
+        }}
         onPointerDown={() => { onClick(); }}
         position={[0, 0, 0]}
       >

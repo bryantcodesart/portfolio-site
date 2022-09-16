@@ -11,6 +11,11 @@ export default {
       type: "string",
     },
     {
+      name: "shortTitle",
+      title: "Short Title",
+      type: "string",
+    },
+    {
       name: "slug",
       title: "Slug",
       type: "slug",
@@ -116,14 +121,14 @@ export default {
     //     }
     //   ]
     // },
-    {
-      name: "video",
-      title: "Thumbnail Video",
-      type: "url",
-      validation: (Rule:Rule) => Rule.uri({
-        allowRelative: true,
-      })
-    },
+    // {
+    //   name: "video",
+    //   title: "Thumbnail Video",
+    //   type: "url",
+    //   validation: (Rule:Rule) => Rule.uri({
+    //     allowRelative: true,
+    //   })
+    // },
     {
       name: "body",
       title: "Body",

@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true,
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/spoofData.mjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/spoofData.mjs", "src/PausableVideoTexture.js"],
   "exclude": ["node_modules", ".next"]
 }

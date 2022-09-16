@@ -84,7 +84,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
       >
         <mesh
           position={[0, 0, -5]}
-          scale={[2.5, 2.5, 1]}
+          scale={[2.5, 2.5, 0.1]}
         >
           <sphereBufferGeometry
             args={[4, 70, 70]}
@@ -111,7 +111,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           fontSize={0.5}
           font={fontUrls.bryantBold}
         >
-          {`My coffee!\n${hasNoMouse ? 'Tap' : 'Click'} an \nice cube.`}
+          {`${hasNoMouse ? 'Tap' : 'Click'} an \nice cube.`}
         </Text>
       </animated.group>
       <mesh

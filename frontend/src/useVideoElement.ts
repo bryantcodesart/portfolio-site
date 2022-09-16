@@ -12,10 +12,16 @@ const createVideoElement = ({ url, setCanPlay, debug = false }:{
   vid.loop = true;
   vid.muted = true;
   vid.playsInline = true;
-  vid.autoplay = true;
+  vid.autoplay = false;
   vid.oncanplay = () => {
     setCanPlay(true);
   };
+
+  // const callback = () => {
+  //   console.log('update', url);
+  //   vid.requestVideoFrameCallback(callback);
+  // };
+  // vid.requestVideoFrameCallback(callback);
 
   if (debug) {
     const containerId = 'brs-video-element-debug';

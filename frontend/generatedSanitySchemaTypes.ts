@@ -115,6 +115,13 @@ export interface Project extends SanityDocument {
   title?: string;
 
   /**
+   * Short Title — `string`
+   *
+   *
+   */
+  shortTitle?: string;
+
+  /**
    * Slug — `slug`
    *
    *
@@ -182,13 +189,6 @@ export interface Project extends SanityDocument {
       url?: string;
     }>
   >;
-
-  /**
-   * Thumbnail Video — `url`
-   *
-   *
-   */
-  video?: string;
 
   /**
    * Body — `blockContent`

@@ -31,7 +31,11 @@ export function ThreeButton({
       role="button"
       description={description}
       activationMsg={activationMsg}
-      a11yElStyle={{ pointerEvents: 'none' }}
+      a11yElStyle={{
+        pointerEvents: 'none',
+        // border: '3px solid red',
+        // opacity: 1,
+      }}
     >
       <InvisibleInteractiveMesh
         {...groupProps}

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { shaderMaterial } from '@react-three/drei';
+import { shaderMaterial, useTexture } from '@react-three/drei';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import {
   Texture, ShaderMaterial, Clock, FrontSide,
@@ -7,11 +7,14 @@ import {
 // @ts-ignore
 import glsl from 'glslify';
 import { useVideoElement } from './useVideoElement';
+import './PausableVideoTexture';
 
 const CoffeeShaderMaterial = shaderMaterial(
   {
-    map: new Texture(),
-    inColor: 0.0,
+    thumb: new Texture(),
+    video: new Texture(),
+    showVideo: 0.0,
+    time: 0.0,
   },
   glsl`
     varying vec2 vUv;
@@ -21,11 +24,12 @@ const CoffeeShaderMaterial = shaderMaterial(
     }
   `,
   glsl`
-    uniform sampler2D map;
+    uniform sampler2D thumb;
+    uniform sampler2D video;
     varying vec2 vUv;
-    uniform float inColor;
+    uniform float showVideo;
     uniform float seed;
-
+    uniform float time;
 
     // 2D Random
     // from https://thebookofshaders.com/11/
@@ -65,28 +69,28 @@ const CoffeeShaderMaterial = shaderMaterial(
 
     void main() {
 
-      float noiseValue1 = noise(vUv*5.0-seed);
-      float noiseValue2 = noise(vUv*10.0-seed*50.);
-      float noiseValue3 = noise(vUv*2.0-seed*100.);
-      float noiseValue4 = noise(vUv*8.0-seed*150.*inColor);
-      float noiseValue5 = noise(vUv*100.0-seed*250.*inColor);
-      float noiseValue6 = noise(vUv*-seed*300.);
+      float noiseValue1 = noise(vUv*5.0-seed + time);
+      float noiseValue2 = noise(vUv*10.0-seed*50. + time);
+      float noiseValue3 = noise(vUv*2.0-seed*100. + time);
+      float noiseValue4 = noise(vUv*8.0-seed*150.*showVideo + time);
+      float noiseValue5 = noise(vUv*100.0-seed*250.*showVideo + time);
+      float noiseValue6 = noise(vUv*-seed*300. + time);
       float noiseValue = (noiseValue1+noiseValue2+noiseValue3+noiseValue4+noiseValue5+noiseValue6)/6.;
-      float visible = smoothstep(0.0,2.0,(noiseValue+inColor*2.));
+      float visible = smoothstep(0.0,2.0,(noiseValue+showVideo*2.));
+      visible = smoothstep(0.5,1.0,visible);
 
 
-      vec3 texColorDistorted = texture2D(map, (vUv-0.5)*visible+0.5).rgb;
-      vec3 texColor = texture2D(map, vUv).rgb;
+      vec3 videoColor = texture2D(video, (vUv-0.5)*visible+0.5).rgb;
 
-      float grayscaleValue = (texColor.r + texColor.g + texColor.b) / 3.0 * 1. + 0.33;
-
-      vec3 triToneColor =
+      vec3 thumbColor = texture2D(thumb, vUv).rgb;
+      float grayscaleValue = (thumbColor.r + thumbColor.g + thumbColor.b) / 3.0 * 1. + 0.33;
+      thumbColor =
       (1.-step(0.5, grayscaleValue)) * mix(darkColor,middleColor,grayscaleValue*2.)
         + step(0.5, grayscaleValue) * mix(middleColor,lightColor,grayscaleValue*2.-1.);
 
-      vec3 color = mix(triToneColor,texColorDistorted,visible);
+      vec3 color = mix(thumbColor+noiseValue,videoColor,visible);
 
-      gl_FragColor.rgba = vec4(color, 1.); //0.8+0.2*inColor);
+      gl_FragColor.rgba = vec4(color, 1.0); //0.8+0.2*showVideo);
     }
   `,
 );
@@ -94,7 +98,8 @@ const CoffeeShaderMaterial = shaderMaterial(
 extend({ CoffeeShaderMaterial });
 
 // eslint-disable-next-line no-redeclare
-type CoffeeShaderMaterial = ShaderMaterial & {inColor:number, seed:number};
+type CoffeeShaderMaterial = ShaderMaterial & {showVideo:number,
+  seed:number, thumb:Texture, video:Texture, time:number};
 
 /* eslint-disable no-unused-vars */
 declare global {
@@ -107,56 +112,63 @@ declare global {
 }
 /* eslint-enable no-unused-vars */
 
-export const CoffeeVideoMaterial = ({ src, playing = true }:
-  { src: string; playing: boolean; }) => {
-  const { videoElement } = useVideoElement(src, playing, { debug: false });
+export const CoffeeVideoMaterial = ({ videoSrc, thumbSrc, active = true }:
+  { thumbSrc: string; videoSrc: string; active: boolean; }) => {
+  const { videoElement } = useVideoElement(videoSrc, active, { debug: false });
   const materialRef = React.useRef<CoffeeShaderMaterial>(null);
 
-  const inColorClock = useMemo(() => {
+  const showVideoClock = useMemo(() => {
     const clock = new Clock();
     clock.start();
     return clock;
   }, []);
 
-  const inColor = playing;
+  const showVideo = active;
 
   useFrame(() => {
     if (!materialRef.current) return;
     const transitionTime = 1;
 
-    const increment = inColorClock.getDelta() / transitionTime;
+    const increment = showVideoClock.getDelta() / transitionTime;
 
-    if (inColor) {
-      materialRef.current.uniforms.inColor.value = Math.min(
-        materialRef.current.uniforms.inColor.value + increment,
+    if (showVideo) {
+      materialRef.current.uniforms.showVideo.value = Math.min(
+        materialRef.current.uniforms.showVideo.value + increment * 0.7,
         1.0,
       );
     } else {
-      materialRef.current.uniforms.inColor.value = Math.max(
-        materialRef.current.uniforms.inColor.value - increment,
+      materialRef.current.uniforms.showVideo.value = Math.max(
+        materialRef.current.uniforms.showVideo.value - increment * 0.7,
         0.0,
       );
     }
+
+    materialRef.current.uniforms.time.value += increment;
   });
 
   const randomSeed = useMemo(() => Math.random(), []);
 
+  const thumbTexture = useTexture(thumbSrc);
+
   return (
     <coffeeShaderMaterial
-      // transparent
-      // depthTest={false}
+      depthTest={false}
       // side={DoubleSide}
       side={FrontSide}
       key={CoffeeShaderMaterial.key}
-      inColor={0}
+      showVideo={0}
       seed={randomSeed}
       ref={materialRef}
+      thumb={thumbTexture}
+      // video={thumbTexture}
+      time={0} // will be set in anim frame
+      transparent
     >
 
       {videoElement && (
-        <videoTexture
+        <pausableVideoTexture
           args={[videoElement]}
-          attach="map"
+          attach="video"
         />
       )}
     </coffeeShaderMaterial>
