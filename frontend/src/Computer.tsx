@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Text } from '@react-three/drei';
-import { Color } from 'three';
+import { Color, MeshBasicMaterial } from 'three';
 import {
   useSpring,
   animated,
@@ -76,6 +76,11 @@ export function Computer() {
     config: { mass: 1.5, tension: 220, friction: 12 },
   });
 
+  // Cant seem to turn off depthTest with drei Text props, so making a material here to pass to Text
+  const textMaterial = useMemo(() => new MeshBasicMaterial({
+    depthTest: false,
+  }), []);
+
   return (
     <animated.group
       scale={animatedComputerGroupScale} // @ts-ignore
@@ -107,6 +112,8 @@ export function Computer() {
         nPointsInCurve={700}
         scale={computerPartScale}
         closed
+        depthTest={false}
+        renderOrder={1}
       />
       <Scribble
         points={(computerBodyPoints as CoordArray[])}
@@ -119,6 +126,8 @@ export function Computer() {
         curved
         nPointsInCurve={700}
         scale={computerPartScale}
+        depthTest={false}
+        renderOrder={2}
       />
       <Scribble
         points={(computerKeyboardPoints as CoordArray[])}
@@ -131,6 +140,8 @@ export function Computer() {
         curved
         nPointsInCurve={700}
         scale={computerPartScale}
+        depthTest={false}
+        renderOrder={2}
       />
 
       {computerOn ? <ComputerTerminal /> : null}
@@ -142,6 +153,8 @@ export function Computer() {
         anchorY="middle"
         fontSize={0.5}
         font={fontUrls.bryantBold}
+        material={textMaterial}
+        renderOrder={3}
         visible={computerCanBeTurnedOn && !computerTurningOn && !computerOn && !computerWillTurnOn}
       >
         click to start
