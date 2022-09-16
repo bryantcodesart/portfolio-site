@@ -30,7 +30,7 @@ export function CoffeeCup() {
   let time = 450;
   const projectButtonVisible1 = useTrueAfterDelay(time += 1000);
   const projectButtonVisible2 = useTrueAfterDelay(time += 1000);
-  const coffeeCupButtonEnabled = useTrueAfterDelay(time += 1000);
+  const coffeeCupButtonEnabled = useTrueAfterDelay(time);
   const [hovering, setHovering] = useState(false);
 
   const sceneController = useSceneController();

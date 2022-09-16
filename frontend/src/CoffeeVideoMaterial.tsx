@@ -1,11 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { shaderMaterial, useTexture } from '@react-three/drei';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
 import {
-  Texture, ShaderMaterial, Clock, FrontSide,
+  Texture, ShaderMaterial, Clock, FrontSide, VideoTexture,
 } from 'three';
 // @ts-ignore
 import glsl from 'glslify';
+import { useInterval } from 'usehooks-ts';
 import { useVideoElement } from './useVideoElement';
 import './PausableVideoTexture';
 
@@ -171,26 +172,32 @@ export const CoffeeVideoMaterial = ({ videoSrc, thumbSrc, active = true }:
 
   const thumbTexture = useTexture(thumbSrc);
 
+  // Due to some race case with requestVideoFrameCallback, paused videos are occasionally unrendered
+  // So we prompt a rerender every so often jic.
+  const videoTextureRef = useRef<VideoTexture>(null);
+  useInterval(() => {
+    if (videoTextureRef.current) videoTextureRef.current.needsUpdate = true;
+  }, 500);
+
   return (
     <coffeeShaderMaterial
       depthTest={false}
-      // side={DoubleSide}
       side={FrontSide}
       key={CoffeeShaderMaterial.key}
       unfreeze={0}
       seed={randomSeed}
       ref={materialRef}
       thumb={thumbTexture}
-      // video={thumbTexture}
       videoReady={0}
       time={0} // will be set in anim frame
       transparent
     >
 
-      {videoElement && canPlay && (
+      {videoElement && (
         <pausableVideoTexture
           args={[videoElement]}
           attach="video"
+          ref={videoTextureRef}
         />
       )}
     </coffeeShaderMaterial>

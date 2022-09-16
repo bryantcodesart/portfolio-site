@@ -5,19 +5,15 @@ import { VideoTexture } from 'three';
 import { isPlaying } from './isPlaying';
 
 export class PausableVideoTexture extends VideoTexture {
-  firstFramePainted = false;
-
   update() {
     const video = this.image;
     const hasVideoFrameCallback = 'requestVideoFrameCallback' in video;
-
     if (
-      hasVideoFrameCallback === false
+      (hasVideoFrameCallback === false
       && video.readyState >= video.HAVE_CURRENT_DATA
-      && (isPlaying(video) || !this.firstFramePainted)
+      && (isPlaying(video)))
     ) {
       this.needsUpdate = true;
-      this.firstFramePainted = true;
     }
   }
 }
