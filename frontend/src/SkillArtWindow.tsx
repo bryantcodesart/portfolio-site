@@ -49,6 +49,30 @@ const drawFatLinePath = (
   // Closing the path takes us back to our first point
 };
 
+const draw = (
+  canvas:HTMLCanvasElement,
+  drawFill:DrawFill,
+  x:number,
+  y:number,
+  prevX:number,
+  prevY:number,
+  onDraw:() => void,
+) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('no ctx');
+  const stroke = Math.max(canvas.width / 10, canvas.height / 10);
+  const { width, height } = canvas;
+
+  ctx.save();
+  ctx.beginPath();
+  drawFatLinePath(ctx, [prevX, prevY], [x, y], stroke);
+  ctx.clip();
+  drawFill(ctx, width, height);
+  ctx.restore();
+
+  onDraw();
+};
+
 export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
   drawFill:DrawFill;
   onDraw:() => void;
@@ -60,21 +84,9 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
       // @ts-ignore
       onDrag: ({ xy, delta }) => {
         if (!canvasRef.current) return;
-        const ctx = canvasRef.current.getContext('2d');
-        if (!ctx) throw new Error('no ctx');
         const [x, y] = xy;
         const [prevX, prevY] = [x - delta[0], y - delta[1]];
-        const stroke = Math.max(canvasRef.current.width / 10, canvasRef.current.height / 10);
-        const { width, height } = canvasRef.current;
-
-        ctx.save();
-        ctx.beginPath();
-        drawFatLinePath(ctx, [prevX, prevY], [x, y], stroke);
-        ctx.clip();
-        drawFill(ctx, width, height);
-        ctx.restore();
-
-        onDraw();
+        draw(canvasRef.current, drawFill, x, y, prevX, prevY, onDraw);
       },
     },
     {

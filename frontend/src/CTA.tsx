@@ -63,6 +63,8 @@ export const CTA = () => {
   // useEffect(() => { setShowBg(true); }, []);
   const showBg = useDelayedBoolean(hover, null, 1000);
 
+  const onFocus = () => { setColorSpeed(fastSpeed); setHover(true); };
+  const onBlur = () => { setColorSpeed(defaultSpeed); setHover(false); };
   // useInterval;
   return (
     <>
@@ -75,8 +77,8 @@ export const CTA = () => {
       </style>
       <CustomCursorHover
         cursor="contact"
-        onMouseEnter={() => { setColorSpeed(fastSpeed); setHover(true); }}
-        onMouseLeave={() => { setColorSpeed(defaultSpeed); setHover(false); }}
+        onMouseEnter={onFocus}
+        onMouseLeave={onBlur}
       >
         <a
           href={contactHref}
@@ -86,7 +88,7 @@ export const CTA = () => {
             block fixed top-0 left-0 text-[min(4vw,1.3rem)]  pr-[1rem] py-[1rem] font-mono tracking-wide pl-[0.5em]
             ${showStats ? '' : 'z-[88888888]'}
             ${showCTAs ? '' : 'translate-y-[-200%]'} transition-all duration-300
-            hover:scale-[1.2] origin-top-left
+            hover:scale-[1.2] focus:scale-[1.2] origin-top-left
           `}
           style={{
             filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
@@ -94,6 +96,9 @@ export const CTA = () => {
             color: textColor,
             stroke: textColor,
           }}
+          tabIndex={showCTAs ? 0 : -1}
+          onFocus={() => { setColorSpeed(fastSpeed); setHover(true); }}
+          onBlur={() => { setColorSpeed(defaultSpeed); setHover(false); }}
         >
           <h2 className="sr-only">Contact</h2>
           <span

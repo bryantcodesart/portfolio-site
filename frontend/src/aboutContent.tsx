@@ -27,13 +27,13 @@ export const aboutContent = {
   }],
   skills: [
     `
+      7 years working with
+      best-in-class designers building award-winning projects
+    `,
+    `
       strong command of design systems. excellent
       at interpreting mockups in any form (adobe, figma,
       whatev) and working with minimal OR maximal direction
-    `,
-    `
-      7 years working with
-      best-in-class designers building award-winning projects
     `,
     `
       exceptional at visual

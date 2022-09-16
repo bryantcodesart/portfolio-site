@@ -12,7 +12,7 @@ const createVideoElement = ({ url, setCanPlay, debug = false }:{
   vid.loop = true;
   vid.muted = true;
   vid.playsInline = true;
-  vid.autoplay = false;
+  vid.autoplay = true;
   vid.oncanplay = () => {
     setCanPlay(true);
   };

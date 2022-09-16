@@ -71,6 +71,8 @@ export const ScollingContentContainer = ({ children }: { children: ReactNode; })
           ${breakpoints.projectOpen ? 'h-[calc(100%-3rem)]' : 'h-[calc(100%-1.5rem)]'}
         `}
         ref={scrollRef}
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+        tabIndex={0}
       >
         <div
           className={`

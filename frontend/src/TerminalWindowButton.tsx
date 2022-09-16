@@ -13,7 +13,9 @@ const InnerButtonContent = ({ children, disabled }:{children:ReactNode, disabled
     ${disabled ? '' : `
       translate-x-[0.15em] translate-y-[0.15em]
       group-hover:translate-x-0
+      group-focus:translate-x-0
       group-hover:translate-y-0
+      group-focus:translate-y-0
       group-active:scale-75
     `}
   `}

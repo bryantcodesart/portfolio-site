@@ -20,6 +20,7 @@ import { useBreakpoints } from './useBreakpoints';
 import { CoordArray } from './CoordArray';
 import { useHasNoMouse } from './useHasNoMouse';
 import { ProjectTitlePreview } from './ProjectTitlePreview';
+import { useSceneController } from './SceneController';
 
 const ROTATION_MAX_SPEED = 0.01;
 const MAX_WANDER_DISTANCE = 0.5;
@@ -118,9 +119,9 @@ export const ProjectEntry = ({
   const hasNoMouse = useHasNoMouse();
   let cubeScale = 1;
   if (hovering) {
-    cubeScale = hasNoMouse ? 1.5 : 2;
+    cubeScale = 3;// hasNoMouse ? 1.5 : 2;
     if (breakpoints.projects) {
-      cubeScale = hasNoMouse ? 2 : 3;
+      cubeScale = 3; // hasNoMouse ? 2 : 3;
     }
   }
   if (open) cubeScale = 1;
@@ -141,13 +142,15 @@ export const ProjectEntry = ({
   // const anotherProjectIsOpen = someProjectIsOpen && !open;
   // console.log(project.title, 'anotherProjectIsOpen', anotherProjectIsOpen);
 
+  const { scene } = useSceneController();
+
   const active = hovering || open;
   return (
     <>
       <group
         position={basePosition}
       >
-        {!someProjectIsOpen && (
+        {scene === 'projects' && !someProjectIsOpen && (
         <ThreeButton
           position={[0, 0, 0]}
           width={2}

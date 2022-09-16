@@ -13,8 +13,9 @@ const CoffeeShaderMaterial = shaderMaterial(
   {
     thumb: new Texture(),
     video: new Texture(),
-    showVideo: 0.0,
+    unfreeze: 0.0,
     time: 0.0,
+    videoReady: 0.0,
   },
   glsl`
     varying vec2 vUv;
@@ -27,9 +28,10 @@ const CoffeeShaderMaterial = shaderMaterial(
     uniform sampler2D thumb;
     uniform sampler2D video;
     varying vec2 vUv;
-    uniform float showVideo;
+    uniform float unfreeze;
     uniform float seed;
     uniform float time;
+    uniform float videoReady;
 
     // 2D Random
     // from https://thebookofshaders.com/11/
@@ -72,25 +74,28 @@ const CoffeeShaderMaterial = shaderMaterial(
       float noiseValue1 = noise(vUv*5.0-seed + time);
       float noiseValue2 = noise(vUv*10.0-seed*50. + time);
       float noiseValue3 = noise(vUv*2.0-seed*100. + time);
-      float noiseValue4 = noise(vUv*8.0-seed*150.*showVideo + time);
-      float noiseValue5 = noise(vUv*100.0-seed*250.*showVideo + time);
+      float noiseValue4 = noise(vUv*8.0-seed*150.*unfreeze + time);
+      float noiseValue5 = noise(vUv*100.0-seed*250.*unfreeze + time);
       float noiseValue6 = noise(vUv*-seed*300. + time);
       float noiseValue = (noiseValue1+noiseValue2+noiseValue3+noiseValue4+noiseValue5+noiseValue6)/6.;
-      float visible = smoothstep(0.0,2.0,(noiseValue+showVideo*2.));
+      float visible = smoothstep(0.0,2.0,(noiseValue+unfreeze*2.));
       visible = smoothstep(0.5,1.0,visible);
 
 
-      vec3 videoColor = texture2D(video, (vUv-0.5)*visible+0.5).rgb;
+      vec3 distortedVideoColor = texture2D(video, (vUv-0.5)*visible+0.5).rgb;
+      vec3 distortedThumbColor = texture2D(thumb, (vUv-0.5)*visible+0.5).rgb;
+      vec3 unfrozenColor = mix(distortedThumbColor, distortedVideoColor, videoReady);
 
-      vec3 thumbColor = texture2D(thumb, vUv).rgb;
-      float grayscaleValue = (thumbColor.r + thumbColor.g + thumbColor.b) / 3.0 * 1. + 0.33;
-      thumbColor =
+      vec3 frozenColor = texture2D(thumb, vUv).rgb;
+      float grayscaleValue = (frozenColor.r + frozenColor.g + frozenColor.b) / 3.0 * 1. + 0.33;
+      frozenColor =
       (1.-step(0.5, grayscaleValue)) * mix(darkColor,middleColor,grayscaleValue*2.)
         + step(0.5, grayscaleValue) * mix(middleColor,lightColor,grayscaleValue*2.-1.);
+      frozenColor += noiseValue;
 
-      vec3 color = mix(thumbColor+noiseValue,videoColor,visible);
+      vec3 color = mix(frozenColor,unfrozenColor,visible);
 
-      gl_FragColor.rgba = vec4(color, 1.0); //0.8+0.2*showVideo);
+      gl_FragColor.rgba = vec4(color, 1.0); //0.8+0.2*unfreeze);
     }
   `,
 );
@@ -98,8 +103,14 @@ const CoffeeShaderMaterial = shaderMaterial(
 extend({ CoffeeShaderMaterial });
 
 // eslint-disable-next-line no-redeclare
-type CoffeeShaderMaterial = ShaderMaterial & {showVideo:number,
-  seed:number, thumb:Texture, video:Texture, time:number};
+type CoffeeShaderMaterial = ShaderMaterial & {
+  unfreeze:number,
+  seed:number,
+  thumb:Texture,
+  video:Texture,
+  time:number,
+  videoReady:number,
+};
 
 /* eslint-disable no-unused-vars */
 declare global {
@@ -114,31 +125,41 @@ declare global {
 
 export const CoffeeVideoMaterial = ({ videoSrc, thumbSrc, active = true }:
   { thumbSrc: string; videoSrc: string; active: boolean; }) => {
-  const { videoElement } = useVideoElement(videoSrc, active, { debug: false });
+  const { videoElement, canPlay } = useVideoElement(videoSrc, active, { debug: true });
   const materialRef = React.useRef<CoffeeShaderMaterial>(null);
 
-  const showVideoClock = useMemo(() => {
+  const unfreezeClock = useMemo(() => {
     const clock = new Clock();
     clock.start();
     return clock;
   }, []);
 
-  const showVideo = active;
-
   useFrame(() => {
     if (!materialRef.current) return;
     const transitionTime = 1;
 
-    const increment = showVideoClock.getDelta() / transitionTime;
+    const increment = unfreezeClock.getDelta() / transitionTime;
 
-    if (showVideo) {
-      materialRef.current.uniforms.showVideo.value = Math.min(
-        materialRef.current.uniforms.showVideo.value + increment * 0.7,
+    if (active) {
+      materialRef.current.uniforms.unfreeze.value = Math.min(
+        materialRef.current.uniforms.unfreeze.value + increment * 0.7,
         1.0,
       );
     } else {
-      materialRef.current.uniforms.showVideo.value = Math.max(
-        materialRef.current.uniforms.showVideo.value - increment * 0.7,
+      materialRef.current.uniforms.unfreeze.value = Math.max(
+        materialRef.current.uniforms.unfreeze.value - increment * 0.7,
+        0.0,
+      );
+    }
+
+    if (canPlay) {
+      materialRef.current.uniforms.videoReady.value = Math.min(
+        materialRef.current.uniforms.videoReady.value + increment,
+        1.0,
+      );
+    } else {
+      materialRef.current.uniforms.videoReady.value = Math.max(
+        materialRef.current.uniforms.videoReady.value - increment,
         0.0,
       );
     }
@@ -156,16 +177,17 @@ export const CoffeeVideoMaterial = ({ videoSrc, thumbSrc, active = true }:
       // side={DoubleSide}
       side={FrontSide}
       key={CoffeeShaderMaterial.key}
-      showVideo={0}
+      unfreeze={0}
       seed={randomSeed}
       ref={materialRef}
       thumb={thumbTexture}
       // video={thumbTexture}
+      videoReady={0}
       time={0} // will be set in anim frame
       transparent
     >
 
-      {videoElement && (
+      {videoElement && canPlay && (
         <pausableVideoTexture
           args={[videoElement]}
           attach="video"

@@ -27,3 +27,17 @@ body {
 
   height: calc(100 * var(--vh));
 }
+
+/* Global focus style */
+*:focus-visible {
+  outline: 4px solid red;
+}
+
+/*The div on this button can sometimes block mouse
+ and doing this does NOT break anything. */
+div:has(> button[r3f-a11y='true']) {
+  /* Uncomment to make these visible... */
+  /* opacity: 1 !important;
+  outline: 4px solid red; */
+  pointer-events: none !important;
+}

@@ -63,7 +63,6 @@ export const InvisibleInteractiveMesh = ({
       {...groupProps}
     >
       <mesh
-        // renderOrder={1000}
         onPointerEnter={() => {
           startHover(cursor);
           setHovering(true);
@@ -105,6 +104,8 @@ export const InvisibleInteractiveMesh = ({
         drawSpringConfig={{
           duration: 300,
         }}
+        depthTest={false}
+        renderOrder={1000}
       />
     </group>
   );

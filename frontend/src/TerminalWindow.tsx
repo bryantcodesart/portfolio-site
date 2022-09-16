@@ -96,6 +96,7 @@ export const TerminalWindow = ({
                   onClick={() => {
                     setFlipped(!flipped);
                   }}
+                  tabIndex={-1}
                 />
               )}
             </div>

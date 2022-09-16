@@ -31,6 +31,8 @@ export const Slides = ({
   const breakpoints = useBreakpoints();
   const breakpoint = breakpoints.about;
 
+  const { scene } = useSceneController();
+
   if (slide === 'intro') {
     const text1Delay = 800;
     const text2Delay = text1Delay + 22 * TIME_PER_CHAR + 100;
@@ -52,6 +54,7 @@ export const Slides = ({
             }}
             delay={buttonDelay}
             className="text-[max(1.5em,16px)]"
+            tabIndex={scene === 'menu' ? 0 : -1}
           >
             ABOUT_BRYANT
           </TerminalButton>

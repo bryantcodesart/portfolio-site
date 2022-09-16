@@ -36,6 +36,7 @@ export function ThreeButton({
         // border: '3px solid red',
         // opacity: 1,
       }}
+      actionCall={onClick}
     >
       <InvisibleInteractiveMesh
         {...groupProps}
@@ -47,9 +48,9 @@ export function ThreeButton({
         onBlur={() => {
           onBlur();
         }}
-        onClick={() => {
-          onClick();
-        }}
+        // onClick={() => {
+        //   onClick();
+        // }}
         cursor={cursor}
         debug={debug}
       />
