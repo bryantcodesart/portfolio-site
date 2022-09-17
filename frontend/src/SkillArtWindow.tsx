@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, {
-  useRef, useState, useMemo,
+  useRef, useState, useMemo, useEffect, useCallback,
 } from 'react';
 import { useGesture } from '@use-gesture/react';
 import { useEventListener, useInterval } from 'usehooks-ts';
@@ -24,6 +24,33 @@ const { skills } = aboutContent;
 const resolutionMultiplier = 2.0;
 
 const DEBUG_DRAWFILLS = false;
+
+/**
+ * Improved from
+ * @see https://css-tricks.com/using-requestanimationframe-with-react-hooks/
+ */
+export const useAnimationFrame = (callback:(_delta:number)=>void) => {
+  // Use useRef for mutable variables that we want to persist
+  // without triggering a re-render on their change
+  const requestRef = useRef<ReturnType<typeof requestAnimationFrame>>();
+  const previousTimeRef = useRef<number>();
+
+  const animate = useCallback((time:number) => {
+    if (previousTimeRef.current !== undefined) {
+      const deltaTime = time - previousTimeRef.current;
+      callback(deltaTime);
+    }
+    previousTimeRef.current = time;
+    requestRef.current = requestAnimationFrame(animate);
+  }, [callback]);
+
+  useEffect(() => {
+    requestRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [animate]); // Make sure the effect runs only once
+};
 
 const drawFatLinePath = (
   ctx:CanvasRenderingContext2D,
@@ -94,10 +121,25 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
       keyboardUserPaintbrushRef.current.style.setProperty('--y', '-9999px');
     }
   };
+
+  const arrowKeysDown = useRef<Set<('ArrowRight'| 'ArrowLeft'|'ArrowUp'|'ArrowDown')>>(new Set());
   useEventListener('keydown', (e) => {
-    if (!canvasRef.current || !keyboardUserPaintbrushRef.current) return;
     if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    const arrowKey = e.key as ('ArrowRight'| 'ArrowLeft'|'ArrowUp'|'ArrowDown');
+    if (!arrowKeysDown.current.has(arrowKey)) arrowKeysDown.current.add(arrowKey);
     setUsingKeyboard(true);
+  });
+
+  useEventListener('keyup', (e) => {
+    if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    const arrowKey = e.key as ('ArrowRight'| 'ArrowLeft'|'ArrowUp'|'ArrowDown');
+    if (arrowKeysDown.current.has(arrowKey)) arrowKeysDown.current.delete(arrowKey);
+  });
+
+  useAnimationFrame(() => {
+    if (!canvasRef.current || !keyboardUserPaintbrushRef.current) return;
+
+    if (arrowKeysDown.current.size === 0) return;
 
     const w = canvasRef.current.width;
     const h = canvasRef.current.height;
@@ -110,11 +152,11 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
 
     const { x: prevX, y: prevY } = drawPositionForKeyboardUsers.current;
 
-    const distance = w / 50;
-    if (e.key === 'ArrowRight') drawPositionForKeyboardUsers.current.x = Math.min(drawPositionForKeyboardUsers.current.x + distance, w);
-    if (e.key === 'ArrowLeft') drawPositionForKeyboardUsers.current.x = Math.max(drawPositionForKeyboardUsers.current.x - distance, 0);
-    if (e.key === 'ArrowUp') drawPositionForKeyboardUsers.current.y = Math.max(drawPositionForKeyboardUsers.current.y - distance, 0);
-    if (e.key === 'ArrowDown') drawPositionForKeyboardUsers.current.y = Math.min(drawPositionForKeyboardUsers.current.y + distance, h);
+    const distance = w / 100;
+    if (arrowKeysDown.current.has('ArrowRight')) drawPositionForKeyboardUsers.current.x = Math.min(drawPositionForKeyboardUsers.current.x + distance, w);
+    if (arrowKeysDown.current.has('ArrowLeft')) drawPositionForKeyboardUsers.current.x = Math.max(drawPositionForKeyboardUsers.current.x - distance, 0);
+    if (arrowKeysDown.current.has('ArrowUp')) drawPositionForKeyboardUsers.current.y = Math.max(drawPositionForKeyboardUsers.current.y - distance, 0);
+    if (arrowKeysDown.current.has('ArrowDown')) drawPositionForKeyboardUsers.current.y = Math.min(drawPositionForKeyboardUsers.current.y + distance, h);
 
     // @ts-ignore
     keyboardUserPaintbrushRef.current.style.setProperty('--x', `${drawPositionForKeyboardUsers.current.x / devicePixelRatio}px`);
