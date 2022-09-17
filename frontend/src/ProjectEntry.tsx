@@ -166,7 +166,7 @@ export const ProjectEntry = ({
           description=""
           activationMsg=""
           cursor="open-project"
-          // debug
+          debug
           onClick={() => {
             setOpen(true);
           }}
@@ -200,24 +200,6 @@ export const ProjectEntry = ({
               roughness={0}
             />
           </mesh>
-          {/* <mesh
-            position={[0, 0, -1.2]}
-            scale={[1, 1, 0.1]}
-          >
-            <sphereBufferGeometry
-              args={[1, 20, 20]}
-              attach="geometry"
-            />
-            <MeshDistortMaterial
-              color={colors.coffeeLight}
-              speed={6}
-              radius={2}
-              distort={0.5}
-              transparent
-              opacity={0.4}
-              roughness={0}
-            />
-          </mesh> */}
         </animated.group>
       </group>
       <animated.group

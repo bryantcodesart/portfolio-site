@@ -43,11 +43,11 @@ export const ProjectTitlePreview = ({ project, basePosition, visible }:
   const decorativeSquiggle2 = useMemo(() => decorativeSquiggles2[
     Math.floor(Math.random() * decorativeSquiggles2.length)], []);
 
-  const titlePosition: [number, number, number] = [
-    basePosition[0],
-    basePosition[1] < 0 ? basePosition[1] + 2 : basePosition[1] - 2,
-    1,
-  ];
+  // const titlePosition: [number, number, number] = [
+  //   basePosition[0],
+  //   basePosition[1] < 0 ? basePosition[1] + 2 : basePosition[1] - 2,
+  //   1,
+  // ];
 
   const delayedVisible = useDelayedBoolean(visible, 800, null);
 
@@ -59,6 +59,8 @@ export const ProjectTitlePreview = ({ project, basePosition, visible }:
   const renderOrder = 2;
 
   const { textColor, bgColor } = useChangingColorPalette(500);
+
+  const titlePosition:[number, number, number] = [0, 0, 2];
 
   return (
     <>

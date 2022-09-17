@@ -33,14 +33,6 @@ export const Slides = ({
 
   const { scene } = useSceneController();
 
-  useEventListener('keypress', (e) => {
-    if (e.key === 'Escape') {
-      if (scene === 'about') {
-        setScene('menu');
-      }
-    }
-  });
-
   if (slide === 'intro') {
     const text1Delay = 800;
     const text2Delay = text1Delay + 22 * TIME_PER_CHAR + 100;
@@ -239,7 +231,7 @@ export const Slides = ({
 };
 
 export function ComputerTerminal() {
-  const { setScene } = useSceneController();
+  const { scene, setScene } = useSceneController();
 
   const [slide, setSlide] = useState<SlideName>('intro');
 
@@ -293,15 +285,21 @@ export function ComputerTerminal() {
     terminalDivRef.current.style.setProperty('--terminal-height', `min(80 * var(--vh), ${planeHeightInPixels}px)`);
   });
 
+  // Exit on escape key
+  useEventListener('keypress', (e) => {
+    if (e.key === 'Escape') {
+      if (scene === 'about') {
+        setScene('menu');
+        setSlide('intro');
+      }
+    }
+  });
+
   return (
     <group
       position={position}
       rotation={[0, 0, Math.PI / 40]}
     >
-      {/* <mesh renderOrder={2}>
-        <boxGeometry args={[...planeSizeInWorldUnits, 0.1] as CoordArray} />
-        <meshStandardMaterial color="red" transparent opacity={0.5} depthTest={false} />
-      </mesh> */}
       <Html>
         <CustomCursorHover cursor="terminal">
           <div
