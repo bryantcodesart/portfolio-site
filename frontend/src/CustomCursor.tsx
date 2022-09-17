@@ -30,6 +30,7 @@ export type CustomCursorState = null
  | 'unspill'
  | 'paint'
  | 'external'
+ | 'none'
 
 /** Cant use <Head> tag or SSR inside CustomCursorRenderer,
   * since it conditionally runs based on user env
@@ -47,7 +48,7 @@ const CustomCursorPreloads = () => (
 
 /** How we render the cusror based on its state (project specific) */
 const CustomCursorRenderer = ({ cursor }:{cursor:CustomCursorState}) => {
-  const textCursor = cursor !== 'terminal' && cursor !== 'paint';
+  const textCursor = cursor !== 'terminal' && cursor !== 'paint' && cursor !== 'none';
   return (
     <div
       style={{

@@ -9,6 +9,7 @@ import glsl from 'glslify';
 import { useInterval } from 'usehooks-ts';
 import { useVideoElement } from './useVideoElement';
 import './PausableVideoTexture';
+import { isPlaying } from './isPlaying';
 
 const CoffeeShaderMaterial = shaderMaterial(
   {
@@ -126,7 +127,7 @@ declare global {
 
 export const CoffeeVideoMaterial = ({ videoSrc, thumbSrc, active = true }:
   { thumbSrc: string; videoSrc: string; active: boolean; }) => {
-  const { videoElement, canPlay } = useVideoElement(videoSrc, active, { debug: true });
+  const { videoElement, canPlay } = useVideoElement(videoSrc, active, { debug: false });
   const materialRef = React.useRef<CoffeeShaderMaterial>(null);
 
   const unfreezeClock = useMemo(() => {
@@ -177,6 +178,12 @@ export const CoffeeVideoMaterial = ({ videoSrc, thumbSrc, active = true }:
   const videoTextureRef = useRef<VideoTexture>(null);
   useInterval(() => {
     if (videoTextureRef.current) videoTextureRef.current.needsUpdate = true;
+    if (videoElement && isPlaying(videoElement) && !active) videoElement.pause();
+  }, 500);
+
+  // Make sure the video is paused when not active
+  useInterval(() => {
+    if (videoElement && isPlaying(videoElement) && !active) videoElement.pause();
   }, 500);
 
   return (

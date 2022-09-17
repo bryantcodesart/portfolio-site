@@ -8,17 +8,17 @@ const InnerButtonContent = ({ children, disabled }:{children:ReactNode, disabled
     />
     <span
       className={`border-[2px] border-[var(--color)]
-    py-[0.5em] px-[1em] pointer-events-none
-    relative block
-    ${disabled ? '' : `
-      translate-x-[0.15em] translate-y-[0.15em]
-      group-hover:translate-x-0
-      group-focus:translate-x-0
-      group-hover:translate-y-0
-      group-focus:translate-y-0
-      group-active:scale-75
-    `}
-  `}
+        py-[0.5em] px-[1em] pointer-events-none
+        relative block
+        ${disabled ? '' : `
+          translate-x-[0.15em] translate-y-[0.15em]
+          group-hover:translate-x-0
+          group-focus:translate-x-0
+          group-hover:translate-y-0
+          group-focus:translate-y-0
+          group-active:scale-75
+        `}
+      `}
       style={{
         backgroundColor: 'var(--bgColor)',
       }}
@@ -71,6 +71,7 @@ export const TerminalWindowButton = ({
         href={href}
         target="_blank"
         rel="noreferrer"
+        className="group"
       >
         <div
           {...buttonProps}

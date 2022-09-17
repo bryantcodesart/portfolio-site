@@ -2,12 +2,13 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import React from 'react';
 import { DefaultSeo } from 'next-seo';
-import { useEventListener } from 'usehooks-ts';
+// import { useEventListener } from 'usehooks-ts';
 import { CustomCursor } from '../src/CustomCursor';
 import { ThreePage } from '../src/ThreePage';
 import { SiteData } from '../src/SiteData';
 import { MobileVhAsCssVar } from '../src/MobileVhAsCssVar';
 import { useConsoleLogDevSignature } from '../src/useConsoleLogDevSignature';
+import { PlayAllVideosOnClickInLowPowerMode } from '../src/usePlayAllVideosOnClickInLowPowerMode';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const siteData:SiteData = {
@@ -15,15 +16,15 @@ function MyApp({ Component, pageProps }: AppProps) {
     projects: pageProps.projects ?? null,
   };
 
+  useConsoleLogDevSignature();
+
+  // useEventListener('focusin', (e) => {
+  //   console.log('focused on', e.target);
+  // });
+
   const title = 'Bryant Smith, Creative Dev';
   const description = 'I help awesome designers (like you) build their wildest dreams.';
   const url = 'https://bryantcodes.art';
-
-  useConsoleLogDevSignature();
-
-  useEventListener('focusin', (e) => {
-    console.log('focused on', e.target);
-  });
 
   return (
     <>
@@ -58,6 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <Component {...pageProps} />
       <CustomCursor />
+      <PlayAllVideosOnClickInLowPowerMode />
     </>
   );
 }

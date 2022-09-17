@@ -36,6 +36,7 @@
     "next-seo": "^5.5.0",
     "node-fetch": "^3.2.9",
     "react": "^18.2.0",
+    "react-aria": "^3.19.0",
     "react-async-hook": "^4.0.0",
     "react-dom": "^18.2.0",
     "react-merge-refs": "^2.0.1",

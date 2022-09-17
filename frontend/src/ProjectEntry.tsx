@@ -7,7 +7,7 @@ import {
   MathUtils, Mesh, Object3D,
 } from 'three';
 import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
-import { useInterval } from 'usehooks-ts';
+import { useEventListener, useInterval } from 'usehooks-ts';
 import { animated, config, useSpring } from '@react-spring/three';
 import { RoundedBoxGeometry } from 'three-stdlib';
 import { MeshDistortMaterial } from '@react-three/drei';
@@ -145,6 +145,14 @@ export const ProjectEntry = ({
   const { scene } = useSceneController();
 
   const active = hovering || open;
+
+  useEventListener('keydown', (e) => {
+    // console.log('keydown', e.key);
+    if (e.key === 'Escape' && open) {
+      setOpen(false);
+    }
+  });
+
   return (
     <>
       <group

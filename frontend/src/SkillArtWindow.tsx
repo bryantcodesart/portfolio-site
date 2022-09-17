@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import React, {
   useRef, useState, useMemo,
 } from 'react';
 import { useGesture } from '@use-gesture/react';
-import { useInterval } from 'usehooks-ts';
+import { useEventListener, useInterval } from 'usehooks-ts';
+import { useFocusVisible } from 'react-aria';
 import { TerminalWindowProps } from './TerminalWindowProps';
 import { DrawFill } from './DrawFill';
 import { TerminalWindow } from './TerminalWindow';
@@ -14,7 +16,8 @@ import { SlideName } from './SlideName';
 import { contactHref } from './contactHref';
 import { useBreakpoints } from './useBreakpoints';
 import { aboutContent } from './aboutContent';
-// import { useImgElement } from './useImgElement';
+import { useTrueAfterDelay } from './useTrueAfterDelay';
+import { useHasNoMouse } from './useHasNoMouse';
 
 const { skills } = aboutContent;
 
@@ -79,6 +82,60 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
 }) => {
   const canvasRef = useRef<HTMLCanvasElement|null>(null);
 
+  const drawPositionForKeyboardUsers = useRef<null|{x:number, y:number}>(null);
+  const keyboardUserPaintbrushRef = useRef<HTMLImageElement|null>(null);
+  const [usingKeyboard, _setUsingKeyboard] = useState(false);
+  const setUsingKeyboard = (value:boolean) => {
+    _setUsingKeyboard(value);
+    if (value === false) {
+      // @ts-ignore
+      keyboardUserPaintbrushRef.current.style.setProperty('--x', '-9999px');
+      // @ts-ignore
+      keyboardUserPaintbrushRef.current.style.setProperty('--y', '-9999px');
+    }
+  };
+  useEventListener('keydown', (e) => {
+    if (!canvasRef.current || !keyboardUserPaintbrushRef.current) return;
+    if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    setUsingKeyboard(true);
+
+    const w = canvasRef.current.width;
+    const h = canvasRef.current.height;
+    if (!drawPositionForKeyboardUsers.current) {
+      drawPositionForKeyboardUsers.current = {
+        x: w / 2,
+        y: h / 2,
+      };
+    }
+
+    const { x: prevX, y: prevY } = drawPositionForKeyboardUsers.current;
+
+    const distance = w / 50;
+    if (e.key === 'ArrowRight') drawPositionForKeyboardUsers.current.x = Math.min(drawPositionForKeyboardUsers.current.x + distance, w);
+    if (e.key === 'ArrowLeft') drawPositionForKeyboardUsers.current.x = Math.max(drawPositionForKeyboardUsers.current.x - distance, 0);
+    if (e.key === 'ArrowUp') drawPositionForKeyboardUsers.current.y = Math.max(drawPositionForKeyboardUsers.current.y - distance, 0);
+    if (e.key === 'ArrowDown') drawPositionForKeyboardUsers.current.y = Math.min(drawPositionForKeyboardUsers.current.y + distance, h);
+
+    // @ts-ignore
+    keyboardUserPaintbrushRef.current.style.setProperty('--x', `${drawPositionForKeyboardUsers.current.x / devicePixelRatio}px`);
+    // @ts-ignore
+    keyboardUserPaintbrushRef.current.style.setProperty('--y', `${drawPositionForKeyboardUsers.current.y / devicePixelRatio}px`);
+
+    draw(
+      canvasRef.current,
+      drawFill,
+      drawPositionForKeyboardUsers.current.x,
+      drawPositionForKeyboardUsers.current.y,
+      prevX,
+      prevY,
+      onDraw,
+    );
+  });
+
+  useEventListener('mousemove', () => {
+    setUsingKeyboard(false);
+  });
+
   const gestureProps = useGesture(
     {
       // @ts-ignore
@@ -87,6 +144,7 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
         const [x, y] = xy;
         const [prevX, prevY] = [x - delta[0], y - delta[1]];
         draw(canvasRef.current, drawFill, x, y, prevX, prevY, onDraw);
+        setUsingKeyboard(false);
       },
     },
     {
@@ -118,16 +176,32 @@ export const DrawToRevealCanvas = ({ drawFill, onDraw = () => {} }:{
   }, 200);
 
   return (
-    <CustomCursorHover cursor="paint">
-      <canvas
-        ref={canvasRef}
-        {...gestureProps()}
-        className="top-0 left-0 w-full h-full top left touch-none"
+    <>
+      <CustomCursorHover cursor={usingKeyboard ? 'none' : 'paint'}>
+        <canvas
+          ref={canvasRef}
+          {...gestureProps()}
+          className="top-0 left-0 w-full h-full top left touch-none"
+        />
+      </CustomCursorHover>
+      <img
+        className="w-[45px] absolute top-0 left-0 touch-none pointer-events-none"
+        src="/cursor/paint.svg"
+        alt=""
+        style={{
+          // @ts-ignore
+          '--x': '-9999px',
+          // @ts-ignore
+          '--y': '-9999px',
+          transform: 'translate(-50%, -50%) translate(var(--x), var(--y))',
+        }}
+        ref={keyboardUserPaintbrushRef}
       />
-    </CustomCursorHover>
+    </>
   );
 };
 
+// Forked and heavily edited from https://gitlab.com/davideblasutto/canvas-multiline-text/-/blob/master/index.js
 type MultilineTextOptions = {
   font?: string;
   stroke?: boolean;
@@ -147,8 +221,6 @@ type MultilineTextOptions = {
   nbsp?: string;
   br?: string;
 }
-
-// Forked and heavily edited from https://gitlab.com/davideblasutto/canvas-multiline-text/-/blob/master/index.js
 type Line = {
   text: string;
   x: number;
@@ -416,6 +488,12 @@ export const SkillArtWindow = ({
   const [showInstructions, setShowInstructions] = useState(true);
   const [showCta, setShowCta] = useState(false);
 
+  const giveUserAHint = useTrueAfterDelay(8000);
+  const hasNoMouse = useHasNoMouse();
+  const theUserShouldHaveFiguredItOutByNow = useTrueAfterDelay(12000);
+
+  const { isFocusVisible } = useFocusVisible({ isTextInput: true });
+
   return (
     <>
       <TerminalWindow
@@ -445,10 +523,32 @@ export const SkillArtWindow = ({
             />
           </div>
           {showInstructions && (
-          <div className="font-display text-center text-[4em] leading-[1] uppercase text-[#ccc] translate-y-[-10%] pointer-events-none p-[0.2em] max-w-[8em]">
-            Draw on me
-            {breakpoint ? <br /> : ' '}
-            in every color
+          <div
+            className={`
+              font-display text-center
+              ${giveUserAHint ? 'text-[3em] ' : 'text-[4em] '}
+              leading-[1] uppercase text-[#aaa]
+              pointer-events-none p-[0.2em]
+              max-w-[8em]
+            `}
+          >
+            {giveUserAHint
+              ? (
+                <span>
+                  Hint:
+                  Choose a color and
+                  {' '}
+                  {hasNoMouse ? 'tap' : 'click'}
+                  {' '}
+                  anywhere to paint!
+                </span>
+              ) : (
+                <span>
+                  Draw on me
+                  {breakpoint ? <br /> : ' '}
+                  in every color
+                </span>
+              )}
           </div>
           )}
           <div className="absolute top-0 left-0 flex">
@@ -459,8 +559,10 @@ export const SkillArtWindow = ({
                   onClick={() => setCurrentFill(index)}
                   type="button"
                   className={`grid place-items-center  border-black w-[3em] h-[3em]
-                  ${currentFill === index ? 'border-[0.5em]' : 'border-2'}
-                `}
+                    ${currentFill === index ? 'border-[0.5em]' : 'border-2'}
+                    focus-visible:scale-125
+                    origin-top
+                  `}
                   style={{
                     backgroundColor: color,
                   }}
@@ -472,7 +574,16 @@ export const SkillArtWindow = ({
           </div>
         </div>
       </TerminalWindow>
-      {showCta && (
+
+      {isFocusVisible
+          && (
+          <div className="absolute bottom-0 left-0 font-mono text-white bg-black z-[5] p-[0.2em] text-[1em]">
+            {'Don\'t use a mouse? '}
+            <br />
+            Paint with the arrow keys!
+          </div>
+          )}
+      {(showCta || theUserShouldHaveFiguredItOutByNow) && (
       <TerminalWindow
         title={null}
         className={`

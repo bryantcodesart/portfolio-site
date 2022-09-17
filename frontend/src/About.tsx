@@ -3,7 +3,7 @@ import React, {
   useRef, useState,
 } from 'react';
 import { MathUtils, PerspectiveCamera } from 'three';
-import { useWindowSize } from 'usehooks-ts';
+import { useEventListener, useWindowSize } from 'usehooks-ts';
 import { Html } from '@react-three/drei';
 import { CoordArray } from './CoordArray';
 import { CustomCursorHover } from './CustomCursor';
@@ -32,6 +32,14 @@ export const Slides = ({
   const breakpoint = breakpoints.about;
 
   const { scene } = useSceneController();
+
+  useEventListener('keypress', (e) => {
+    if (e.key === 'Escape') {
+      if (scene === 'about') {
+        setScene('menu');
+      }
+    }
+  });
 
   if (slide === 'intro') {
     const text1Delay = 800;
