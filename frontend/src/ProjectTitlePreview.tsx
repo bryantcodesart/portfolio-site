@@ -50,9 +50,10 @@ export const ProjectTitlePreview = ({ project, basePosition, visible }:
   //   2,
   // ];
   // const titlePosition:[number, number, number] = [0, 0, 2];
+  const yDist = 2.5 - Math.abs(basePosition[0]) * 0.25;
   const titlePosition: [number, number, number] = [
     -basePosition[0] / 4,
-    basePosition[1] < 0 ? basePosition[1] + 2.25 : basePosition[1] - 2.25,
+    basePosition[1] < 0 ? basePosition[1] + yDist : basePosition[1] - yDist,
     2,
   ];
 
