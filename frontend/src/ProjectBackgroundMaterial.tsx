@@ -84,7 +84,8 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       return vec3((color.r + color.g + color.b) / 3.);
     }
 
-    float distance(float x1, float y1, float x2, float y2) {
+    // Namespacing this because it exists in firefox
+    float bsDistance(float x1, float y1, float x2, float y2) {
       return sqrt(pow(x2-x1,2.) + pow(y2-y1,2.));
     }
 
@@ -128,9 +129,9 @@ const BackgroundColorShaderMaterial = shaderMaterial(
 
       float colorBlobs = 0.0;
       if(breakpoint) {
-        colorBlobs += smoothstep(0.7,0.9,1.0-distance(vUv.x, vUv.y, .75, vUv.y)*1.0);
+        colorBlobs += smoothstep(0.7,0.9,1.0-bsDistance(vUv.x, vUv.y, .75, vUv.y)*1.0);
       } else {
-        colorBlobs += smoothstep(0.7,0.9,1.0-distance(vUv.x, vUv.y, vUv.x, .65)*1.0);
+        colorBlobs += smoothstep(0.7,0.9,1.0-bsDistance(vUv.x, vUv.y, vUv.x, .65)*1.0);
       }
       colorBlobs += blobNoise(5.0, seed, time*0.3)/2.0;
       colorBlobs += blobNoise(2.0, seed, time*0.6)/2.0;

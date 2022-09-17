@@ -30,7 +30,6 @@ export const usePlayAllVideosOnClickInLowPowerMode = () => {
       if (userAlreadyClicked) return;
       setUserAlreadyClicked(true);
 
-      console.log('');
       let dummyVidToPlay:HTMLVideoElement|null = document.createElement('video');
       dummyVidToPlay.muted = true;
       dummyVidToPlay.play();
