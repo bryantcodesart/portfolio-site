@@ -29,6 +29,7 @@ export const decorativeSquiggles2 = [
   squiggle2Points.reverse().map((point) => [point[0], 1 - point[1], point[2]]),
 ];
 
+// eslint-disable-next-line no-unused-vars
 export const ProjectTitlePreview = ({ project, basePosition, visible }:
   { project: Project; basePosition: [number, number, number]; visible: boolean; }) => {
   const [titleRotation, setTitleRotation] = useState(0);

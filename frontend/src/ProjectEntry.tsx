@@ -166,7 +166,7 @@ export const ProjectEntry = ({
           description=""
           activationMsg=""
           cursor="open-project"
-          debug
+          // debug
           onClick={() => {
             setOpen(true);
           }}
