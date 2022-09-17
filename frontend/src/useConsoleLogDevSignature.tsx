@@ -11,7 +11,7 @@ export const useConsoleLogDevSignature = () => {
     log('looking at my code, are you?');
     log('awesome! dig around!');
     log('Although you\'ll probably have more luck looking at the repo:');
-    console.log('%chttps://github.com/bryantcodesart/bryantcodesart', sizeStyle);
+    console.log('%chttps://github.com/bryantcodesart/portfolio-site', sizeStyle);
     log('hmu to nerd out about any of it!');
     log('hello@bryantcodes.art');
   }, 1000);
