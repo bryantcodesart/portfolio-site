@@ -55,7 +55,7 @@ export function SceneDirector({
   }
   if (scene === 'projects') {
     stagePosition = [0, -10, 3];
-    stageSize = [5, 10];
+    stageSize = [6, 10];
     if (breakpoints.projects) {
       stagePosition = [0.5, -12, 3];
       stageSize = [8.5, 6.5];
