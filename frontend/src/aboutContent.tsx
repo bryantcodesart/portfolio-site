@@ -1,3 +1,5 @@
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable max-len */
 export const aboutContent = {
   intro: ['I\'m Bryant! (he/him)', 'I build web experiences'],
   mission: [
@@ -58,3 +60,45 @@ export const aboutContent = {
     `,
   ],
 };
+
+/*
+
+More content:
+
+
+
+
+I am a fullstack dev who collaborates with designers to build their wildest dreams.  Together, let's create something that stands out–and has your users saying, "woah."
+
+I've been working as a creative technologist for 7 years, helping best-in-class designers build award winning projects–including 4 STA100's, a TDC and a Webby.
+
+I separate myself from the pack in two ways:
+
+1. I specialize in building projects with particularly challenging designs, special effects, interactivity, & multimedia.  This skillset lends itself well to creating eye-catching marketing experiences, microsites, artistic galleries/exhibitions, and so on.  I love playful, bold, provocative brands, but I also have experience building more conservative, standard marketing projects–especially if it serves a cause I believe in.  I will take a designer's challenging, exciting idea and make it happen with precision–and often collaborate with them to figure out how to take their ideas even further.
+
+2.  I see the big picture and take ownership/pride in my work.  Leading up, down and laterally, I will wear multiple hats to facilitate successful launches.  While I'm comfortable staying in my lane and moving tickets, I tend to find myself in environments where I add additional value to project management, strategy, and design.  This can look like:
+- Early involvement as a consultant in ideation phase to derisk, force multiply, and generally maximize the lift/impact ratio of the build
+- Collaborate with designers early to build prototypes and explore an idea collaboratively
+- Helping discover a minimum viable product given business goals, and helping design a team workflow/timeline/milestones
+- Coaching designers on best practices
+- Filling in gaps with minimal oversight, if desired.
+- I'm the sort of dev who notices inconsistent capitalization in the copy.
+
+
+When I'm not building cool tech, I'm playing funk trombone.  I have toured the country with world class acts including The Isley Brothers and I've headlined Chicago comedy clubs with my electric trombone storytelling shows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
