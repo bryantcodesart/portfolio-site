@@ -20,6 +20,8 @@ import colors from './colors';
 // import { AwardsWindow } from './AwardsWindow';
 import { TerminalWindowButton } from './TerminalWindowButton';
 import { aboutContent } from './aboutContent';
+import selfPortraitImage from '../public/images/self-portrait.jpg';
+import haileyImage from '../public/images/hailey2.jpg';
 
 export const Slides = ({
   slide, setScene, setSlide,
@@ -114,7 +116,7 @@ export const Slides = ({
             transition-transform duration-[1s]
             ${slide === 'mission' ? '' : 'translate-x-[20%] translate-y-[70%]'}
           `}
-            srcs={['/images/self-portrait.jpg']}
+            srcs={[selfPortraitImage]}
             alts={['Crayon illustration of Bryant from decades ago.']}
           />
         </div>
@@ -146,7 +148,7 @@ export const Slides = ({
             transition-transform duration-[1s]
             ${slide === 'testimonials' ? '' : 'translate-x-[-70%] translate-y-[-10%]'}
           `}
-          srcs={['/images/hailey2.jpg']}
+          srcs={[haileyImage]}
           alts={['My dog Hailey smiling her crazy smile.']}
         />
 
