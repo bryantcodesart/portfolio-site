@@ -165,7 +165,7 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       if(breakpoint) {
         distanceGradient += smoothstep(0.4,0.9,1.0-bsDistance(vUv.x, vUv.y, .75, vUv.y)*1.0);
       } else {
-        distanceGradient += smoothstep(0.4,0.9,1.0-bsDistance(vUv.x, vUv.y, vUv.x, .65)*1.0);
+        distanceGradient += smoothstep(0.5,1.1,1.0-bsDistance(vUv.x, vUv.y, vUv.x, .65)*1.0);
       }
 
       float correctedTime = time*0.075;
