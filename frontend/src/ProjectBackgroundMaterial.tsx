@@ -117,6 +117,41 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       return step(1.0,1.-test);
     }
 
+    // vec3 pixelate(vec2 uv, vec3 col) {
+    //     float granularity = 0.01;
+    //     float dx = granularity / gl_FragCoord.x;
+    //     float dy = granularity / gl_FragCoord.y;
+    //     uv = vec2(dx*(floor(uv.x/dx) + 0.5),
+    //               dy*(floor(uv.y/dy) + 0.5));
+    //     return bg(uv);
+    // }
+
+
+    // mat4 bayerIndex = mat4(
+    //   vec4(00.0/16.0, 12.0/16.0, 03.0/16.0, 15.0/16.0),
+    //   vec4(08.0/16.0, 04.0/16.0, 11.0/16.0, 07.0/16.0),
+    //   vec4(02.0/16.0, 14.0/16.0, 01.0/16.0, 13.0/16.0),
+    //   vec4(10.0/16.0, 06.0/16.0, 09.0/16.0, 05.0/16.0));
+
+    // vec3 dither(vec2 coord, vec3 color) {
+    //   // coord *= 1.5;
+
+    //   // gamma correction
+    //   color = smoothstep(0.1,1.,color);
+    //   color = vec3(pow(color.rgb,vec3(2.1)) - 0.004);
+
+    //   // find bayer matrix entry based on fragment position
+    //   float bayerValue = bayerIndex[int(coord.x) % 4][int(coord.y) % 4];
+
+    //   // output
+    //   return vec3(
+    //       step(bayerValue,color.r),
+    //       step(bayerValue,color.g),
+    //       step(bayerValue,color.b));
+
+    //   // return vec3(step(bayerValue,grayscale(color)));
+    // }
+
     vec3 coffee = vec3(0.333,0.122,0.);
     vec3 black = vec3(0.1);
 
@@ -126,16 +161,29 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       transitionBlobs += noise(vUv*8.0+time,seed+1000.0)/2.0;
       transitionBlobs = step(1.0-opacity,transitionBlobs);
 
+      float distanceGradient = 0.0;
+      if(breakpoint) {
+        distanceGradient += smoothstep(0.4,0.9,1.0-bsDistance(vUv.x, vUv.y, .75, vUv.y)*1.0);
+      } else {
+        distanceGradient += smoothstep(0.4,0.9,1.0-bsDistance(vUv.x, vUv.y, vUv.x, .65)*1.0);
+      }
+
+      float correctedTime = time*0.075;
 
       float colorBlobs = 0.0;
-      if(breakpoint) {
-        colorBlobs += smoothstep(0.7,0.9,1.0-bsDistance(vUv.x, vUv.y, .75, vUv.y)*1.0);
-      } else {
-        colorBlobs += smoothstep(0.7,0.9,1.0-bsDistance(vUv.x, vUv.y, vUv.x, .65)*1.0);
-      }
-      colorBlobs += blobNoise(5.0, seed, time*0.3)/2.0;
-      colorBlobs += blobNoise(2.0, seed, time*0.6)/2.0;
-      vec3 color = mix(coffee,colorBlobs*projectColor,opacity);
+      colorBlobs += distanceGradient/1.0;
+      colorBlobs += blobNoise(5.0, seed, correctedTime*0.3)/3.0;
+      colorBlobs += blobNoise(12.0, seed, correctedTime*0.6)/2.0;
+      colorBlobs += blobNoise(8.0, seed, correctedTime*0.6)/2.0;
+
+      // colorBlobs *= blobNoise(1000.0+time, seed, correctedTime*0.6);
+      colorBlobs *=  noise(vUv*1000.0,gl_FragCoord.x*gl_FragCoord.y/1000.0);
+      colorBlobs = step(0.5, colorBlobs);
+
+      vec3 color = mix(coffee,colorBlobs*projectColor,opacity)*2.0;
+      // color = dither(vUv, color);
+      // color = step(0.5, color);
+      color *= smoothstep(0.0,1.0,distanceGradient)*0.5;
 
       gl_FragColor.rgba = vec4(color, transitionBlobs);
     }
