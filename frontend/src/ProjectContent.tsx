@@ -119,7 +119,7 @@ export const ProjectHeader = ({ project }: { project: Project; }) => (
     <h1
       className="font-mono leading-[1] mb-6 mt-12"
       style={{
-        fontSize: (project?.title?.length ?? 0) > 15 ? 'max(35px,3.5vw)' : 'max(35px,6vw)',
+        fontSize: (project?.title?.length ?? 0) > 15 ? 'clamp(35px,3.5vw,55px)' : 'clamp(35px,6vw,85px)',
       }}
     >
       {project.title}

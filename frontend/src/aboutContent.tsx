@@ -93,8 +93,32 @@ When I'm not building cool tech, I'm playing funk trombone.  I have toured the c
 
 
 
+SOFT
+Interpreting design
+Attention to detail
+Communication / collaboration
+Quick onboarding
+Problem solving
 
+HARD
+Exceptional:
+Styling (CSS, SCSS, Tailwind)
+JS (Typescript, React, Next.js)
+2D (Canvas, SVG, PIXI, Phaser)
+Animation (Framer, React Spring, GSAP, Lottie)
+Audio (Web Audio API, Tone.js)
 
+Good:
+3D (Three.js, GLSL)
+CMS building (Sanity, Strapi, WP, Craft)
+
+Competent:
+Other frameworks (Vue 3, Svelte)
+Backends (Serverless, Node, Socket.io, Express)
+p2p (webRTC, crdt)
+Image (Adobe PS, AI, Figma)
+Video (Adobe AE, PR)
+Audio (Ableton, Max/MSP)
 
 
 

@@ -168,7 +168,7 @@ const BackgroundColorShaderMaterial = shaderMaterial(
         distanceGradient += smoothstep(0.5,1.1,1.0-bsDistance(vUv.x, vUv.y, vUv.x, .65)*1.0);
       }
 
-      float correctedTime = time*0.075;
+      float correctedTime = time*0.3;
 
       float colorBlobs = 0.0;
       colorBlobs += distanceGradient/1.0;
