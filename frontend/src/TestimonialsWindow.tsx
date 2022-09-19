@@ -94,7 +94,7 @@ export const TestimonialsWindow = ({
                         />
                       )
                       : (
-                        <div className="w-[3em] h-[3em] relative">
+                        <div className="w-[3em] h-[3em] relative rounded-full overflow-hidden">
                           <Image
                             src={headshot}
                             className="object-cover rounded-full pointer-events-none"
