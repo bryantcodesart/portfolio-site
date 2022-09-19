@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { ReactNode, useState } from 'react';
+import Image from 'next/image';
 import { TerminalWindowProps } from './TerminalWindowProps';
 import { TerminalWindow } from './TerminalWindow';
 import { Typewriter } from './Typewriter';
@@ -83,8 +84,27 @@ export const TestimonialsWindow = ({
                   ${messageIndex === index ? 'bg-[#bdffbd]' : ''}
                 `}
                 >
-                  <div className="border-[2px] rounded-full">
-                    <img src={`/images/${headshot}`} className="w-[3em] h-[3em] pointer-events-none rounded-full object-cover" alt="headshot" />
+                  <div className="border-[2px] rounded-full bg-blue">
+                    {typeof headshot === 'string'
+                      ? (
+                        <img
+                          src={headshot}
+                          className="w-[3em] h-[3em] pointer-events-none rounded-full object-cover"
+                          alt="headshot"
+                        />
+                      )
+                      : (
+                        <div className="w-[3em] h-[3em] relative">
+                          <Image
+                            src={headshot}
+                            className="object-cover rounded-full pointer-events-none"
+                            alt="headshot"
+                            placeholder="blur"
+                            layout="fill"
+                          />
+                        </div>
+                      )}
+
                   </div>
                   <div className="text-[0.75em] leading-[1]">
                     <h2 className="font-bold">

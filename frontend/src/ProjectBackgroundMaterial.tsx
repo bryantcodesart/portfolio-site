@@ -177,7 +177,7 @@ const BackgroundColorShaderMaterial = shaderMaterial(
       colorBlobs += blobNoise(8.0, seed, correctedTime*0.6)/2.0;
 
       // colorBlobs *= blobNoise(1000.0+time, seed, correctedTime*0.6);
-      colorBlobs *=  noise(vUv*1000.0,gl_FragCoord.x*gl_FragCoord.y/1000.0);
+      colorBlobs *=  noise(vUv*1000.0,gl_FragCoord.x*gl_FragCoord.y/10000.0);
       colorBlobs = step(0.5, colorBlobs);
 
       vec3 color = mix(coffee,colorBlobs*projectColor,opacity)*2.0;

@@ -1,3 +1,6 @@
+import stefImage from '../public/images/stef.jpg';
+import jpImage from '../public/images/jp.jpg';
+
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable max-len */
 export const aboutContent = {
@@ -10,7 +13,7 @@ export const aboutContent = {
     quote: 'Bryant\'s kickass work is complemented by his infectious energy and passion for creating original, exciting work. He is a true creative partner––always bringing new ideas to the table.',
     shortName: 'Stef',
     name: 'Stephanie Jung',
-    headshot: 'stef.jpg',
+    headshot: stefImage,
     title: [
       'Brand Design Lead, Employer Marketing at Handshake',
     ],
@@ -20,12 +23,12 @@ export const aboutContent = {
     shortName: 'JP',
     title: ['Design Manager, Brand Design Strategy at Intuit',
       'Director, Studio Ramírez'],
-    headshot: 'jp.jpg',
+    headshot: jpImage,
   }, {
     quote: 'Bryant\'s building enables award-winning projects––including 4x STA100\'s, a Type Director\'s Club award, and a Webby.',
     name: 'The award people',
     shortName: 'Awards',
-    headshot: 'star-icon.svg',
+    headshot: '/images/star-icon.svg',
   }],
   skills: [
     `
