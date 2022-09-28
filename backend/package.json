@@ -11,7 +11,8 @@
     "dev": "sanity start",
     "build": "sanity build",
     "build:types": "npx sanity-codegen",
-    "deploy": "sanity deploy"
+    "deploy": "sanity deploy",
+    "backup": "sanity dataset export production \"../sanity-backups/backup-$(date +\"%Y-%m-%d-%H-%M\").tar.gz\""
   },
   "keywords": [
     "sanity"
