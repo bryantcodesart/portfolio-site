@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
+        sm: '400px',
         landscape: { raw: '(min-aspect-ratio: 1 / 1)' },
       },
       // https://github.com/tailwindlabs/tailwindcss/discussions/2599#discussioncomment-2965375

@@ -78,9 +78,9 @@ export const TestimonialsWindow = ({
                   onClick={() => { setMessageIndex(index); }}
                   type="button"
                   className={`
-                  flex justify-start items-center gap-[0.5em]
+                  flex flex-col text-center justify-start items-center gap-[0.5em]
                   w-full p-[0.5em]
-                  text-left
+                  sm:text-left sm:flex-row
                   ${messageIndex === index ? 'bg-[#bdffbd]' : ''}
                 `}
                 >
@@ -89,7 +89,7 @@ export const TestimonialsWindow = ({
                       ? (
                         <img
                           src={headshot}
-                          className="w-[3em] h-[3em] pointer-events-none rounded-full object-cover"
+                          className="w-[3em] h-[3em] min-w-[3em] pointer-events-none rounded-full object-cover"
                           alt="headshot"
                         />
                       )
