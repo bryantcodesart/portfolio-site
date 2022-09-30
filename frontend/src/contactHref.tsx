@@ -1,5 +1,5 @@
 const subject = 'Hello, Bryant!';
-const body = '(Optional: If unsure how to start this email, please break the ice by describing your dream pizza.)';
+const body = 'I hope this note finds you well. You had such a compelling CTA, I just *had* to click on it!';
 
 export const contactHref = `mailto:hello@bryantcodes.art?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 export const linkedInHref = 'https://www.linkedin.com/in/bryantcodesart/';
