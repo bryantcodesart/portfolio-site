@@ -54,9 +54,6 @@ const ctas = [
   'but I\'M THE PEANUTS',
   'webdev!',
   'get your webdev, here!',
-  null,
-  null,
-  'avail 4 freelance!',
 ];
 
 export const useShowCtas = () => {
