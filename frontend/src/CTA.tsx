@@ -52,8 +52,9 @@ const ctas = [
   'selling peanuts',
   'at a ballgame',
   'but I\'M THE PEANUTS',
-  'webdev!',
-  'get your webdev, here!',
+  '"webdev!"',
+  '"get your webdev, here!"',
+  '"webdeeeeeev!"',
 ];
 
 export const useShowCtas = () => {
