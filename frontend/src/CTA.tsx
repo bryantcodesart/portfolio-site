@@ -33,7 +33,7 @@ const ctas = [
   null,
   null,
   'trying to strike',
-  'a self aware tone with it',
+  'a self-aware tone with it',
   'but still have it work',
   'ya know?',
   null,

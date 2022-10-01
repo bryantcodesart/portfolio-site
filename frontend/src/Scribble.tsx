@@ -137,6 +137,7 @@ export const Scribble = ({
         dashArray={1}
         dashRatio={1}
         dashOffset={0}
+        toneMapped={false}
       />
     </animated.mesh>
   );

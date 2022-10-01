@@ -110,6 +110,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
           textAlign="center"
           fontSize={0.5}
           font={fontUrls.bryantBold}
+          material-toneMapped={false}
         >
           {`${hasNoMouse ? 'Tap' : 'Click'} an \nice cube.`}
         </Text>
