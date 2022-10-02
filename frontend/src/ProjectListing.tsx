@@ -59,7 +59,7 @@ export function ProjectListing({ active, projects, ...groupProps }:
       }, delay += 500);
       setTimeout(() => {
         setAutoHover(true);
-      }, delay += 2000);
+      }, delay += 3000);
     } else {
       setHoveredIndex(null);
       setAutoHover(false);
