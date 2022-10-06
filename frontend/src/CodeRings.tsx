@@ -50,10 +50,8 @@ const TEXT_LINES = [
   'const debugInterval = setInterval(()=>{if(prompt(\'Program still working?\')==="nope") throw new Error("bug.");}, 100);',
   '<Burrito spicy={100}>{toppings.map((tProps:{name:string,spicy:number,isHotsauce:boolean,vegan:boolean})=>(<Topping {...(tprops)} key={name} />)}</Burrito>',
   'if(i%(3*(7*3+2))===0) return "nice"; if(i%3===0 && i%5===0) return "fizzbuzz"; if(i%3===0) return "fizz"; if(i%5===0) return "buzz";',
-  'mintNft("vintage-3d-aardvark-meme1.gif"); profit(); mintNft("vintage-3d-aardvark-meme2.gif"); profit(); mintNft("vintage-3d-aardvark-meme3.gif"); profit();',
   // eslint-disable-next-line no-template-curly-in-string
   'const isEven = async (i:number) => {const res = await fetch(`https://iseven.com/api/numbers/${i}`); const {isEven} = await res.json(); return isEven; }',
-  // '// es-lint-disable // ts-ignore // whatever it works',
 ].map((line) => line + ((new Array(TEXT_LINE_LENGTH - line.length)).fill('.').join('')));
 
 /**

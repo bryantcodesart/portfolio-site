@@ -145,6 +145,7 @@ export const ProjectTitlePreview = ({ project, basePosition, visible }:
         visible={delayedVisible}
         material={textMaterial}
         renderOrder={renderOrder + 1}
+        material-toneMapped={false}
       >
         {project?.shortTitle}
       </Text>

@@ -19,6 +19,7 @@ import { fontUrls } from './typography';
 import { ComputerTerminal } from './About';
 import { useSceneController } from './SceneController';
 import { ThreeButton } from './ThreeButton';
+import { useHasNoMouse } from './useHasNoMouse';
 
 export function Computer() {
   const sceneController = useSceneController();
@@ -80,6 +81,8 @@ export function Computer() {
   const textMaterial = useMemo(() => new MeshBasicMaterial({
     depthTest: false,
   }), []);
+
+  const hasNoMouse = useHasNoMouse();
 
   return (
     <animated.group
@@ -157,7 +160,9 @@ export function Computer() {
         renderOrder={3}
         visible={computerCanBeTurnedOn && !computerTurningOn && !computerOn && !computerWillTurnOn}
       >
-        click to start
+        {hasNoMouse ? 'Tap' : 'Click'}
+        {' '}
+        to start
       </Text>
       {computerCanBeTurnedOn && !computerOn && (
       <ThreeButton

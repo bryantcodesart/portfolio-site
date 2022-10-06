@@ -6,7 +6,7 @@ import jpImage from '../public/images/jp.jpg';
 export const aboutContent = {
   intro: ['I\'m Bryant! (he/him)', 'I build web experiences'],
   mission: [
-    'I am a fullstack dev who helps awesome designers (like you) build their wildest dreams.',
+    'I am a freelance dev who helps awesome designers (like you) build their wildest dreams.',
     'Together, let\'s create something that stands out––and has your users saying, "woah."',
   ],
   testimonials: [{
