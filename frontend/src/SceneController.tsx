@@ -1,4 +1,5 @@
 // import { createContext, useContext } from 'react';
+import { event } from 'nextjs-google-analytics';
 import create from 'zustand';
 import { useCustomCursorVanillaStore } from './CustomCursor';
 
@@ -28,6 +29,9 @@ export const useSceneController = create<SceneController>((set) => ({
   scene: 'intro',
   setScene: (scene:SceneName) => {
     set({ scene });
+    event('scene', {
+      scene,
+    });
     useCustomCursorVanillaStore.getState().clearAllHovers();
   },
 }));

@@ -5,6 +5,7 @@ import React, {
 import { MathUtils, PerspectiveCamera } from 'three';
 import { useEventListener, useWindowSize } from 'usehooks-ts';
 import { Html } from '@react-three/drei';
+import { event } from 'nextjs-google-analytics';
 import { CoordArray } from './CoordArray';
 import { CustomCursorHover } from './CustomCursor';
 import { SceneName, useSceneController } from './SceneController';
@@ -235,7 +236,13 @@ export const Slides = ({
 export function ComputerTerminal() {
   const { scene, setScene } = useSceneController();
 
-  const [slide, setSlide] = useState<SlideName>('intro');
+  const [slide, _setSlide] = useState<SlideName>('intro');
+  const setSlide = (name: SlideName) => {
+    event('about-slide', {
+      slide: name,
+    });
+    _setSlide(name);
+  };
 
   // We cant use drei/HTML transform property to manage the size of this div
   // Why? Because a close camera will scale it up so much

@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import React from 'react';
 import { DefaultSeo } from 'next-seo';
 // import { useEventListener } from 'usehooks-ts';
+import { GoogleAnalytics } from 'nextjs-google-analytics';
 import { CustomCursor } from '../src/CustomCursor';
 import { ThreePage } from '../src/ThreePage';
 import { SiteData } from '../src/SiteData';
@@ -53,6 +54,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           cardType: 'summary_large_image',
         }}
       />
+      <GoogleAnalytics trackPageViews />
       <MobileVhAsCssVar />
       <ThreePage
         siteData={siteData}

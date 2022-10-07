@@ -138,7 +138,7 @@ export const ProjectHtmlModal = ({ project, position, setOpen }:
       <ScollingContentContainer>
         <ProjectHeader project={project} />
         <ProjectBody project={project} />
-        <ProjectCTA />
+        <ProjectCTA slug={project?.slug?.current ?? 'unset'} />
       </ScollingContentContainer>
     </Html>
   );

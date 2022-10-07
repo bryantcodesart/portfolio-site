@@ -34,6 +34,7 @@
     "meshline": "^2.0.4",
     "next": "12.1.6",
     "next-seo": "^5.5.0",
+    "nextjs-google-analytics": "^2.1.0",
     "node-fetch": "^3.2.9",
     "react": "^18.2.0",
     "react-aria": "^3.19.0",

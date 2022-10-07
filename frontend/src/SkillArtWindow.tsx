@@ -5,6 +5,7 @@ import React, {
 import { useGesture } from '@use-gesture/react';
 import { useEventListener, useInterval } from 'usehooks-ts';
 import { useFocusVisible } from 'react-aria';
+import { event } from 'nextjs-google-analytics';
 import { TerminalWindowProps } from './TerminalWindowProps';
 import { DrawFill } from './DrawFill';
 import { TerminalWindow } from './TerminalWindow';
@@ -560,6 +561,9 @@ export const SkillArtWindow = ({
                   if (colorsUsed.size > 0) {
                     setShowCta(true);
                   }
+                  event('skill-draw', {
+                    fill: currentFill,
+                  });
                 }
               }}
             />
@@ -656,6 +660,12 @@ export const SkillArtWindow = ({
             key="back-to-menu-and-contact"
             bgColor="yellow"
             href={contactHref}
+            onClick={() => {
+              event('cta', {
+                type: 'email',
+                location: 'about',
+              });
+            }}
           >
             CONTACT_ME
           </TerminalWindowButton>

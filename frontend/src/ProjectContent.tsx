@@ -9,13 +9,16 @@ import { TypedObject } from '@portabletext/types';
 import Vimeo from '@u-wave/react-vimeo';
 import { SanityImageAsset, SanityReference } from 'sanity-codegen';
 import { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import { event } from 'nextjs-google-analytics';
 import { ImageFigure, Project } from '../generatedSanitySchemaTypes';
 import { getSanityImageUrlFor } from './sanity/sanityImageBuilder';
 import { CustomCursorHover, CustomCursorState } from './CustomCursor';
 import ExternalLinkIconSvg from './svg/ExternalLinkIconSvg';
 import { contactHref } from './contactHref';
 
-const ExternalLink = ({ href, cursor = 'external', children }: { href: string; children: ReactNode; cursor?: CustomCursorState; }) => (
+const ExternalLink = ({
+  href, cursor = 'external', children, onClick = () => {},
+}: { href: string; children: ReactNode; cursor?: CustomCursorState; onClick?: ()=>void}) => (
   <CustomCursorHover cursor={cursor}>
     <a
       href={href}
@@ -25,6 +28,7 @@ const ExternalLink = ({ href, cursor = 'external', children }: { href: string; c
           relative block p-2 pr-8 font-mono text-center border-[1px] border-[currentColor]
           hover:text-projectColor hover:border-projectColor hover:fill-projectColor
         "
+      onClick={onClick}
     >
       {children}
       <span className="absolute top-0 grid w-6 h-full right-2 place-items-center fill-[currentColor]"><ExternalLinkIconSvg /></span>
@@ -202,7 +206,8 @@ export const ProjectBody = ({ project }: { project: Project; }) => useMemo(() =>
 
   </div>
 ), [project?.body]);
-export const ProjectCTA = () => (
+
+export const ProjectCTA = ({ slug }:{slug:string}) => (
   <div className="mb-[5em]">
     <H2>Questions?</H2>
     <P className="mb-8">
@@ -213,6 +218,18 @@ export const ProjectCTA = () => (
         I'd love to hear from you!
       `}
     </P>
-    <ExternalLink href={contactHref} cursor="contact">hello @ bryantcodes.art</ExternalLink>
+    <ExternalLink
+      href={contactHref}
+      cursor="contact"
+      onClick={() => {
+        event('cta', {
+          type: 'email',
+          location: `project-${slug}`,
+        });
+      }}
+    >
+      hello @ bryantcodes.art
+
+    </ExternalLink>
   </div>
 );

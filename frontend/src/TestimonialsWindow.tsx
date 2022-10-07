@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { event } from 'nextjs-google-analytics';
 import { TerminalWindowProps } from './TerminalWindowProps';
 import { TerminalWindow } from './TerminalWindow';
 import { Typewriter } from './Typewriter';
@@ -45,6 +46,12 @@ export const TestimonialsWindow = ({
   const breakpoint = breakpoints.about;
 
   const testimonial = testimonials?.[messageIndex];
+
+  useEffect(() => {
+    event('testimonial-viewed', {
+      label: testimonial?.name,
+    });
+  }, [testimonial?.name]);
 
   return (
     <TerminalWindow

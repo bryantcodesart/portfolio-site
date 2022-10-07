@@ -1,6 +1,5 @@
 import React, {
   Ref,
-  // useEffect,
   useMemo, useRef, useState,
 } from 'react';
 import {
@@ -11,6 +10,7 @@ import { useEventListener, useInterval } from 'usehooks-ts';
 import { animated, config, useSpring } from '@react-spring/three';
 import { RoundedBoxGeometry } from 'three-stdlib';
 import { MeshDistortMaterial } from '@react-three/drei';
+import { event } from 'nextjs-google-analytics';
 import { Project } from '../generatedSanitySchemaTypes';
 import { CoffeeVideoMaterial } from './CoffeeVideoMaterial';
 import { ThreeButton } from './ThreeButton';
@@ -169,6 +169,9 @@ export const ProjectEntry = ({
           // debug
           onClick={() => {
             setOpen(true);
+            event('project-opened', {
+              project: project?.slug?.current ?? 'unset',
+            });
           }}
           onFocus={() => {
             setHovering(true);

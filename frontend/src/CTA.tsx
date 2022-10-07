@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
+import { event } from 'nextjs-google-analytics';
 import { CustomCursorHover, CustomCursorState } from './CustomCursor';
 import { useParamOnLoad } from './useParamOnLoad';
 import { contactHref, linkedInHref, twitterHref } from './contactHref';
@@ -90,6 +91,12 @@ const SocialLink = ({
       tabIndex={showCTAs ? 0 : -1}
       onFocus={onFocus}
       onBlur={onBlur}
+      onClick={() => {
+        event('cta', {
+          type: `social-${title.toLowerCase()}`,
+          location: 'bottom-nav',
+        });
+      }}
     >
       <IconSvg className="w-[2em] h-[1.625em]" />
       <span className="sr-only">{title}</span>
@@ -153,6 +160,12 @@ export const CTA = () => {
           tabIndex={showCTAs ? 0 : -1}
           onFocus={onFocus}
           onBlur={onBlur}
+          onClick={() => {
+            event('cta', {
+              type: 'email',
+              location: 'nav',
+            });
+          }}
         >
           <h2 className="sr-only">Contact</h2>
           <span
@@ -215,7 +228,7 @@ export const CTA = () => {
         </ul>
       </nav>
       {showBg && (
-        <div className="top-0 left-0 fixed w-full h-full overflow-hidden z-[-1] text-2vw] font-mono text-white break-all opacity-30" aria-hidden>{new Array(2000).fill(null).map(() => 'hi!')}</div>
+        <div className="top-0 left-0 fixed w-full h-full overflow-hidden z-[-1] text-[2vw] font-mono text-white break-all opacity-30" aria-hidden>{new Array(2000).fill(null).map(() => 'hi!')}</div>
       )}
     </>
   );
