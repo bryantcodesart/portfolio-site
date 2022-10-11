@@ -25,7 +25,7 @@ export const aboutContent = {
       'Director, Studio Ramírez'],
     headshot: jpImage,
   }, {
-    quote: 'Bryant\'s building enables award-winning projects––including CSSDA Special Kudos, CSSDA Best UI/UX/Innovation, 4x STA100, Type Director\'s Club, Webby, Weddy For Good... & more.',
+    quote: 'Bryant\'s building enables award-winning projects––including CSSDA Special Kudos, CSSDA Best UI/UX/Innovation, 4x STA100, Type Director\'s Club, Webby, Webby For Good... & more.',
     name: 'The award people',
     shortName: 'Awards',
     headshot: '/images/star-icon.svg',
