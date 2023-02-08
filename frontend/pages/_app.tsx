@@ -12,7 +12,7 @@ import { useConsoleLogDevSignature } from '../src/useConsoleLogDevSignature';
 import { PlayAllVideosOnClickInLowPowerMode } from '../src/usePlayAllVideosOnClickInLowPowerMode';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const siteData:SiteData = {
+  const siteData: SiteData = {
     startingScene: pageProps.scene ?? 'error',
     projects: pageProps.projects ?? null,
   };
@@ -24,7 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   // });
 
   const title = 'Bryant Smith, Creative Dev';
-  const description = 'I help awesome designers (like you) build their wildest dreams.';
+  const description =
+    'I help awesome designers (like you) build their wildest dreams.';
   const url = 'https://bryantcodes.art';
 
   return (
@@ -56,9 +57,10 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <GoogleAnalytics trackPageViews />
       <MobileVhAsCssVar />
-      <ThreePage
+      {/* <ThreePage
         siteData={siteData}
-      />
+      /> */}
+      <h1>PREVIEWING TEST</h1>
       <Component {...pageProps} />
       <CustomCursor />
       <PlayAllVideosOnClickInLowPowerMode />
