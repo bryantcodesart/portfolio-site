@@ -9,6 +9,8 @@ module.exports = {
     'plugin:react/recommended',
     'airbnb',
     'plugin:import/typescript',
+    'prettier',
+    'prettier/react',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -21,6 +23,7 @@ module.exports = {
   ignorePatterns: ['generatedSanitySchemaTypes.ts'],
   plugins: ['react', '@typescript-eslint'],
   rules: {
+    'comma-dangle': 'off',
     'react/function-component-definition': 'off',
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',

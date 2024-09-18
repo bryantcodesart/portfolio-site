@@ -1,14 +1,6 @@
-import React, {
-  Ref,
-  useMemo, useRef,
-} from 'react';
-import {
-  extend, ReactThreeFiber, useFrame,
-} from '@react-three/fiber';
-import {
-  CatmullRomCurve3,
-  Color, Vector3,
-} from 'three';
+import React, { Ref, useMemo, useRef } from 'react';
+import { extend, ReactThreeFiber, useFrame } from '@react-three/fiber';
+import { CatmullRomCurve3, Color, Vector3 } from 'three';
 import {
   useSpring,
   animated,
@@ -31,8 +23,11 @@ extend({ MeshLine, MeshLineMaterial });
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'meshLine': ReactThreeFiber.Object3DNode<MeshLine, typeof MeshLine>;
-      'meshLineMaterial': ReactThreeFiber.Object3DNode<MeshLineMaterial, typeof MeshLineMaterial>;
+      meshLine: ReactThreeFiber.Object3DNode<MeshLine, typeof MeshLine>;
+      meshLineMaterial: ReactThreeFiber.Object3DNode<
+        MeshLineMaterial,
+        typeof MeshLineMaterial
+      >;
     }
   }
 }
@@ -82,22 +77,20 @@ export const Scribble = ({
   // and possibly interpolated into a curve on nPointsInCurve if curved prop is true.
   // Must be in format [x1,y1,z1,x2,y2,z2,...] for MeshLine.
   const sizedPoints: number[] = useMemo(() => {
-    let vectors = points.flatMap((
-      [x, y, z],
-    ) => new Vector3(x * size - size / 2, y * size - size / 2, z));
+    let vectors = points.flatMap(
+      ([x, y, z]) => new Vector3(x * size - size / 2, y * size - size / 2, z)
+    );
 
     // Optionally extrapolate points into a curve
     if (curved) {
-      vectors = new CatmullRomCurve3(vectors, closed)
-        .getPoints(nPointsInCurve);
+      vectors = new CatmullRomCurve3(vectors, closed).getPoints(nPointsInCurve);
     }
 
-    return vectors.flatMap((point:Vector3) => [point.x, point.y, point.z]);
-  }, [points, curved, size, nPointsInCurve]);
+    return vectors.flatMap((point: Vector3) => [point.x, point.y, point.z]);
+  }, [points, curved, size, closed, nPointsInCurve]);
 
   const { percentageDrawn } = useSpring({
-    percentageDrawn: visible
-      ? 1 : 0,
+    percentageDrawn: visible ? 1 : 0,
     config: drawSpringConfig,
   });
 
@@ -113,7 +106,10 @@ export const Scribble = ({
     }
   });
 
-  const { scale: animatedScale } = useSpring({ scale, config: scaleSpringConfig });
+  const { scale: animatedScale } = useSpring({
+    scale,
+    config: scaleSpringConfig,
+  });
 
   return (
     <animated.mesh
@@ -123,10 +119,7 @@ export const Scribble = ({
       // raycast={MeshLineRaycast}
       renderOrder={renderOrder}
     >
-      <meshLine
-        attach="geometry"
-        points={sizedPoints}
-      />
+      <meshLine attach="geometry" points={sizedPoints} />
       <meshLineMaterial
         attach="material"
         transparent
