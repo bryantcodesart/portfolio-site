@@ -52,7 +52,7 @@ const ctas = [
   'feels sorta like',
   'selling peanuts',
   'at a ballgame',
-  'but I\'M THE PEANUTS',
+  "but I'M THE PEANUTS",
   '"webdev!"',
   '"get your webdev, here!"',
   '"webdeeeeeev!"',
@@ -71,18 +71,16 @@ const SocialLink = ({
   onFocus,
   onBlur,
   cursor,
-}:{
+}: {
   IconSvg: typeof MailIconSvg;
   showCTAs: boolean;
-  title:string;
+  title: string;
   href: string;
-  onFocus: ()=>void;
-  onBlur: ()=>void;
-  cursor: CustomCursorState
+  onFocus: () => void;
+  onBlur: () => void;
+  cursor: CustomCursorState;
 }) => (
-  <CustomCursorHover
-    cursor={cursor}
-  >
+  <CustomCursorHover cursor={cursor}>
     <a
       href={href}
       target="_blank"
@@ -124,13 +122,20 @@ export const CTA = () => {
   // const [showBg, setShowBg] = useState(false);
   const showBg = useDelayedBoolean(hover, null, 1000);
 
-  const onFocus = () => { setColorSpeed(fastSpeed); setHover(true); };
-  const onBlur = () => { setColorSpeed(defaultSpeed); setHover(false); };
+  const onFocus = () => {
+    setColorSpeed(fastSpeed);
+    setHover(true);
+  };
+  const onBlur = () => {
+    setColorSpeed(defaultSpeed);
+    setHover(false);
+  };
   // useInterval;
   return (
     <>
       <style>
-        { hover && `
+        {hover &&
+          `
           body {
             background: black !important;
           }
@@ -152,7 +157,8 @@ export const CTA = () => {
             ${hover ? 'scale-[1.3]' : ''}  origin-top-left
           `}
           style={{
-            filter: 'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
+            filter:
+              'drop-shadow(0 0 0.2rem black) drop-shadow(0 0 0.2rem black)',
             background: bgColor,
             color: textColor,
             stroke: textColor,
@@ -168,19 +174,16 @@ export const CTA = () => {
           }}
         >
           <h2 className="sr-only">Contact</h2>
-          <span
-            className="tracking-[-0.01em] flex gap-[0.75em] underline decoration-2 underline-offset-[6px]"
-          >
+          <span className="tracking-[-0.01em] flex gap-[0.75em] underline decoration-2 underline-offset-[6px]">
             <MailIconSvg className="w-[2em] h-[1.625em]" />
-            {ctas[ctaIndex]
-            ?? (
-            <span>
-              hello
-              <span className="text-[0.7em]">&nbsp;</span>
-              <span>@</span>
-              <span className="text-[0.7em]">&nbsp;</span>
-              bryantcodes.art
-            </span>
+            {ctas[ctaIndex] ?? (
+              <span>
+                hello
+                <span className="text-[0.7em]">&nbsp;</span>
+                <span>@</span>
+                <span className="text-[0.7em]">&nbsp;</span>
+                bryantcodes.art
+              </span>
             )}
           </span>
         </a>
@@ -214,21 +217,15 @@ export const CTA = () => {
               cursor="linked-in"
             />
           </li>
-          <li>
-            <SocialLink
-              title="Twitter"
-              IconSvg={TwitterIconSvg}
-              showCTAs={showCTAs}
-              href={twitterHref}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              cursor="twitter"
-            />
-          </li>
         </ul>
       </nav>
       {showBg && (
-        <div className="top-0 left-0 fixed w-full h-full overflow-hidden z-[-1] text-[2vw] font-mono text-white break-all opacity-30" aria-hidden>{new Array(2000).fill(null).map(() => 'hi!')}</div>
+        <div
+          className="top-0 left-0 fixed w-full h-full overflow-hidden z-[-1] text-[2vw] font-mono text-white break-all opacity-30"
+          aria-hidden
+        >
+          {new Array(2000).fill(null).map(() => 'hi!')}
+        </div>
       )}
     </>
   );
